@@ -81,7 +81,7 @@ Each backlog item should carry these fields:
 - `title`
 - `summary`
 - `purpose`
-- `source_refs`, the approved requirement, UX, and architecture IDs that justify the item
+- `source_refs`, the approved requirement, UX, and architecture IDs that justify the item. For code-affecting items, include the approved module, public contract, and dependency decision IDs that govern the change
 - `evidence_refs`, the artifact lines, test cases, logs, mocks, or review notes that support the item
 - `visual_decision_refs`, the exact approved VDC revision and VIS decision references that govern UI-affecting work
 - `visual_acceptance_criteria`, the measurable visual outcomes mapped to those VIS decisions
@@ -90,10 +90,10 @@ Each backlog item should carry these fields:
 - `dependencies`, the items that must land first
 - `priority`, use `high`, `medium`, or `low`
 - `release_slice`, the planned delivery batch
-- `acceptance_criteria`
+- `acceptance_criteria`, measurable outcomes, including maintainability outcomes for code-affecting items
 - `observable_behavior`
-- `test_intent`
-- `expected_completion_proof`
+- `test_intent`, the behavior or boundary the checks must cover, including public-contract, module-boundary, or integration intent for code-affecting items
+- `expected_completion_proof`, the reports, check output, dependency evidence, and explicit evidence gaps that will prove completion
 - `sequencing_rationale`
 - `assumptions`
 - `unknowns`
@@ -101,7 +101,7 @@ Each backlog item should carry these fields:
 - `definition_of_ready`
 - `definition_of_done`
 - `security_tasks`
-- `quality_tasks`
+- `quality_tasks`, repository-native checks or direct inspection steps
 - `risks`
 - `blockers`
 - `handoff_status`
@@ -140,6 +140,20 @@ For each UI-affecting item:
 
 Treat the three visual fields as lists. They may be empty only for a genuinely non-UI item, and the item must state the reason in `summary`. Indirect support for rendered UI is UI-affecting when the task can change the rendered result.
 
+### Maintainability Decision Propagation
+
+For every code-affecting epic, story, or task:
+
+- Populate `source_refs` with the approved architecture decisions that cover module responsibility, public contracts, dependency direction, and any repo-configured complexity or size limits that apply
+- Write `acceptance_criteria` as measurable maintainability outcomes, such as correct module ownership, stable public contracts, no new dependency cycles, cohesion that matches the approved boundary, domain names that match approved vocabulary, removal of real duplication or dead code when proven, and comments only where non-obvious rationale is needed
+- Use `test_intent` to name the boundary or contract being checked, such as module boundary, public contract, dependency graph, integration path, or regression path
+- Use `quality_tasks` for repository-native checks or direct inspection, such as lint, tests, dependency checks, search for duplicate logic, dead code review, unused dependency checks, and verification against repo-configured limits
+- Write `expected_completion_proof` as the concrete report, command output, review note, or dependency evidence that proves the change met the maintainability criteria, plus any gaps when a tool or direct check was not available
+- Allow abstraction only when repeated behavior or policy has been verified, or when a variation point is proven. Reject speculative indirection
+- If the repository config defines size or complexity limits, use those exact limits. If it does not, require evidence-backed refactoring and do not invent a universal line count
+
+For non-code items, if maintainability proof does not apply, state that reason clearly in `summary` and keep the other evidence honest.
+
 ### Technical Tasks
 
 Use tasks for shared services, data shape changes, migrations, component support, or test harness work that a story depends on.
@@ -151,6 +165,8 @@ Technical tasks must:
 - State the visible effect, even if indirect
 - State the test intent and the proof expected at completion
 - Avoid hiding product or architecture decisions
+
+For code-affecting technical tasks, the acceptance criteria, test intent, quality tasks, and expected completion proof must form one maintainability chain from approved architecture decisions to observable checks and evidence.
 
 ### Dependencies
 
@@ -184,8 +200,8 @@ Release slices stay intact even when delivery gates change, and a gate never rew
 
 Every backlog item must carry a delivery gate value:
 
-- `PASS` means the item has clear purpose, evidence refs, observable behavior, test intent, expected completion proof, and a traceable reason for its sequencing or priority.
-- `FAIL` means any of those are missing, vague, or only implied, including filler tasks with no measurable acceptance.
+- `PASS` means the item has clear purpose, evidence refs, observable behavior, test intent, expected completion proof, and a traceable reason for its sequencing or priority. For code-affecting items, it also has approved maintainability source refs, objective maintainability acceptance criteria, named checks, and proof evidence or named gaps.
+- `FAIL` means any of those are missing, vague, or only implied, including filler tasks with no measurable acceptance. A code-affecting item also fails when approved module, public contract, or dependency refs are missing, maintainability outcomes are subjective, configured limits are ignored, abstraction is speculative, or proof gaps are hidden.
 
 For a UI-affecting item, the gate is `FAIL` when its visual contract cites an unapproved or stale VDC revision, omits a required VIS reference, contains a vague visual acceptance criterion, leaves expected visual proof unspecified, or lacks the required visual-quality task.
 
@@ -201,10 +217,12 @@ Use traceability to show:
 
 - Which product requirement started the item
 - Which UX flow or state it supports
-- Which architecture decision it depends on
+- Which architecture decision it depends on, including module, public contract, and dependency decisions for code-affecting items
+- Which repo-configured complexity or size limit applies, or which evidence-backed refactor path applies when no limit is configured
 - Which exact approved VDC revision and VIS decisions govern any UI-affecting result
 - Which visual acceptance criteria translate each referenced VIS decision
 - Which expected visual proof artifact and target path will verify each criterion
+- Which maintainability checks, direct inspection steps, and evidence gaps prove the code change stayed within the approved architecture decision
 - Which release slice contains it
 - Which evidence proves the item is still grounded in approved intent
 
@@ -217,13 +235,16 @@ An item is ready only when all of these are true:
 - The source requirement is approved
 - The UX behavior is approved, if the item touches the user flow
 - The architecture needed for the item is approved
+- For code-affecting work, the approved architecture refs include the relevant module, public contract, and dependency decisions, and the verification method is testable
 - Dependencies are listed and available or scheduled
 - Acceptance criteria are clear and testable
 - Purpose, evidence refs, observable behavior, test intent, and expected completion proof are present
+- For code-affecting work, maintainability outcomes are objective, the checks are named, and the completion proof can show any evidence gaps
 - For UI-affecting work, the exact VDC revision and all required VIS decisions are approved, current, and present in `visual_decision_refs`
 - For UI-affecting work, every visual acceptance criterion is measurable, names a relevant viewport, state, content condition, or component, and maps to a referenced VIS decision
 - For UI-affecting work, expected visual proof names an artifact type and target path, and a visual-quality task is included for rendered UI changes
 - For genuinely non-UI work, empty visual fields have an explicit reason in `summary`
+- For non-code work, any maintainability evidence that is not applicable is explained in `summary`
 - Risks and blockers are noted
 - Security and quality work is included where needed
 
@@ -237,6 +258,7 @@ An item is done only when all of these are true:
 - The traceability links are complete
 - Acceptance criteria are written in plain language
 - The delivery gate is `PASS` and the proof is attached or referenced
+- For code-affecting work, maintainability evidence is attached or referenced, no material criterion is unresolved, and any direct-inspection limitation is called out in the proof
 - UI-affecting work preserves the exact approved VDC revision and VIS references, satisfies the mapped visual acceptance criteria, and attaches or references the expected visual proof at its stated target paths
 - The visual-quality task is complete for every rendered UI change
 - The dependency chain is honest
@@ -254,6 +276,7 @@ Add explicit security and quality tasks when the item touches any of these areas
 - Network boundaries or third party data
 - Migration, rollout, or rollback risk
 - Core user flows that need verification
+- Code paths where module boundaries, public contracts, dependency direction, cohesion, duplication, dead code, or complexity limits can change
 
 These tasks should cover the needed checks, tests, or reviews without turning the backlog into implementation code.
 
@@ -261,7 +284,7 @@ These tasks should cover the needed checks, tests, or reviews without turning th
 
 Call out any risk that could change scope, timing, or sequencing.
 
-Use `blockers` for missing approvals, unresolved architecture decisions, or required source changes.
+Use `blockers` for missing approvals, unresolved architecture decisions, required source changes, or missing maintainability evidence that blocks a code-affecting item from being objective.
 
 Use `risks` for things that are known but not yet blocking, such as complex integration, data migration sensitivity, or tight release timing.
 
@@ -298,6 +321,7 @@ validation_evidence:
   - dependency map
   - DoR and DoD coverage
   - delivery gate PASS and FAIL examples
+  - maintainability source refs, objective acceptance criteria, checks, proof, and named gaps for code-affecting items
   - VIS-mapped visual acceptance criteria and expected visual proof artifact target paths
 status: awaiting-approval
 approval: pending
@@ -314,6 +338,7 @@ This skill is complete when all of these are true:
 - `artifacts/planning/delivery-backlog.md` exists
 - All approved product requirements are traced into the backlog
 - All in-scope UX and architecture decisions are reflected
+- All code-affecting items carry maintainability traceability from approved architecture decisions to acceptance criteria, checks, and proof or named gaps
 - Every UI-affecting item preserves the exact approved VDC revision and required VIS references through visual acceptance criteria and expected visual proof artifact target paths
 - Epics, stories, and tasks are structured cleanly
 - Dependencies, priorities, release slices, and risks are filled in
@@ -322,6 +347,6 @@ This skill is complete when all of these are true:
 - Visual-quality tasks are included for every rendered UI change
 - The handoff status is `awaiting-approval`.
 - No item is marked ready without approval
-- The delivery gate is `PASS` for each ready item, backed by evidence refs and observable behavior; UI-affecting ready items also have approved, current visual refs, measurable VIS-mapped criteria, and specified proof
+- The delivery gate is `PASS` for each ready item, backed by evidence refs and observable behavior; UI-affecting ready items also have approved, current visual refs, measurable VIS-mapped criteria, and specified proof; code-affecting ready items also have maintainability source refs, objective acceptance criteria, named checks, and proof or named gaps
 
 Do not mark the work `approved`. Human review is the last step.
