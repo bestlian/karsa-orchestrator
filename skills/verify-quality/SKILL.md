@@ -35,6 +35,13 @@ The report must show what was checked, what was skipped, what passed, what faile
 - Do not weaken tests, skip failures, deploy, or self-approve.
 - Do not invent evidence, environment details, or results.
 - If a check cannot run, record the reason and classify the gap clearly.
+- Treat implementation-report claims as leads, not proof. Independently inspect current source, config, manifests, conventions, and tests before you trust them.
+- Require approved maintainability architecture decisions, backlog criteria, implementation evidence, repository conventions, source, manifests, configuration, and tests as relevant inputs.
+- Use configured repository checks for dependency direction, cycles, complexity, size, dead code, and unused dependencies when they exist. If they do not exist, inspect directly where feasible and record the lower assurance.
+- For cycles, block any new, forbidden, expanded, changed, unapproved, or unresolved cycle. An unchanged existing cycle may avoid that specific defect only when a human-approved `DEP-NNN` exception exists, the exact bounded edges and rationale match current source, and direct evidence shows no expansion or new risk. That exception does not waive other maintainability failures, and acyclic candidates pass this criterion.
+- Never call an absent check passed, and never require installing a missing check tool as a condition of review.
+- Local check results must be one of `pass`, `fail`, `evidence-gap`, or `not-applicable`. Keep those separate from lifecycle status and `technical_verdict`.
+- A tool gap alone is not a defect. An unresolved required property is an evidence gap, and it blocks `technical_verdict: pass`.
 
 ## Delivery Gate
 
@@ -57,6 +64,8 @@ Missing required evidence is a fail.
 - Candidate id.
 - Approved increment manifest for the release slice.
 - Approved item reports for every required item in that manifest.
+- Approved maintainability architecture decisions and backlog criteria, when the candidate includes maintainability constraints.
+- Implementation evidence, repository conventions, source, manifests, configuration, and tests, as relevant to the candidate.
 - Scope of the implementation candidate.
 - Relevant build, test, app, or service commands.
 - Any known release criteria or acceptance notes.
@@ -78,7 +87,8 @@ For UI candidates, also require all of the following:
 6. Record the action or command, the expected result, the actual result, the artifact reference, and the environment for every check.
 7. Separate direct evidence from inference.
 8. For a UI candidate, create a visual conformance map that links every visual acceptance criterion to the current approved contract revision, canonical combined visual decision references, expected proof, observed evidence, approved deviation if any, and result.
-9. Decide release eligibility only after all applicable checks and, for a UI candidate, the visual conformance map are reviewed.
+9. For maintainability, create a conformance map that ties each criterion to an approved reference or repository convention, the inspected scope, the verification method, the expected and actual state, direct evidence, result, evidence gap, and blocking rationale.
+10. Decide release eligibility only after all applicable checks are reviewed and, when applicable, both the visual conformance map and the maintainability conformance map are reviewed.
 
 ## Checks To Cover
 
@@ -95,6 +105,18 @@ Run the checks that apply to the candidate. If a category does not apply, record
 - Compatibility checks.
 - Build checks.
 - Visual fidelity checks for UI candidates.
+
+### Design And Maintainability
+- Responsibilities and public contracts.
+- Dependency direction and cycles, including human-approved `DEP-NNN` exceptions, exact bounded edges, and current-source rationale.
+- Cohesion, configured complexity, and size.
+- Domain naming.
+- Duplication and abstraction rationale.
+- Dead code and unused dependencies.
+- Comments and rationale.
+- Boundary tests.
+- Checks run.
+- Evidence gaps.
 
 For UI candidates, the evidence set must include real click through of every interactive element, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain.
 
@@ -121,6 +143,7 @@ For each check, record all of the following:
 - Result.
 - Evidence source, such as console output, screenshots, logs, test output, or a report file.
 - Skip reason, if the check was not run.
+- Local check results use `pass`, `fail`, `evidence-gap`, or `not-applicable`, and they do not change lifecycle status or `technical_verdict`.
 
 For each UI visual fidelity check, also record all of the following:
 
@@ -157,6 +180,19 @@ For UI candidates, classify each of these verified conditions as a release-block
 - The implementation loses hierarchy, density, or surface treatment explicitly required by the approved contract.
 - A fidelity claim is unsupported by equivalent evidence.
 - A required comparison is missing or its omission is unexplained.
+
+For any code-affecting candidate, including UI candidates, classify each of these verified conditions as a release-blocking Major defect:
+
+- An approved boundary or public-contract violation is present.
+- A new, forbidden, expanded, changed, unapproved, or unresolved cycle is present.
+- An existing cycle lacks a matching human-approved `DEP-NNN` exception, exact bounded edges and rationale that match current source, or direct evidence that there is no expansion or new risk.
+- A confirmed forbidden dependency is present.
+- A configured complexity or size violation is present.
+- Evidence shows mixed responsibility, weak cohesion, or risky abstraction with concrete impact.
+- Evidence shows divergent duplicated business rules or speculative indirection with concrete impact.
+- Evidence shows risky dead code or an unused dependency.
+- Material boundary coverage is missing.
+- Any required maintainability property remains unverifiable.
 
 Do not classify subjective taste, expressiveness, flatness, or genericness alone as a defect. Generic-template drift is blocking only when direct evidence verifies one of the approved-contract mismatches above.
 
@@ -226,6 +262,7 @@ validation_evidence:
   - compatibility checks
   - build checks
   - visual conformance map with canonical combined visual decision refs, real-browser evidence, screenshots, and approved deviations for UI candidates
+  - design and maintainability conformance map with approved references or repository conventions, inspected scope, verification method, expected and actual state, direct evidence, result, evidence gap, and blocking rationale for any code-affecting candidate, including cycle status, any human-approved `DEP-NNN` exception, exact bounded edges, current-source match, and evidence of no expansion or new risk when a cycle exists
 status: awaiting-approval
 approval: pending
 next_skills:
@@ -358,6 +395,18 @@ If the verdict is `conditional` or `fail`, replace `next_skills` with `implement
 - screenshots:
 - approved-deviations:
 
+### Design And Maintainability
+- criterion:
+- approved-ref-or-repository-convention:
+- scope:
+- verification-method:
+- expected:
+- actual:
+- direct-evidence:
+- result:
+- evidence-gap:
+- blocking-rationale:
+
 ## Defects
 - severity:
 - summary:
@@ -387,6 +436,8 @@ The handoff must include the shared schema fields and keep artifact status separ
 
 Approval is only allowed when the evidence supports the chosen technical verdict.
 
+The conformance map is required evidence for maintainability review, and every blocked or unresolved criterion must have direct evidence or a clear evidence gap.
+
 ## Completion Criteria
 
 Finish only when all of these are true:
@@ -396,6 +447,8 @@ Finish only when all of these are true:
 - Every skipped check has a reason.
 - Every defect is classified.
 - For a UI candidate, the visual conformance map covers every visual acceptance criterion and carries the current approved VDC revision resolved from the current approved `experience-spec.md`, canonical combined visual decision refs, expected proof, real-browser evidence, screenshots, and approved deviations.
+- For any code-affecting candidate, including UI candidates, the design and maintainability conformance map covers every required criterion with an approved reference or repository convention, inspected scope, verification method, expected and actual state, direct evidence, result, evidence gap, and blocking rationale, and it records cycle status, any human-approved `DEP-NNN` exception, exact bounded edges, current-source match, and evidence of no expansion or new risk when a cycle exists.
 - For a UI candidate, missing, stale, superseded, noncanonical, or mismatched visual decision refs, missing required visual evidence, or any other verified blocking visual defect results in `technical_verdict: fail`.
+- For any code-affecting candidate, including UI candidates, approved boundary or public-contract violations, any new, forbidden, expanded, changed, unapproved, or unresolved cycle, an existing cycle without a matching human-approved `DEP-NNN` exception plus exact bounded edges and current-source rationale and direct evidence of no expansion or new risk, confirmed forbidden dependencies, configured complexity or size violations, evidence-backed mixed responsibility or risky abstraction, divergent duplicated business rules, risky dead code or unused dependencies, missing material boundary coverage, or any required maintainability property that remains unverifiable results in `technical_verdict: fail`.
 - The release decision is explicit.
 - No unsupported pass claims remain.
