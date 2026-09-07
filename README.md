@@ -1,100 +1,107 @@
-# Gemini Spark Fullstack Skills
+# Antigravity Fullstack Skills
 
-Panduan ringkas untuk suite full stack greenfield berbasis delapan skill yang sudah dikurasi per fase. Suite ini tidak menyalin framework upstream secara utuh, hanya mengambil subset yang relevan untuk alur kerja di repositori ini, termasuk alur anti-keserupaan visual yang dipimpin kontrak visual.
+Repositori ini adalah paket orkestrasi Antigravity Fullstack Skills untuk membangun aplikasi full-stack greenfield end to end. `fullstack-orchestrator` adalah control plane berbasis bahasa natural. Delapan skill lain adalah skill spesialis fase. Alurnya memandu kerja dari ide dan discovery, ke UX, arsitektur, perencanaan, implementasi, QA, security, lalu persiapan rilis.
 
-Sumber upstream yang dipin: anti-slop `v3.2.4`, commit `44be68777e96d53d113edad33dbc4ab380f5d054`, lisensi MIT. Suite ini bukan afiliasi atau dukungan dari proyek upstream.
+## Tentang Proyek
 
-## Catatan Kurasi Anti-Slop
+`fullstack-orchestrator` membaca artefak yang terlihat dan merekomendasikan skill berikutnya yang paling tepat. Ia adalah lapisan kontrol, bukan pekerja.
 
-Yang dipakai hanya aturan anti-fabrikasi, anti-template visual, dan peran fase yang dibutuhkan di sini. Upstream menyumbang filter anti-template visual yang dipilih; suite ini menambahkan kontrak VDC/VIS lokal, traceability, fidelity implementasi, dan quality blocking yang terverifikasi. CLI, plugin, script, tooling MCP, dan seluruh rule set upstream tetap tidak diimpor.
+Ia tidak menjalankan skill spesialis secara langsung, tidak merangkai pekerjaan secara otomatis, tidak menyimpan state lintas chat, tidak self-approve, tidak membuat artefak orchestrator baru, tidak deploy, dan tidak menggantikan kontrak skill spesialis. Ia juga tidak mengklaim Antigravity akan menjalankan routing otomatis yang pasti. Semua skill tetap dipasang sebagai direktori terpisah di workspace yang sama.
 
-Prinsip bukti dan anti-fabrikasi yang dipakai lintas fase:
+## Siklus Hidup
 
-- klaim harus bisa dirujuk ke bukti, keputusan, atau artefak yang nyata;
-- bila data nyata belum tersedia, tulis `[REAL DATA NEEDED]` dan sebutkan apa yang masih kurang;
-- jangan mengisi celah dengan angka, kutipan, hasil, atau status yang belum ada buktinya;
-- simpan bukti di artefak, jangan disamarkan di narasi.
+Urutan resminya adalah `discover-product -> (design-experience + define-architecture) -> plan-delivery -> one-item implement-feature loop -> (verify-quality + review-security) -> prepare-release`.
 
-Ringkasan pemeriksaan per fase:
+Aturan intinya:
 
-- `discover-product`: discovery berbasis bukti, anti-fabrikasi, dan brief yang siap disetujui;
-- `design-experience`: owner kontrak visual yang disetujui di `experience-spec.md`, dengan state nyata dan traceability ke requirement;
-- `define-architecture`: blueprint netral framework, ownership dan contract jelas, tanpa coupling ke patch script;
-- `plan-delivery`: propagasi referensi visual, acceptance visual, dan proof yang diminta ke backlog;
-- `implement-feature`: fidelity kontrak visual, kontrol dan state harus nyata, tidak ada interaksi palsu atau tombol mati;
-- `verify-quality`: real browser, click-through, build, run, console, keyboard, contrast, mobile reflow, theme, state loading, empty, error, disabled, serta blocking untuk drift terverifikasi atau proof yang hilang;
-- `review-security`: klaim berbasis bukti saja, hasil yang belum pasti tetap ditulis sebagai ketidakpastian;
-- `prepare-release`: keputusan akhir `PASS` atau `FAIL`, plus penjagaan notice dan atribusi.
+- `discover-product` dimulai dari bukti yang tampak, lalu menghasilkan product brief yang siap dimintakan persetujuan manusia.
+- `design-experience` dan `define-architecture` baru berjalan paralel setelah product brief disetujui secara eksplisit. Keduanya adalah join, jadi dua output yang sudah disetujui harus ada sebelum lanjut.
+- `plan-delivery` hanya jalan setelah brief, experience spec, dan blueprint sudah disetujui.
+- `implement-feature` berjalan satu item siap kerja per putaran, bukan batch.
+- `verify-quality` dan `review-security` baru berjalan paralel setelah seluruh item wajib dan increment manifest sudah disetujui. Ini juga join, jadi kedua report harus ada dan disetujui sebelum lanjut.
+- `prepare-release` hanya boleh dipilih setelah quality dan security lulus sesuai aturan yang berlaku.
 
-## Kontrak Visual
+## Persetujuan Dan Join
 
-- `VDC-NNN` adalah revisi Visual Direction Contract yang disetujui di `experience-spec.md`.
-- `VIS-NNN` adalah keputusan visual bernomor di dalam revisi itu.
-- Referensi kanonik memakai bentuk `experience-spec@VDC-NNN#VIS-NNN`, misalnya `experience-spec@VDC-001#VIS-001`.
-- `direction_mode` bisa `restrained` atau `expressive`, dipilih sesuai tujuan produk, bukan selera estetika. Gradien, glass, animasi, atau imitasi brand tidak wajib.
-- Referensi visual hanya dipakai sebagai provenance dan pembanding. Referensi itu tidak memberi izin untuk menyalin brand, aset yang dilindungi, atau materi tanpa lisensi dan persetujuan yang sesuai.
-- Validasi visual real browser memakai lebar yang disetujui, atau fallback 375, 768, dan 1280 CSS px bila produk tidak menetapkannya. Screenshot saja tidak cukup untuk lulus.
-- Mismatch kontrak yang terverifikasi, default generik yang sudah tertulis di kontrak, signature moment yang hilang, atau proof wajib yang tidak ada akan membuat quality gagal dan harus lewat remediasi di siklus hidup yang sudah ada.
+Setiap transisi ke fase berikutnya memerlukan persetujuan manusia yang eksplisit pada artefak upstream yang dipakai fase itu. Status artefak, verdict teknis, PASS gate, `next_skills`, dan persetujuan manusia adalah hal yang berbeda.
 
-## Delapan skill
+- `awaiting-approval` bukan persetujuan.
+- `PASS`, `pass`, `pass-with-findings`, `complete`, atau `technical_verdict` yang baik tidak otomatis berarti disetujui manusia.
+- `next_skills` hanya arahan hilir. Itu bukan bukti bahwa skill sudah dipanggil, pekerjaan sudah berjalan, atau persetujuan sudah diberikan.
+- Saat dua skill diparalelkan, kedua branch harus selesai dan disetujui sebelum join dibuka.
 
-1. `discover-product`
-2. `design-experience`
-3. `define-architecture`
-4. `plan-delivery`
-5. `implement-feature`
-6. `verify-quality`
-7. `review-security`
-8. `prepare-release`
+Jika `verify-quality` gagal, `conditional`, atau `review-security` `block` dengan temuan yang bisa diperbaiki, jalurnya adalah remediation. Buat satu item remediasi yang dapat ditelusuri, mintakan persetujuan manusia, jalankan `implement-feature` untuk satu item itu, lalu ulangi kedua verifikasi sampai syarat rilis terpenuhi.
 
-## Siklus pakai
+## Handoff Dan Artefak
 
-Alur dasarnya:
+Gunakan `fullstack-skill-handoff/v1` untuk handoff antar tahap. Struktur ini tetap dipakai apa adanya.
 
-1. `discover-product`
-2. `design-experience` dan `define-architecture` dapat jalan paralel setelah kebutuhan awal cukup jelas
-3. `plan-delivery`
-4. `implement-feature` mengerjakan satu item siap pakai dalam satu waktu dan memperbarui `artifacts/implementation/<release-slice-id>-increment-manifest.md`
-5. Selama item wajib dalam release slice masih tersisa, skill berikutnya tetap `implement-feature`
-6. Setelah semua laporan item wajib selesai dan disetujui secara eksplisit, manifest increment dipindah ke `awaiting-approval`, lalu manusia menyetujuinya, lalu increment yang sudah disetujui masuk ke `verify-quality` dan `review-security` secara paralel
-7. Jika `verify-quality` menghasilkan `fail` atau `conditional`, atau `review-security` menghasilkan `block` dengan temuan yang bisa diperbaiki, buat item remediasi yang dapat ditelusuri, minta persetujuan manusia, jalankan lagi `implement-feature`, lalu ulangi kedua review
-8. Hanya laporan yang sudah disetujui dan tidak memblokir yang boleh lanjut ke `prepare-release`
+Status yang sah:
 
-Setiap tahap menghasilkan artefak yang harus lewat persetujuan manusia sebelum lanjut. Kalau `define-architecture` dibuat ulang, blueprint baru selalu mulai dari `awaiting-approval`, walau arahan sebelumnya sudah pernah disetujui.
+- `draft`
+- `awaiting-approval`
+- `approved`
+- `rejected`
+- `blocked`
 
-## Kontrak handoff
+`implement-feature` memakai `technical_verdict: complete | partial | blocked` pada laporan kerja. `verify-quality` dan `review-security` punya verdict teknis mereka sendiri, terpisah dari status artefak.
 
-Gunakan format `fullstack-skill-handoff/v1` untuk artefak antar tahap. Status yang dipakai:
+Referensi visual kanonik selalu memakai bentuk `experience-spec@VDC-NNN#VIS-NNN`. Contoh: `experience-spec@VDC-001#VIS-001`.
 
-- `draft`, masih dikerjakan
-- `awaiting-approval`, siap ditinjau manusia
-- `approved`, sudah disetujui manusia
-- `rejected`, perlu revisi
-- `blocked`, tertahan karena dependensi atau keputusan belum ada
+Resume harus dimulai dari artefak yang terlihat, bukan dari ingatan chat. Kalau pindah chat, bawa artefak terbaru dan handoff terbaru, lalu lanjut dari sana. Memori percakapan bukan sumber otoritatif.
 
-Referensi VDC/VIS yang sudah disetujui tetap dibawa di `decision_refs`, sementara provenance dan bukti visual tetap dibawa di `validation_evidence`. `fullstack-skill-handoff/v1` dan model field tingkat atasnya tidak berubah.
+## Keterbacaan Dan Daya Rawat
 
-Persetujuan harus eksplisit dari manusia. Jangan lanjut hanya karena artefak sudah selesai ditulis.
+Keterbacaan berarti source code lebih mudah dipahami dan diubah oleh developer yang menerima dan memelihara aplikasi hasil generasi ini.
 
-`implement-feature` memakai `technical_verdict: complete | partial | blocked` di laporan kerja. Laporan quality dan security memakai verdict teknis sendiri, terpisah dari status artefak.
+- Arsitektur menetapkan tanggung jawab modul, kontrak publik, dan arah dependensi.
+- Perencanaan menurunkan keputusan itu ke acceptance criteria, test, quality gate, dan proof yang wajib ada.
+- Implementasi memakai TDD, konvensi repository, modularitas yang didukung bukti, dan evidence Design And Maintainability.
+- Quality memverifikasi secara independen dan memblokir kegagalan material atau evidence wajib yang belum terselesaikan.
+- Checks yang dikonfigurasi repository diprioritaskan. Tooling opsional yang tidak tersedia dicatat sebagai evidence gap, bukan dipalsukan menjadi pass dan bukan syarat otomatis untuk instalasi.
+- Tidak ada line limit universal, mandat framework universal, kebijakan SOLID universal, atau preferensi gaya subjektif yang dipakai sebagai release gate.
 
-## Upload ke Gemini Spark
+## Sembilan Paket
 
-Setiap skill diunggah sendiri, bukan sekaligus.
+1. `fullstack-orchestrator`, control plane natural-language
+2. `discover-product`
+3. `design-experience`
+4. `define-architecture`
+5. `plan-delivery`
+6. `implement-feature`
+7. `verify-quality`
+8. `review-security`
+9. `prepare-release`
 
-Langkah umum:
+## Instalasi Dan Format Paket
 
-1. Pastikan folder skill hanya berisi paket skill itu sendiri.
-2. Simpan `SKILL.md` di root folder skill.
-3. Bungkus folder skill menjadi ZIP terpisah.
-4. Unggah ZIP tersebut satu per satu ke Gemini Spark.
-5. Ulangi untuk semua delapan skill.
+Setiap ZIP adalah artefak distribusi portabel. Satu ZIP hanya boleh berisi satu skill.
 
-## Contoh penggunaan
+Langkahnya:
 
-Panggil skill dengan bentuk:
+1. Ekstrak tiap paket ke `.agents/skills/<skill-name>/`.
+2. Setelah diekstrak, setiap direktori skill harus punya `SKILL.md` dan `THIRD_PARTY_NOTICES.md` di root-nya.
+3. Instal semua sembilan direktori skill di workspace Antigravity yang sama.
+4. Nama skill yang sudah ada tetap tidak berubah.
+
+## Cara Pakai
+
+Contoh mulai dengan bahasa natural:
 
 ```text
+Bangun aplikasi inventori baru, gunakan artefak yang terlihat.
+```
+
+Contoh resume:
+
+```text
+Lanjutkan dari product brief yang sudah approved, lalu cek handoff terbaru untuk branch design dan architecture.
+```
+
+Contoh slash command opsional:
+
+```text
+/fullstack-orchestrator
 /discover-product
 /design-experience
 /define-architecture
@@ -105,28 +112,28 @@ Panggil skill dengan bentuk:
 /prepare-release
 ```
 
-Contoh alur singkat:
+## Kontrak Visual
 
-```text
-/discover-product
-```
+- `VDC-NNN` adalah revisi Visual Direction Contract yang disetujui di `experience-spec.md`.
+- `VIS-NNN` adalah keputusan visual bernomor di dalam revisi itu.
+- `direction_mode` bisa `restrained` atau `expressive`, dipilih sesuai tujuan produk, bukan selera estetika.
+- Referensi visual hanya dipakai sebagai provenance dan pembanding. Itu tidak memberi izin untuk menyalin brand, aset yang dilindungi, atau materi tanpa lisensi dan persetujuan yang sesuai.
+- Validasi visual di browser nyata memakai lebar yang disetujui, atau fallback 375, 768, dan 1280 CSS px bila produk tidak menetapkannya. Screenshot saja tidak cukup.
+- Default generik yang tertulis di kontrak, signature moment yang hilang, mismatch yang terverifikasi, atau proof wajib yang tidak ada akan membuat quality gagal dan harus lewat remediation di siklus hidup yang sama.
 
-Lalu, setelah artefak awal disetujui:
+## Kurasi Anti-Slop
 
-```text
-/design-experience
-/define-architecture
-```
+Anti-slop hanya berfungsi sebagai guardrail mutu tambahan. Anti-slop bukan mesin orkestrasi, bukan framework utama proyek ini, dan tidak diimpor secara utuh.
 
-Setelah implementasi selesai:
+Yang dipakai dari upstream hanya kurasi yang membantu mengurangi output aplikasi generik atau terlalu mirip template, visual sameness atau keserupaan visual, bukti yang direkayasa, interaksi palsu, dan klaim mutu yang belum diverifikasi.
 
-```text
-/verify-quality
-/review-security
-```
+Sumber upstream yang dipin: anti-slop `v3.2.4`, commit `44be68777e96d53d113edad33dbc4ab380f5d054`, lisensi MIT. Referensi sumber upstream adalah [anti-slop](https://github.com/miqdadbadjuber/anti-slop). Proyek ini tidak berafiliasi dengan, tidak didukung oleh, dan tidak mewakili proyek upstream.
 
-## ZIP usage
+Prinsip yang dipakai lintas fase:
 
-ZIP dipakai sebagai kemasan transfer untuk satu skill per arsip. Isi ZIP harus mewakili satu paket skill saja, agar impor tetap jelas dan nama skill tetap konsisten dengan format kebab-case.
+- klaim harus bisa dirujuk ke bukti, keputusan, atau artefak yang nyata;
+- kalau data nyata belum ada, tulis `[REAL DATA NEEDED]` dan sebutkan apa yang kurang;
+- jangan mengisi celah dengan angka, kutipan, hasil, atau status yang belum terbukti;
+- simpan bukti di artefak, bukan di narasi.
 
-Setiap ZIP yang didistribusikan harus berisi `SKILL.md` di root dan `THIRD_PARTY_NOTICES.md` di root. Notice di file itu harus tetap ada dan tidak boleh dihapus saat paket dipindah, disalin, atau dibungkus ulang.
+`THIRD_PARTY_NOTICES.md` harus tetap ikut di root setiap ZIP yang didistribusikan. Notice itu tidak boleh dihapus saat paket dipindah, disalin, atau dibungkus ulang.
