@@ -42,6 +42,9 @@ Do not use this skill when:
 
 * Keep evidence, unknowns, filler, and validation separate. Every architecture claim should be traceable to evidence, marked as an unknown, or stated as an explicit assumption, and every major section should end with the observable check that would prove it.
 * Treat design direction and configuration as data when the brief says they vary by mode, tenant, audience, environment, or approval state.
+* Define source-code readability as maintainability for developers who will read, change, and own the generated application.
+* Prefer repository configured complexity or size limits when they exist. If none exist, use evidence backed refactoring triggers such as mixed responsibilities, excessive branching or fan out, hidden side effects, repeated decision points, weak test seams, or concrete navigation or change risk. Do not set a universal line cap.
+* Use stable addressable identifiers for maintainability decisions so downstream plan-delivery can resolve them to exact approved blueprint anchors.
 * Do not use patch scripts, generated rewrites, or source or CSS mutation scripts as substitutes for maintainable boundaries.
 * If any adapted rule or phrase needs attribution, point to `THIRD_PARTY_NOTICES.md`.
 
@@ -86,7 +89,17 @@ Include:
 * Storage and integration components.
 * The responsibility of each component.
 * What each component must not do.
-* For each major component, state its purpose, owner, rationale, tradeoff, and observable contract.
+* For each major component or module, state its responsibility, public contract, owner, prohibited responsibilities, rationale, tradeoff, and observable contract.
+* Assign each major module a stable `MOD-NNN` identifier and each public contract a stable `CON-NNN` identifier.
+* Include a module and public contract map that carries those IDs, shows which component exposes which contract, and shows which consumers depend on it.
+* Describe the intended dependency direction between modules, the allowed cross boundary references, and the acyclic module graph the design is meant to preserve.
+* Assign each dependency direction rule or approved cycle exception a stable `DEP-NNN` identifier.
+* Call out any circular dependency. If it is unresolved or not justified, treat it as a blocker.
+* Require cycle exceptions to be explicit human approved `DEP-NNN` decisions with rationale, bounded edges, and evidence.
+* Define domain vocabulary and naming boundaries where overlapping terms could obscure ownership or behavior.
+* Assign each evidence backed refactoring decision a stable `MNT-NNN` identifier when repository configured limits are absent or an observed maintainability trigger is accepted.
+* State the boundary test strategy for major module interactions, including contract tests or other observable checks that prove the public contract at the boundary.
+* Ensure the module map, contract map, and dependency map can be cited by stable ID in downstream planning source_refs.
 * Reject generic component labels unless the responsibility and contract are explicit.
 
 ### 4. Data Ownership And Data Model
@@ -112,6 +125,7 @@ Include:
 * Event names, producers, consumers, and payload intent.
 * Versioning rules.
 * Idempotency, retries, ordering, and error handling assumptions.
+* How each public `CON-NNN` contract is exercised and verified at module boundaries.
 
 ### 6. Authentication And Authorization
 
@@ -205,7 +219,7 @@ Include:
 
 * At least the main alternative for each important decision.
 * Why the preferred path fits the evidence best.
-* Any decision record entries that need to exist.
+* Any decision record entries that need to exist, including `DEP-NNN` cycle exceptions and `MNT-NNN` maintainability decisions.
 * Open questions that should become ADRs later if evidence changes.
 
 ### 14. Requirement Traceability
@@ -218,6 +232,7 @@ Include:
 * Where it is addressed in the blueprint.
 * Whether it is solved, deferred, or blocked.
 * Any assumption tied to the requirement.
+* A source_refs entry or equivalent exact anchor for every maintainability decision and contract reference, resolved through the stable IDs in this blueprint.
 
 ### 15. Handoff
 
@@ -234,7 +249,7 @@ inputs:
 requirement_refs:
   - approved product requirement IDs
 decision_refs:
-  - architecture decisions and ADR references
+  - architecture decisions, ADR references, and `DEP-NNN` or `MNT-NNN` maintainability decisions
 assumptions:
   - explicitly stated architecture assumptions
 open_questions:
@@ -245,7 +260,14 @@ validation_evidence:
   - system context
   - trust zones
   - component ownership
+  - `MOD-NNN` module map
+  - `CON-NNN` public contract map
+  - `DEP-NNN` dependency direction and cycle analysis
+  - naming vocabulary and boundary rules
+  - `MNT-NNN` maintainability decisions and source_refs anchors
   - contracts and traceability
+  - boundary test strategy
+  - maintainability constraints and refactoring triggers
 status: awaiting-approval
 approval: pending
 next_skills:
@@ -261,8 +283,9 @@ Do not mark the work approved on your own.
 3. Define data ownership before contracts, because ownership shapes the interfaces.
 4. Write contracts, auth, privacy, reliability, performance, and observability next.
 5. Add migration, rollback, threat assumptions, and alternatives only where they apply.
-6. Build the requirement traceability map last so every requirement points to a finished section.
-7. Finish with the handoff block and set the status to `awaiting-approval` every time the blueprint is generated, even if a previous version was already approved.
+6. Assign stable `MOD-NNN`, `CON-NNN`, `DEP-NNN`, and `MNT-NNN` IDs before finalizing traceability so source_refs can resolve to exact approved blueprint anchors.
+7. Build the requirement traceability map last so every requirement points to a finished section and every maintainability source_refs entry resolves to an exact approved blueprint anchor.
+8. Finish with the handoff block and set the status to `awaiting-approval` every time the blueprint is generated, even if a previous version was already approved.
 
 ## Completion Criteria
 
@@ -271,8 +294,11 @@ The skill is complete only when all of these are true:
 * `artifacts/architecture/application-blueprint.md` exists.
 * The blueprint is framework-neutral and evidence based.
 * The blueprint covers every required area in this skill.
+* The blueprint states source-code maintainability expectations, module ownership, public contracts, dependency direction, cycle constraints, naming boundaries, and boundary test strategy.
+* The blueprint uses stable `MOD-NNN`, `CON-NNN`, `DEP-NNN`, and `MNT-NNN` identifiers and every maintainability source_refs entry resolves to an exact approved blueprint anchor.
 * Every approved requirement has traceability.
 * Open questions and assumptions are explicit.
+* Refactoring triggers are evidence backed and do not rely on a universal line cap.
 * No backlog, code, or deployment content was added.
 * The handoff block is present and uses the shared schema.
 
