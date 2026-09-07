@@ -75,6 +75,24 @@ Keterbacaan berarti source code lebih mudah dipahami dan diubah oleh developer y
 
 ## Instalasi Dan Format Paket
 
+### Plugin Antigravity (Direkomendasikan)
+
+Instal seluruh suite langsung dari repositori:
+
+```bash
+agy plugin install https://github.com/bestlian/antigravity-fullstack-skills
+```
+
+Verifikasi bahwa plugin terdaftar:
+
+```bash
+agy plugin list
+```
+
+Plugin ini mendaftarkan kesembilan skill dari `skills/` dan aturan orkestrator dari `rules/fullstack-orchestrator.md`. Setiap skill tetap dipilih atau diaktifkan secara eksplisit; instalasi plugin tidak menjalankan skill secara otomatis.
+
+### ZIP Manual (Fallback)
+
 Setiap ZIP adalah artefak distribusi portabel. Satu ZIP hanya boleh berisi satu skill.
 
 Langkahnya:
