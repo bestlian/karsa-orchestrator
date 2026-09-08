@@ -174,6 +174,8 @@ Include:
 
 For confirmed full-stack work with auth, authorization, or real payments in scope, define those boundaries and their owner. For a prototype with simulated behavior, state the simulation and limitation explicitly; never silently turn it into a production security or payment claim.
 
+For customer or staff authentication, specify the approved identity lifecycle, password hashing algorithm and parameters, session or token storage, secure first-admin setup in the project test environment, and credential source. Never seed a shared default administrator password or a fast unsalted hash such as SHA-256. When initial local credentials are needed, plan generated environment-bound credentials or a documented one-time bootstrap, not a user-invented secret. Define ownership checks for booking read and cancellation, and role checks for staff inventory, reports, and manual settlement. A manual settlement is an authenticated staff action that persists an auditable actor, amount, state transition, and idempotency reference; do not represent it as a simulated paid state unless that simulation is explicitly approved.
+
 ### 7. Privacy
 
 State how personal or sensitive data is handled.
