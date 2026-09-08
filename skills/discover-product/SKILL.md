@@ -78,6 +78,10 @@ Evidence sources to check first:
 
 Create one product brief at `artifacts/discovery/product-brief.md`.
 
+## Artifact Root Contract
+
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
 The brief must be plain, concrete, and short enough to review quickly. It should include only the information needed to decide whether the idea is worth building.
 
 ## Brief Content

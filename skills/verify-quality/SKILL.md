@@ -26,6 +26,10 @@ The anti-slop Delivery Gate is adapted from anti-slop v3.2.4 at commit `44be6877
 
 Produce one evidence-backed report at `artifacts/quality/<candidate-id>-quality-report.md`.
 
+## Artifact Root Contract
+
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including quality reports, evidence, screenshots, and conformance artifacts. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
 The report must show what was checked, what was skipped, what passed, what failed, and why the candidate is or is not eligible for release.
 
 ## Rules
