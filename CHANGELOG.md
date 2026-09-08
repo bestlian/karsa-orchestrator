@@ -15,8 +15,10 @@ This project follows Keep a Changelog.
 - Required real-browser UI evidence and supported browser-tool recovery rules that distinguish it from optional static checks.
 - Separate readiness target (`prototype` or `production-ready`) from architecture shape (`frontend-only` or `full-stack`), visual direction, and stack decision during discovery; `MVP` is an optional scope or release label mapped to an explicit readiness target.
 - Production-ready topology and proportional readiness gates for substantive backend/frontend integration, durable data, staff authorization, operations, and audit recommendations.
-- Canonical review records with independent `pending`, `resolved`, and `superseded` lifecycle states; unbound host `Proceed` falls back to chat, terminal decisions use internal source-message evidence, and supported review-tab lifecycle is explicitly best effort.
+- Canonical review records with independent `pending`, `resolved`, and `superseded` lifecycle states, terminal decisions with internal source-message evidence, and honest host UI limits.
 - Per-project MCP preflight guidance with official Antigravity and Playwright MCP sources, project configuration, verified CLI syntax, scope caveats, and least-privilege recommendations.
+- Chat-only lifecycle approval with one canonical, request-bound Yes/No/Revision Review Record at a time, including freeform revision feedback, stale-reply protection, and separate sequential reviews for independent artifacts.
+- A confirmed default offer for new unspecified full-stack work: FastAPI backend with React and Vite frontend, while preserving explicit and existing project stacks and leaving database choice unassigned.
 
 ### Changed
 - All eight specialist contracts now inherit the same artifact-root contract, while their relative `fullstack-skill-handoff/v1` `output_path` values stay unchanged.
@@ -31,3 +33,4 @@ This project follows Keep a Changelog.
 - `next_skills` is consistently documented as advisory handoff data rather than evidence that a skill ran, work started, or approval was granted.
 - Contracts now require revision-bound decisions, explicit start authorization, and correct item/slice/application scope before downstream work or release claims proceed.
 - Removed unsupported review metadata guidance. Canonical artifacts are written normally; host-native review presentation is optional and cannot become an authoritative proxy.
+- Backlog approval and development authorization are now separate Yes/No/Revision decisions; a rejected authorization never starts, scaffolds, installs, or edits an application until the user explicitly requests it.
