@@ -29,7 +29,7 @@ Non-triggers:
 
 ## Inputs
 
-Start with whatever evidence exists, then ask only for what is still missing.
+Start with whatever evidence exists, then ask only for what is still missing. Do not repeat an explicit user answer.
 
 Required inputs when available:
 
@@ -40,11 +40,20 @@ Required inputs when available:
 - constraints, deadlines, budget limits, or compliance concerns;
 - the person who can approve the brief.
 
+Ask early, in the first focused discovery round when the answer is not already explicit:
+
+- Is the requested delivery a frontend prototype/mock or a full-stack application with backend API and persistent data?
+- Will data be single-user/local or multi-user/shared, and what persistence is required?
+- Are authentication, authorization, and payments simulated or real? For real payments, which provider and operational boundary are approved?
+- Does the user require a stack, backend capability (including a managed backend/BaaS that meets the real backend need), or deployment preference?
+
+For shared booking data, recommend full-stack delivery as the default recommendation, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, or a backend substitute. Respect a technically specified stack; otherwise keep the architecture framework-neutral.
+
 ## Evidence-First Workflow
 
 1. Read every available artifact before asking questions.
 2. Separate facts, assumptions, and open questions.
-3. Ask 2 to 4 focused questions at a time, only about gaps that can change the brief.
+3. Ask 2 to 4 focused questions at a time, only about gaps that can change the brief. Ask the delivery-shape questions early unless their answers are already explicit.
 4. Prefer evidence over memory, opinions, or guesses.
 5. Restate what is confirmed after each round.
 6. Keep the brief product-level only, no solution design.
@@ -117,7 +126,20 @@ State:
 - what should stay manual for now;
 - what is deferred to later discovery.
 
-### 4. Functional Requirements
+### 4. Delivery Shape And Acceptance Boundary
+
+Record the confirmed delivery shape before product requirements:
+
+- `prototype` or `full-stack`;
+- the explicit evidence for that choice and the human who confirmed it;
+- the acceptance boundary: what demonstrates the prototype, item, slice, and application, respectively;
+- for a prototype, its demo limitations and an explicit statement that it is not production full-stack delivery;
+- for confirmed full-stack delivery, the backend owner, API and integration boundaries, persistence expectation, shared-data model, and real or simulated auth and payment decisions;
+- a confirmed stack, managed-backend/BaaS capability, and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice.
+
+This is scope confirmation, not an architecture implementation. Do not select a database, provider, framework, or deployment service without confirmed evidence.
+
+### 5. Functional Requirements
 
 List product requirements with stable IDs.
 
@@ -135,7 +157,7 @@ Minimum fields for each `FR-*` item:
 
 Do not turn these into architecture decisions, API specs, or implementation tasks.
 
-### 5. Nonfunctional Requirements
+### 6. Nonfunctional Requirements
 
 List measurable quality requirements with stable IDs.
 
@@ -152,7 +174,7 @@ Cover only product-relevant constraints such as:
 
 Each `NFR-*` item must state a measurable target or a clearly bounded assumption.
 
-### 6. Success Metrics
+### 7. Success Metrics
 
 Define the few metrics that prove the idea is working.
 
@@ -165,7 +187,7 @@ Each metric should state:
 - what good looks like;
 - when it should be reviewed.
 
-### 7. Risks And Assumptions
+### 8. Risks And Assumptions
 
 Track risks and assumptions separately.
 
@@ -178,7 +200,7 @@ For each item, include:
 - what would change if it is false;
 - who should confirm it.
 
-### 8. Open Questions
+### 9. Open Questions
 
 Capture unresolved questions with stable IDs.
 
@@ -200,6 +222,8 @@ inputs:
 requirement_refs: []
 decision_refs:
   - product approval decision
+  - confirmed delivery shape and acceptance boundary
+  - confirmed backend owner, API, persistence, auth, payment, stack, and deployment decisions when applicable
 assumptions:
   - evidence-backed assumptions that stay visible in the brief
 open_questions:
@@ -218,9 +242,17 @@ next_skills:
   - define-architecture
 ```
 
-The handoff stays product-level. It does not add architecture, backlog, or implementation detail.
+The handoff stays product-level. It records the confirmed delivery shape and acceptance boundary without adding architecture, backlog, or implementation detail.
 
 Attribution: adapted from anti-slop v3.2.4, commit `44be687`, MIT. See `THIRD_PARTY_NOTICES.md`.
+
+## Approval Evidence Protocol
+
+Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/discovery/product-brief.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+
+Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+
+These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
 
 ## Approval Gate
 
@@ -234,6 +266,7 @@ The brief is approval-ready only when all of the following are true:
 - success metrics are defined;
 - risks, assumptions, and open questions are visible;
 - the approval owner is known;
+- the delivery shape and acceptance boundary are confirmed, including visible limitations for a prototype or backend/persistence/auth/payment boundaries for full-stack work;
 - no unresolved question can materially change the product brief.
 
 If any of these are false, mark the output `blocked` or `draft`, and explain why.
@@ -246,6 +279,7 @@ Consider the skill complete when:
 
 - `artifacts/discovery/product-brief.md` exists and reflects the evidence gathered;
 - the brief contains product summary, users, jobs, outcomes, scope, non-goals, `FR-*`, `NFR-*`, success metrics, risks, assumptions, and open questions;
+- the brief records the confirmed prototype or full-stack delivery shape, acceptance boundary, and applicable backend, persistence, auth, payment, stack, deployment, and demo-limit decisions;
 - the handoff block is filled in with the allowed artifact status vocabulary;
 - the approval gate status is clear;
 - no design, architecture, backlog, code, or external action has been added.
