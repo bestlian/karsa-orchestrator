@@ -9,7 +9,7 @@ description: Use when an approved product brief must become a framework-neutral 
 
 Turn an approved product brief into `artifacts/architecture/application-blueprint.md`.
 
-Keep the result framework-neutral. Describe the system that should exist, not the stack that might build it.
+Keep the result framework-neutral: describe the system that should exist, not an invented vendor or stack. Record a user-confirmed stack, including a confirmed default offer, as a constraint without imposing it.
 
 ## When To Use
 
@@ -34,9 +34,9 @@ Do not use this skill when:
 
 * Start from the approved brief and only use evidence from that brief, existing product context, and confirmed constraints. Verify that the approval evidence names the exact current brief path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it.
 * If the brief leaves a gap, mark it as an open question or assumption. Do not guess.
-* Do not choose a framework, cloud service, database, queue, or vendor unless the brief or evidence already supports it.
+* Do not choose a framework, cloud service, database, queue, or vendor unless the brief or evidence already supports it. Do not create a database default.
 * Preserve the independent approved readiness target and architecture shape. A prototype is explicitly not a production-ready claim. A production-ready full-stack application must define the backend owner, API boundaries, persistence, shared-data, staff roles and permissions, and authentication/authorization boundaries. When there is no user sign-in, define the anonymous or service identity boundary explicitly; real-payment boundaries are required when payments are in scope.
-* Keep framework neutrality unless the user confirmed a stack or approved a recommendation. Visual minimalism is a design-direction decision, not a stack decision. Do not exclude a managed backend/BaaS merely because it is managed when it provides the real backend capability the approved need requires.
+* Keep framework neutrality unless the user confirmed a stack or approved a recommendation. For a new full-stack application lacking an explicit stack, the confirmed offer may be FastAPI backend with React and Vite frontend; record that evidence without treating it as a vendor choice. Preserve an existing project stack unless migration is requested. A frontend-only prototype may use React and Vite without FastAPI. If the confirmed stack cannot meet an approved requirement, explain why and ask before switching. Visual minimalism is a design-direction decision, not a stack decision. Do not exclude a managed backend/BaaS merely because it is managed when it provides the real backend capability the approved need requires.
 * Do not create a backlog. This skill ends at the blueprint.
 * Do not write code.
 
@@ -311,11 +311,13 @@ next_skills:
   - plan-delivery
 ```
 
-## Review And Approval Protocol
+## Chat Review Protocol
 
-Label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical blueprint may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported host-presentation reference or `none`. Do not intentionally open or focus an IDE editor after normal filesystem reads or writes. `write_to_file` with `ArtifactMetadata` for project artifacts is known to fail with `invalid path ... must be inside brain`; do not retry it or invent feedback metadata. A native UI may only be a supported view-only presentation, never a duplicate authority.
+Label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and the source user reply or decision evidence.
 
-Accept `Proceed` only when its event binds the pending canonical path and revision; otherwise request exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, safely close only the review tab if the host supports it without discarding unsaved work; otherwise state the limitation. Reopen or update a supported presentation once only for the next approval. A substantive change before a terminal decision supersedes the pending record, creates a new revision, resets approval, and creates a new pending record only when the blueprint returns to `awaiting-approval`.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/architecture/application-blueprint.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the blueprint and show the bound pending question once.
+
+Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Revision without meaningful feedback asks only for that feedback; sufficient feedback sets the artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals, and asks again only after the revised blueprint returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
 Do not mark the work approved on your own.
 
