@@ -79,6 +79,7 @@ Also reject filler language that hides missing scope or proof, including vague t
 - Do not add deployment work unless it is part of the approved scope.
 - Do not rewrite scope, invent new goals, or widen the release plan.
 - Keep discovery assumptions marked as assumptions until they are confirmed by approved source material or delivery evidence.
+- Maintain a `Full-Request Obligation Ledger` in the backlog. Copy every original `FR-*` and accepted discovery proposal with its source evidence, required or optional status, mapped thin vertical stories, release slice, current evidence, and status. Required entries are unresolved until their mapped work is validated and released; a slice approval, item approval, or release-plan approval never closes another entry. Only an explicit user scope-reduction decision naming the exact obligation may set it to `scope-reduced`.
 - A generic Yes to a backlog, item, slice, or partial summary never makes an omitted requirement out of scope. Only a specific human decision naming the requirement and rationale may do that. If a required obligation has no Ready item, keep it visible and plan a repair; never use a release plan to hide it.
 - Do not turn an assumption into a fact, acceptance criterion, or dependency without proof.
 - For a production-ready full-stack target, plan substantive backend API, database integration, shared-data, staff authorization, and frontend API-consumption work. Include `backend/` and `frontend/` runnable deliverables with start, environment, and applicable test documentation; empty folders or `localStorage` substitutes fail. When there is no user sign-in, plan the explicit anonymous or service identity boundary instead of omitting it. Plan real-payment boundary work when payments are in scope. A recorded simulation approval remains approved simulation, but it prevents a live-payment-ready claim. For a prototype, record its demo limitations and no production-ready claim.
@@ -118,6 +119,7 @@ Each backlog item should carry these fields:
 - `source_refs` must also cite the confirmed readiness target, architecture shape, and acceptance boundary when the item touches prototype limits, backend APIs, persistence, shared data, auth, authorization, payments, a confirmed stack, or deployment
 - `evidence_refs`, the artifact lines, test cases, logs, mocks, or review notes that support the item
 - `visual_decision_refs`, the exact approved VDC revision and VIS decision references that govern UI-affecting work
+- `obligation_refs`, every original `FR-*` or accepted proposal the item advances, including required status and the ledger entry it updates
 - `visual_acceptance_criteria`, the measurable visual outcomes mapped to those VIS decisions
 - `expected_visual_proof`, the artifact types and target paths that will prove those outcomes
 - `parent_id`, when the item belongs under another item
@@ -157,6 +159,10 @@ Each story must say:
 - What must already exist before it starts
 - How it will be accepted
 - What proof should exist when it is complete
+
+For a production-ready authenticated full-stack request, create thin vertical stories that establish secure User and Staff authentication before privileged endpoints: password hashing and secure bootstrap, JWT issue and fixed-algorithm server verification, active-subject role lookup, public login/registration/catalog boundary, protected User ownership paths, protected Staff role paths, and frontend Bearer/session/logout behavior. Public registration may not create Staff. Do not defer this dependency to a final slice or label a slice production-ready before it exists.
+
+When bookings, inventory, orders, payments, or settlements are accepted scope, plan explicit contract and integration tests for same-start, staggered overlap, enclosing, enclosed, and adjacent resource intervals using real date-time values; negative quantities; separate concurrent database connections matching the approved deployment model; and atomic stock/order/payment/settlement/audit/financial-total behavior. Pair Staff-only idempotent manual-settlement tests with the story that exposes the action. Dedicated repeatable fixtures that are independent of test ordering are required; no test may target a live project database.
 
 ### Visual Decision Propagation
 
@@ -287,6 +293,7 @@ An item is ready only when all of these are true:
 - For genuinely non-UI work, empty visual fields have an explicit reason in `summary`
 - For non-code work, any maintainability evidence that is not applicable is explained in `summary`
 - For confirmed full-stack work, affected API, persistence, shared-data, auth, authorization, payment, backend-owner, and boundary-test acceptance is explicit; for a prototype, its approved demo limitation is explicit
+- For an authenticated production-ready target, the User/Staff endpoint matrix, password and secret boundary, JWT verification rules, frontend Bearer/session threat model, ownership and role denials, and negative token tests are explicit before any protected story is Ready
 - For sensitive endpoints, the approved auth model, role/ownership policy, denial tests, and password/bootstrap policy are explicit before the endpoint is Ready
 - A confirmed full-stack backlog contains testable backend API, persistent-data, and authentication/authorization-boundary work before dependent user-facing work is considered Ready
 - For a production-ready full-stack target, the backlog also contains testable `backend/` server/database and `frontend/` API-consumption work, its run/environment/test documentation, and applicable readiness-gate evidence before dependent user-facing work is Ready
