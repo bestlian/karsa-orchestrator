@@ -5,6 +5,10 @@ This project follows Keep a Changelog.
 ## [Unreleased]
 
 ### Added
+- Full-request obligation ledgers that map original requirements and accepted proposals to thin stories, slices, evidence, and explicit scope-reduction decisions; slice release approval now re-evaluates remaining authorized work instead of ending the request.
+- Production-ready User/Staff JWT baseline covering fixed-algorithm signature verification, expiry, active subject and role lookup, Argon2/bcrypt, secure first-Staff bootstrap, ownership/RBAC endpoint matrix, Bearer/session threat model, and negative token tests.
+- Required interval, concurrency, transaction, settlement audit, and financial-total verification for booking, stock, order, and payment scope, using isolated repeatable fixtures.
+- Evidence records for command, working directory, exit code, raw output, tested revision, and owned bounded test-process cleanup, plus explicit backend/frontend maintainability checks.
 - Natural-language requests to create new web, mobile, cross-platform, frontend-and-backend, or full-stack apps now bootstrap through `fullstack-orchestrator` before planning or coding begins.
 - Deterministic `<project-root>` resolution and `<project-root>/artifacts/` placement for lifecycle files, with one location question and a stop when the root is still ambiguous.
 - The README is now fully English, including its examples and usage notes.
