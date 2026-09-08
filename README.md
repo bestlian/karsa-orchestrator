@@ -35,7 +35,7 @@ Describe the application you want:
 Build a new web application for managing padel court bookings, rentals, and payments.
 ```
 
-The agent should clarify prototype versus full-stack delivery, shared data, authentication, payment integration, and technical preferences before choosing the architecture. Answers you already supplied should not be requested again.
+The first discovery round asks, unless already answered, whether the result is a prototype or production-ready application. `MVP` is a separate optional scope or release label and must map to one of those readiness targets. Discovery separately confirms frontend-only or full-stack architecture, visual direction, staff roles and permissions, payment simulation or live boundary, and an explicit stack choice or approved recommendation. Answers you already supplied should not be requested again.
 
 If automatic discovery does not work, start explicitly with `/fullstack-orchestrator`. Rule loading and compliance depend on the host; installation alone does not guarantee execution.
 
@@ -59,10 +59,12 @@ Design and architecture must both be approved before planning. Quality and secur
 
 ## Important Rules
 
-- **Approve the correct document.** Feedback must identify its exact path and content revision. Use `RequestFeedback: true` only when the host can bind review to that artifact; otherwise approval is requested in chat. Approval of `implementation_plan.md` does not approve another document. Valid decisions are recorded before continuing; substantive revisions require new approval.
+- **Approve the correct document.** A review record is independent from handoff status and is `pending`, `resolved`, or `superseded`; only one may be pending while an artifact is `awaiting-approval`. A terminal host-bound or chat decision resolves it with an internal source-message reference. A substantive revision supersedes it and creates another pending record only after returning to review. `implementation_plan.md` may only be a view-only summary. Resolved review tabs close only when the host safely supports it; the plugin cannot guarantee tab control or prevent host file opening.
 - **Confirm development start.** Once the brief, UX, blueprint, and backlog are approved, the agent asks whether to start development and states the first item and expected outcome. Authorization is saved in the backlog and reused for the same approved scope.
-- **Agree on the backend.** Confirmed full-stack work includes the required backend API, persistence, and access boundaries. A frontend prototype, local-only storage, or simulated payment must be explicitly agreed, never silently substituted.
-- **Test the actual UI.** Use working native browser tools first, including a bounded browser-testing subagent. Recover missing tooling through supported, permitted installation or configuration; request permission for external, global, or elevated installation. Missing required browser evidence blocks completion. Build success and HTTP 200 are not UI tests.
+- **Build real production-ready applications.** A production-ready full-stack target has substantive `backend/` and `frontend/` deliverables: a runnable API with database integration and a client that consumes it, with start, environment, and applicable test commands. Empty folders or `localStorage` substitutes fail. Approved payment simulation remains simulation, never a live-payment-ready claim.
+- **Reconcile evidence.** Before resume, QA, or release, the agent re-reads exact source reports, approvals, technical results, and manifest entries. Tested executable, configuration, and source scope is tied to a stable revision or checksum; governance records do not invalidate evidence. Existing backlogs and manifests hold resume state.
+- **Test the actual UI.** The executing agent uses supported browser tooling to click, fill, observe state outcomes, and inspect the console. A host-native `browser_subagent` may collect bounded browser evidence only; it cannot edit, approve, route, or satisfy a join. Screenshots support visual classification only. Missing required browser evidence blocks completion; builds and HTTP 200 are not UI tests.
+- **Recommend MCP proportionately.** Native tools come first and no MCP is required to run an app. For justified browser evidence, merge the documented Playwright launcher into project `.agents/mcp_config.json`; do not overwrite existing servers. The optional `agy mcp add --type stdio playwright npx @playwright/mcp@latest` command has no documented project-scope flag, so prefer project config and do not invent `--scope`.
 - **Report progress honestly.** A scaffold task may be complete while the application is not ready. Item completion is not whole-application completion. Technical success is not human approval.
 - **Keep the gates.** Blocking quality or security findings return through approved remediation and re-verification. The suite does not deploy or self-approve.
 
@@ -71,6 +73,8 @@ Design and architecture must both be approved before planning. Quality and secur
 All lifecycle documents, reports, and evidence belong in **`<project-root>/artifacts/`**, never in the plugin directory. The explicit user target path takes priority; if the project root is unclear, the agent asks before proceeding.
 
 Handoffs retain `fullstack-skill-handoff/v1` and project-relative `output_path` values. Detailed approval, testing, visual, and maintainability contracts live in each [skill's `SKILL.md`](skills/).
+
+MCP configuration paths and syntax are documented by [Antigravity](https://antigravity.google/docs/cli/mcp/) and [Playwright MCP](https://github.com/microsoft/playwright-mcp). The suite recommends configuration only; it does not install MCPs or modify global configuration. It requires live runtime QA when the applicable specialist contract calls for it.
 
 ## Alternative Installation
 

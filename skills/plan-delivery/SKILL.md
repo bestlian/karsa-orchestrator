@@ -16,7 +16,7 @@ Use this skill only after these inputs are approved by a human:
 - Product artifact, with goals, scope, constraints, and requirement IDs
 - UX artifact, with flows, states, and interaction rules
 - Architecture artifact, with system boundaries, data flow, and technical decisions
-- A confirmed delivery shape and acceptance boundary: prototype demo limitations, or full-stack backend owner, API, persistence, shared-data, auth, authorization, payment, stack, and deployment decisions as applicable
+- Independent approved readiness target and architecture shape, plus the acceptance boundary: prototype limitations, or production-ready backend owner, API, persistence, shared-data, staff authorization, payment, stack, and operations decisions as applicable
 
 If any required input is missing or not approved, stop and mark the work `blocked`. For each input, verify that approval evidence names its exact current path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer approval.
 
@@ -79,7 +79,8 @@ Also reject filler language that hides missing scope or proof, including vague t
 - Do not rewrite scope, invent new goals, or widen the release plan.
 - Keep discovery assumptions marked as assumptions until they are confirmed by approved source material or delivery evidence.
 - Do not turn an assumption into a fact, acceptance criterion, or dependency without proof.
-- For confirmed full-stack delivery, plan backend API, persistence, shared-data, and authentication/authorization boundary work. When there is no user sign-in, plan the explicit anonymous or service identity boundary instead of omitting it. Plan real-payment boundary work when payments are in scope. Do not substitute local-only storage or simulated payment unless that exact limitation was approved. For a prototype, record that it is not production full-stack delivery and keep its demo limitations in acceptance and verification.
+- For a production-ready full-stack target, plan substantive backend API, database integration, shared-data, staff authorization, and frontend API-consumption work. Include `backend/` and `frontend/` runnable deliverables with start, environment, and applicable test documentation; empty folders or `localStorage` substitutes fail. When there is no user sign-in, plan the explicit anonymous or service identity boundary instead of omitting it. Plan real-payment boundary work when payments are in scope. A recorded simulation approval remains approved simulation, but it prevents a live-payment-ready claim. For a prototype, record its demo limitations and no production-ready claim.
+- Make production-readiness work proportional: plan only applicable concurrency/process, persistence, backup/restore, migrations, configuration/secrets, logging/operations, security, and audit recommendations. SQLite is legitimate when its documented operational requirements match the approved target. For an approved database, plan verification of its actual driver or connection, authoritative API read/write path, and isolated write/restart persistence behavior; writable JSON may only be a labeled non-authoritative fixture or seed unless an approved architecture revision changes the storage decision. Do not prescribe a framework, Kubernetes, or a vendor merely to satisfy a checklist.
 
 ## Development Start Authorization
 
@@ -93,6 +94,12 @@ The approved backlog body must contain a `Development Start Authorization` recor
 
 When there is no valid record, `fullstack-orchestrator` asks: `Shall I start development against [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` and stops before any scaffold, install, or application edit. A single exact user response may approve this pending backlog revision and authorize its already specified scope, first item, and outcome; record the lifecycle approval and the start decision separately. Backlog approval alone, bare `approved`, a native Process result, or an unrelated plan cannot fill this record. Do not ask again for the same authorized revision and scope; renew it for a material scope change.
 
+## Source And Evidence Reconciliation
+
+Before planning, resuming, marking Ready, or routing to QA or release, re-read each source artifact at its exact path and revision. Verify explicit approval and technical result where applicable, compare them with the delivery backlog and increment manifest, and block on mismatch rather than promoting a label. Store the required source revisions or checksums of tested executable, configuration, and source scope, unresolved gates, and resume state in the existing backlog or increment manifest only. Governance metadata and review state do not invalidate evidence. A change in that tested scope invalidates dependent test evidence until rerun. Metadata normalization cannot fill an approval, technical result, or missing evidence.
+
+At planning preflight, re-check the approved project MCP recommendations. Prefer native tools, require no MCP to run the application, and recommend only needed capability with purpose, scope, prerequisites, verification, least permissions, and restart note. For project-scoped browser evidence, merge the documented Playwright `npx` launcher into `.agents/mcp_config.json` without overwriting existing servers. Do not install or register it automatically. The optional verified command `agy mcp add --type stdio playwright npx @playwright/mcp@latest` followed by `agy mcp list` has no documented project-scope flag, so it must not be presented as project-scoped. See `define-architecture` for the exact JSON and official sources.
+
 ## Item Structure
 
 Each backlog item should carry these fields:
@@ -103,7 +110,7 @@ Each backlog item should carry these fields:
 - `summary`
 - `purpose`
 - `source_refs`, the approved requirement, UX, and architecture IDs that justify the item. For code-affecting items, include the approved module, public contract, and dependency decision IDs that govern the change
-- `source_refs` must also cite the confirmed delivery shape and acceptance boundary when the item touches prototype limits, backend APIs, persistence, shared data, auth, authorization, payments, a confirmed stack, or deployment
+- `source_refs` must also cite the confirmed readiness target, architecture shape, and acceptance boundary when the item touches prototype limits, backend APIs, persistence, shared data, auth, authorization, payments, a confirmed stack, or deployment
 - `evidence_refs`, the artifact lines, test cases, logs, mocks, or review notes that support the item
 - `visual_decision_refs`, the exact approved VDC revision and VIS decision references that govern UI-affecting work
 - `visual_acceptance_criteria`, the measurable visual outcomes mapped to those VIS decisions
@@ -272,6 +279,7 @@ An item is ready only when all of these are true:
 - For non-code work, any maintainability evidence that is not applicable is explained in `summary`
 - For confirmed full-stack work, affected API, persistence, shared-data, auth, authorization, payment, backend-owner, and boundary-test acceptance is explicit; for a prototype, its approved demo limitation is explicit
 - A confirmed full-stack backlog contains testable backend API, persistent-data, and authentication/authorization-boundary work before dependent user-facing work is considered Ready
+- For a production-ready full-stack target, the backlog also contains testable `backend/` server/database and `frontend/` API-consumption work, its run/environment/test documentation, and applicable readiness-gate evidence before dependent user-facing work is Ready
 - Risks and blockers are noted
 - Security and quality work is included where needed
 
@@ -336,7 +344,7 @@ requirement_refs:
 decision_refs:
   - backlog prioritization and release slicing decisions
   - exact approved VDC revision and VIS decision references propagated into UI-affecting items
-  - confirmed delivery shape and acceptance boundary propagated from the brief and blueprint
+  - confirmed readiness target, architecture shape, and acceptance boundary propagated from the brief and blueprint
 assumptions:
   - any planning assumptions that remain visible in the backlog
 open_questions:
@@ -359,13 +367,11 @@ next_skills:
   - implement-feature
 ```
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/planning/delivery-backlog.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical backlog may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and host-presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact path (`invalid path ... must be inside brain`) or invent feedback metadata. A supported native presentation is view-only and cannot replace the canonical backlog.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. Development Start Authorization decision/evidence is also closed metadata only when it fills this already specified backlog revision and scope. None of these updates may change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision, resets approval, and re-evaluates/rebinds start authorization. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when its event binds the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. Closed review and authorization metadata cannot change scope, first item, expected outcome, acceptance, or technical result; a substantive change before a terminal decision supersedes the pending record, creates a new revision, and creates a new pending record only when the backlog returns to `awaiting-approval`.
 
 ## Completion Criteria
 
@@ -381,7 +387,7 @@ This skill is complete when all of these are true:
 - Acceptance criteria, DoR, and DoD are present
 - Security and quality tasks are included where needed
 - Visual-quality tasks are included for every rendered UI change
-- The backlog records the approved delivery shape, its prototype limits or full-stack boundaries, and a pending or valid Development Start Authorization record for its exact revision and scope
+- The backlog records the approved readiness target, architecture shape, prototype limits or full-stack boundaries, and a pending or valid Development Start Authorization record for its exact revision and scope
 - The handoff status is `awaiting-approval`.
 - No item is marked ready without approval
 - The delivery gate is `PASS` for each ready item, backed by evidence refs and observable behavior; UI-affecting ready items also have approved, current visual refs, measurable VIS-mapped criteria, and specified proof; code-affecting ready items also have maintainability source refs, objective acceptance criteria, named checks, and proof or named gaps

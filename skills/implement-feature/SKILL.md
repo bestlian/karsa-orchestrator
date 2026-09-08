@@ -28,7 +28,7 @@ Use this skill for one ready backlog item only. It turns approved specs into a s
 6. For UI-affecting work, the exact approved visual contract reference in canonical form `experience-spec@VDC-NNN#VIS-NNN`, where `NNN` is the exact three-digit approved ID, for example `experience-spec@VDC-001#VIS-001`, including the current approved `VDC-*` revision, every referenced `VIS-*` decision, `visual_acceptance_criteria`, and `expected_visual_proof`.
 7. Foundation: the approved product brief, experience specification, application blueprint, and delivery backlog at their referenced revisions.
 8. A `Development Start Authorization` in the approved backlog body that names that exact backlog revision, authorized scope, first Ready story or task, expected runnable outcome, human identity, and exact user evidence.
-9. The approved delivery shape and acceptance boundary: prototype demo limitations, or full-stack backend, API, persistence, shared-data, and authentication/authorization boundaries for the selected item.
+9. The approved readiness target and architecture shape: prototype limitations, or production-ready backend, API, persistence, shared-data, staff authorization, and frontend API-consumption boundaries for the selected item.
 
 If any of those are missing, stop and ask for the missing input. Do not guess.
 
@@ -44,7 +44,7 @@ If authorization is missing, ask exactly: `Shall I start development against [ap
 
 ## First Check
 
-Read the repository conventions, configured quality tools, approved module responsibilities, public contracts, dependency decisions, relevant manifests, nearby implementation files, and current tests before editing. Then read the selected backlog item, its approved release-slice definition, and its approved specs. Read the current increment manifest when it exists; for the first item in a slice, initialize it as `draft` from the approved release-slice definition.
+Read the repository conventions, configured quality tools, approved module responsibilities, public contracts, dependency decisions, relevant manifests, nearby implementation files, and current tests before editing. Then read the selected backlog item, its approved release-slice definition, and its approved specs. Re-read every referenced source report at its exact path and revision, verify approval and technical result, and compare them with the increment manifest; mismatch blocks work. Record a stable revision or checksum of the tested executable, configuration, and source scope in the existing manifest; governance documents and review state do not invalidate evidence. For an approved database, inspect its actual driver or connection configuration and authoritative API read/write path before editing; a writable JSON store is architecture drift unless an approved architecture revision authorizes it. Read the current increment manifest when it exists; for the first item in a slice, initialize it as `draft` from the approved release-slice definition. Do not trust a compaction summary or metadata normalization as evidence.
 
 For UI-affecting work, resolve the exact `VDC-*` revision and every referenced `VIS-*` ID before editing. Confirm that the visual contract is current and approved, that its IDs match the backlog item, and that its rejected defaults, `visual_acceptance_criteria`, and `expected_visual_proof` are explicit. A stale or unapproved revision, a missing or mismatched reference, or incomplete visual acceptance or proof requirements blocks implementation. Do not infer a newer visual direction from nearby code or replace the approved contract with personal preference.
 
@@ -59,7 +59,7 @@ If the item is not ready, or the specs are not approved, do not start.
 5. Make the smallest code change that passes the test.
 6. Refactor only after the behavior is green.
 7. Keep repeating red, green, refactor until the item is complete.
-8. Update the increment manifest with the item report, the slice state, and the current approval state.
+8. Update the increment manifest with the item report, slice state, current approval state, source revision or checksum, tests tied to that source, and unresolved resume gates. If the tested executable, configuration, or source scope changes, invalidate dependent evidence before routing.
 9. If required slice items remain, keep the next skill as `implement-feature`.
 10. Only when every required item report is complete and explicitly approved may the manifest move to `awaiting-approval`, then human approval, then `verify-quality` and `review-security`.
 
@@ -82,6 +82,7 @@ If the item is not ready, or the specs are not approved, do not start.
 15. For UI-affecting work, implement the approved visual contract faithfully across typography, color, density, layout grammar, surfaces, component anatomy, imagery and iconography, motion, responsive intent, interaction states, accessibility, and any referenced signature moment.
 16. Do not substitute generic defaults or any defaults that the visual contract explicitly rejects. Every intentional deviation requires an approved decision reference before implementation and must be reported.
 17. Judge visual quality by fidelity to the approved contract, not by subjective expressiveness. An intentionally restrained or flat design passes when that is what the contract specifies; do not add gradients, glass, or animation unless the contract specifies them. Directional-reference approval and VDC approval never authorize named-brand imitation or copying protected expression. Protected assets may be used only when ownership, a license, or rights-holder authorization is independently recorded in the approved contract provenance. Missing rights evidence blocks implementation and must not be treated as an intentional visual deviation.
+18. For a production-ready full-stack target, create real `backend/` and `frontend/` work, not placeholders: a runnable server API with database integration and a runnable client consuming it. Keep each area's start, environment, and applicable test commands documented. Managed backends need substantive configuration, functions, and API contracts. SQLite is valid with documented file, backup, migration, locking/concurrency, and operating requirements. Do not substitute writable JSON for an approved database; JSON fixtures and seeds are allowed only when explicitly non-authoritative.
 
 ## Anti Slop Rules
 
@@ -114,7 +115,9 @@ Run the checks that fit the change.
 2. Build or type check when the repo has one.
 3. Focused unit, integration, and acceptance tests for the touched slice.
 4. Manual QA through the real surface when the change is user visible.
-5. For UI-affecting work, interact with the implementation in a real browser at the product-approved widths. If the visual contract specifies none, use `375`, `768`, and `1280` CSS px. Exercise every relevant specified state, including applicable default, hover, focus, active, disabled, loading, empty, error, and success states, and compare the result with the approved references and acceptance criteria.
+5. For UI-affecting work, interact with the implementation in a real browser at the product-approved widths. If the visual contract specifies none, use `375`, `768`, and `1280` CSS px. Click and fill actual controls, use relevant keyboard paths, observe persisted and error state outcomes, and record console results. Exercise every relevant specified state, including applicable default, hover, focus, active, disabled, loading, empty, error, and success states, and compare the result with the approved references and acceptance criteria.
+6. For authorization, test staff actions with expected `401` or `403`, cross-role and ownership denials, and relevant negative business cases. Test durable storage and concurrency-sensitive booking flows against dedicated test data and the approved deployed-process model, never a project live database.
+7. A host-native `browser_subagent` may collect bounded browser interaction evidence only. The executing agent retains lifecycle ownership and must make all edits, approvals, routing, and joins.
 
 Screenshots may support visual evidence but do not replace browser interaction evidence. Use deterministic synthetic fixtures for visual verification. Evidence must contain no credentials, personal data, or production secrets. A build success, a running process, or an HTTP 200 only proves its own boundary and cannot substitute for browser UI evidence.
 
@@ -131,8 +134,6 @@ Use a native browser capability first. A browser skill being listed or installed
 3. If a built-in driver download fails, record the exact reason and failure output. Try one supported alternative when one is available; do not blindly repeat the same failed download.
 4. Stop and ask a human before an external download, global installation, elevated permission, account change, or other action outside the project boundary.
 5. If no permitted, working browser capability remains, record the required evidence as blocked. Do not waive it because a static tool is optional, and do not claim `technical_verdict: complete`.
-
-A host-provided `browser_subagent` may perform this bounded browser testing only. It is not a lifecycle specialist and cannot edit features, make approval decisions, or select/advance a lifecycle phase; the active agent owns those actions.
 
 For a newly scaffolded UI, first detect and record the starter screen, then prove entrypoint wiring to the intended application before any application-ready claim. Treat this as an explicit transition from starter to product surface, not as evidence that the application itself is ready.
 
@@ -238,13 +239,11 @@ next_skills:
 
 Record the technical verdict in the report body. The handoff status stays on the artifact lifecycle and only moves to `approved` after explicit human approval. While required slice items remain, emit only `implement-feature` in `next_skills`. After every required item report and the increment manifest are explicitly approved, replace that route and emit only `verify-quality` and `review-security` in `next_skills`.
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label each document body with an immutable `Artifact Revision`; its combination with the implementation report or increment-manifest path is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to the exact specialist output under review; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label each canonical report or existing increment manifest with its immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. Each canonical artifact may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Never retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact route (`invalid path ... must be inside brain`) or invent feedback metadata. A supported `implementation_plan` presentation is view-only and cannot replace canonical evidence.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. Development Start Authorization decision/evidence is also closed metadata only when it fills an already specified backlog revision and scope. None of these updates may change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision, resets approval, and re-evaluates/rebinds start authorization. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when the host proves its binding to the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. Closed metadata cannot change acceptance, technical result, scope, first item, or outcome; a substantive change before a terminal decision supersedes the pending record, resets approval, and creates a new pending record only when the artifact returns to `awaiting-approval`.
 
 ## Technical Verdict
 

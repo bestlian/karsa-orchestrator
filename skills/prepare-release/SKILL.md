@@ -27,7 +27,7 @@ Use this skill when the work is ready for release planning and you have approved
 4. Version or build identifier.
 5. Scope summary for the release.
 
-Before planning, confirm the approved quality report has technical verdict exactly `pass`, and the approved security report has technical verdict `pass` or `pass-with-findings` with only nonblocking findings and no blocker. Each approval must identify the exact report path and revision; an active editor, another URI, a current phase, or an old revision does not transfer approval.
+Before planning, re-read the quality report, security report, implementation reports, and increment manifest at their exact paths and revisions. Confirm each explicit approval and technical result, compare them with the release candidate, and block on any mismatch. Tie tested code to a stable revision or checksum of executable, configuration, and source scope only; a change in that scope invalidates affected evidence, while governance documents and review state do not. Do not promote labels from summaries, screenshots, manifest normalization, or a report alone. Quality must be exactly `pass`, and security must be `pass` or `pass-with-findings` with only nonblocking findings and no blocker.
 
 If either report is missing, unapproved, or contains blockers, or if the technical verdict does not satisfy these rules, stop and report that the release cannot be planned yet.
 
@@ -63,6 +63,8 @@ The plan must include:
 
 The plan must also include a separate final Delivery Gate section. That gate reports one overall verdict, exactly `PASS` or `FAIL`, and it stays separate from the artifact status and from the upstream technical verdicts.
 
+The plan must name the truthful release classification separately from deployment: `prototype` is a validated demonstration with its recorded limits; `MVP` is a defined scope label, not proof of production readiness; `production-ready` means the approved proportional readiness gates have evidence; `deployed` requires separate authorized deployment execution and observed deployment evidence outside this suite. An approved payment simulator is valid simulation evidence but cannot support a live-payment-ready claim.
+
 ## Final Delivery Gate
 
 Use one compact shared filter before writing the final verdict:
@@ -82,6 +84,7 @@ Set the verdict to `FAIL` if any of these are missing or unresolved:
 4. For a UI candidate, missing required real-browser evidence, including run URL, viewport, actions and observed outcomes, console result, and linked artifacts. Build success, a running process, or HTTP 200 cannot substitute.
 5. Archive manifest checks.
 6. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`.
+7. For a production-ready target, substantive backend/frontend API integration, durable data, applicable staff authorization, configuration/secrets, migrations/backups, logging/operations, concurrency/process evidence, and required independent audit recommendations or explicit scope limits.
 
 The gate must reject mixed status language. Do not claim `ready`, `secure`, `production ready`, or similar wording unless the plan cites evidence for each claim.
 
@@ -174,13 +177,11 @@ approval: pending
 next_skills: []
 ```
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/release/<candidate-id>-release-plan.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the canonical release plan with its immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical release plan may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact route (`invalid path ... must be inside brain`) or invent feedback metadata. A supported presentation is view-only and cannot replace the canonical release plan.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when the host proves binding to the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. A substantive revision before a terminal decision supersedes the pending record, resets approval, invalidates affected evidence, and creates a new pending record only when the plan returns to `awaiting-approval`.
 
 The plan stops before deployment. If deployment is requested, hand off to the deployment flow under separate human authorization.
 

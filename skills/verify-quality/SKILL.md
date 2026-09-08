@@ -40,6 +40,7 @@ The report must show what was checked, what was skipped, what passed, what faile
 - Do not invent evidence, environment details, or results.
 - If a check cannot run, record the reason and classify the gap clearly. A missing required UI browser check is a blocking evidence gap, not a waivable skipped check.
 - Treat implementation-report claims as leads, not proof. Independently inspect current source, config, manifests, conventions, and tests before you trust them.
+- Before QA or resume, re-read every required source report at its exact path and revision, verify its approval and technical result, and compare each fact with the increment manifest and candidate. A mismatch blocks the verdict; labels, screenshots, summaries, and metadata normalization cannot promote it. Tie the tested code to a stable revision or checksum of executable, configuration, and source scope only; governance documents and review state do not invalidate evidence. Invalidate affected evidence when that scope changes.
 - Require approved maintainability architecture decisions, backlog criteria, implementation evidence, repository conventions, source, manifests, configuration, and tests as relevant inputs.
 - Use configured repository checks for dependency direction, cycles, complexity, size, dead code, and unused dependencies when they exist. If they do not exist, inspect directly where feasible and record the lower assurance.
 - For cycles, block any new, forbidden, expanded, changed, unapproved, or unresolved cycle. An unchanged existing cycle may avoid that specific defect only when a human-approved `DEP-NNN` exception exists, the exact bounded edges and rationale match current source, and direct evidence shows no expansion or new risk. That exception does not waive other maintainability failures, and acyclic candidates pass this criterion.
@@ -71,7 +72,7 @@ Missing required evidence is a fail.
 - Approved maintainability architecture decisions and backlog criteria, when the candidate includes maintainability constraints.
 - Implementation evidence, repository conventions, source, manifests, configuration, and tests, as relevant to the candidate.
 - Scope of the implementation candidate.
-- The approved delivery shape and acceptance boundary, including prototype demo limitations or the full-stack API, persistence, shared-data, and authentication/authorization boundaries relevant to the release slice.
+- The approved readiness target, architecture shape, and acceptance boundary, including prototype demo limitations or the full-stack API, persistence, shared-data, and authentication/authorization boundaries relevant to the release slice.
 - Relevant build, test, app, or service commands.
 - Any known release criteria or acceptance notes.
 
@@ -92,7 +93,7 @@ Use a native browser capability first. A browser skill being present does not es
 4. Ask a human before any external download, global install, elevated permission, account change, or other action outside the project boundary.
 5. If a permitted working browser cannot be recovered, record a blocking evidence gap and issue `technical_verdict: fail` for the UI candidate. Do not use static checks, screenshots, build success, or HTTP 200 as substitution.
 
-A host-provided `browser_subagent` may collect this bounded browser evidence only. It is not a lifecycle specialist and cannot edit features, make approval decisions, or select/advance a lifecycle phase; the active agent owns those actions.
+A host-native `browser_subagent` may collect bounded browser interaction evidence only. The executing agent retains lifecycle ownership and must make all edits, approvals, routing, and joins.
 
 For a newly scaffolded UI, record starter-screen detection and entrypoint wiring before evaluating an application-ready claim. A starter screen, even if it loads, proves only the scaffold boundary.
 
@@ -100,7 +101,7 @@ For a newly scaffolded UI, record starter-screen detection and entrypoint wiring
 
 1. Confirm the candidate scope and the expected behavior.
 2. Confirm the increment manifest and every required item report are approved. If not, stop and mark the work `blocked`.
-3. Confirm the candidate and manifest preserve the approved delivery shape. A prototype cannot claim production full-stack behavior; a full-stack release slice must verify its relevant API, persistence, shared-data, and authentication/authorization boundary evidence.
+3. Confirm the candidate and manifest preserve the independent approved readiness target and architecture shape. A prototype cannot claim production readiness; a production-ready full-stack candidate must verify its real `backend/` server/API/database integration, `frontend/` API consumption, persistence, staff authorization, and documented start/environment/test commands. Empty folders and `localStorage` substitutes fail. A managed backend needs substantive configuration, functions, and API contracts; SQLite is valid only with documented operational requirements. For an approved database, inspect manifests, drivers, connection configuration, and the live API read/write path to prove it remains authoritative; writable JSON is allowed only as a labeled non-authoritative fixture or seed unless an approved architecture revision changed the decision. After a write, restart the isolated test process and read the data back through the API.
 4. For a UI candidate, resolve the current approved VDC revision from the current approved `experience-spec.md`.
 5. For a UI candidate, validate that every candidate visual decision reference uses the canonical combined format, points to the resolved current approved VDC revision, and matches the implementation and backlog evidence.
 6. Inspect the implementation evidence you were given, then run the relevant checks.
@@ -141,7 +142,9 @@ Treat build output, process launch, and HTTP reachability as evidence only for t
 - Checks run.
 - Evidence gaps.
 
-For UI candidates, the evidence set must include real click through of every interactive element, run URL, browser and viewport, action and observed outcome, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain. For new scaffolds it also includes starter-screen detection and entrypoint wiring before any application-ready claim.
+For UI candidates, the evidence set must include real click through and, where relevant, fill/submit behavior for every interactive element, run URL, browser and viewport, action and observed state outcome, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain. Screenshots classify visual appearance only; they are supporting evidence, never interaction, state, API, or authorization evidence. For new scaffolds it also includes starter-screen detection and entrypoint wiring before any application-ready claim.
+
+For auth and staff functions, include negative `401` or `403` cases, cross-role and ownership denials, and relevant negative business-rule tests. For durable or booking-like data, use dedicated test data, verify persistence, and test concurrency according to the approved deployed-process model. Never point tests at a project live database. `npm audit` reports dependency findings only; it is not a full application-security verdict, authorization test, or production-readiness gate.
 
 A UI candidate cannot pass on screenshots or visual inspection alone.
 
@@ -262,7 +265,7 @@ inputs:
   - approved increment manifest
   - approved item reports for every required item in that manifest
   - approved specs
-  - approved delivery shape and acceptance boundary
+  - approved readiness target, architecture shape, and acceptance boundary
   - build, test, app, or service commands
   - current approved experience-spec.md, its current approved VDC revision, canonical combined visual decision refs, visual acceptance criteria, and expected proof for UI candidates
 requirement_refs:
@@ -301,13 +304,11 @@ The report records the technical verdict separately from handoff status. Only a 
 
 If the verdict is `conditional` or `fail`, replace `next_skills` with `implement-feature` after the remediation items are approved, then rerun `verify-quality` and `review-security`.
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/quality/<candidate-id>-quality-report.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the canonical report with its immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical report may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and host-presentation reference or `none`. Use ordinary filesystem reads and writes; do not intentionally open or focus an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact route (`invalid path ... must be inside brain`) or invent feedback metadata. A supported presentation is view-only and cannot become authoritative.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when the host proves it is bound to the pending canonical path and revision; otherwise request exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. A substantive change before a terminal decision supersedes the pending record, resets approval, invalidates affected evidence, and creates a new pending record only when the report returns to `awaiting-approval`.
 
 ## Checks
 ### Acceptance
@@ -491,7 +492,7 @@ Finish only when all of these are true:
 - For a UI candidate, the visual conformance map covers every visual acceptance criterion and carries the current approved VDC revision resolved from the current approved `experience-spec.md`, canonical combined visual decision refs, expected proof, real-browser evidence, screenshots, and approved deviations.
 - For a UI candidate, required browser evidence records the actual run URL, browser, each viewport, actions and observed outcomes, console result, and linked artifacts; new scaffold work also proves starter-screen detection and entrypoint wiring before an application-ready claim.
 - For any code-affecting candidate, including UI candidates, the design and maintainability conformance map covers every required criterion with an approved reference or repository convention, inspected scope, verification method, expected and actual state, direct evidence, result, evidence gap, and blocking rationale, and it records cycle status, any human-approved `DEP-NNN` exception, exact bounded edges, current-source match, and evidence of no expansion or new risk when a cycle exists.
-- The report verifies the approved delivery shape: prototype evidence preserves stated demo limits, and full-stack release-slice evidence covers its relevant API, persistence, shared-data, and authentication/authorization boundaries.
+- The report verifies the approved readiness target and architecture shape: prototype evidence preserves stated demo limits, and full-stack release-slice evidence covers its relevant API, persistence, shared-data, and authentication/authorization boundaries.
 - For a UI candidate, missing, stale, superseded, noncanonical, or mismatched visual decision refs, missing required visual evidence, or any other verified blocking visual defect results in `technical_verdict: fail`.
 - For any code-affecting candidate, including UI candidates, approved boundary or public-contract violations, any new, forbidden, expanded, changed, unapproved, or unresolved cycle, an existing cycle without a matching human-approved `DEP-NNN` exception plus exact bounded edges and current-source rationale and direct evidence of no expansion or new risk, confirmed forbidden dependencies, configured complexity or size violations, evidence-backed mixed responsibility or risky abstraction, divergent duplicated business rules, risky dead code or unused dependencies, missing material boundary coverage, or any required maintainability property that remains unverifiable results in `technical_verdict: fail`.
 - The release decision is explicit.
