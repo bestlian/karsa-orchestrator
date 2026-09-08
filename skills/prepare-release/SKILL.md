@@ -29,6 +29,8 @@ Use this skill when the work is ready for release planning and you have approved
 
 Before planning, re-read the quality report, security report, implementation reports, and increment manifest at their exact paths and revisions. Confirm each explicit approval and technical result, compare them with the release candidate, and block on any mismatch. Tie tested code to a stable revision or checksum of executable, configuration, and source scope only; a change in that scope invalidates affected evidence, while governance documents and review state do not. Do not promote labels from summaries, screenshots, manifest normalization, or a report alone. Quality must be exactly `pass`, and security must be `pass` or `pass-with-findings` with only nonblocking findings and no blocker.
 
+This skill plans one candidate release slice, not the end of the original request. Re-read the approved backlog's Full-Request Obligation Ledger and every required slice manifest before writing the plan. The plan must name delivered obligations, required obligations still pending or blocked, and the next authorized route. An approved release plan may finalize its candidate slice only. It must not make an application-ready, full-scope-delivered, or request-complete claim while any required ledger entry remains unresolved. If required work remains and no next item is Ready, the next route is `plan-delivery` for a traceable planning repair, not completion. A bare `Yes` to this plan never reduces remaining scope or requires a repeated development authorization for the same approved backlog revision and scope.
+
 If either report is missing, unapproved, or contains blockers, or if the technical verdict does not satisfy these rules, stop and report that the release cannot be planned yet.
 
 ## Release Planning Eligibility
@@ -85,6 +87,7 @@ Set the verdict to `FAIL` if any of these are missing or unresolved:
 5. Archive manifest checks.
 6. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`.
 7. For a production-ready target, substantive backend/frontend API integration, durable data, applicable staff authorization, configuration/secrets, migrations/backups, logging/operations, concurrency/process evidence, and required independent audit recommendations or explicit scope limits.
+8. A Full-Request Obligation Ledger showing every required original `FR-*` and accepted proposal as delivered in the candidate set, explicitly remaining for a later slice, blocked, or explicitly scope-reduced by the user. Any remaining required entry makes an application-complete claim `FAIL`, even when this candidate slice can be released.
 
 The gate must reject mixed status language. Do not claim `ready`, `secure`, `production ready`, or similar wording unless the plan cites evidence for each claim.
 
@@ -108,8 +111,9 @@ Keep the artifact status as `awaiting-approval`. The status is not the verdict. 
 12. Record the release owner, the approver, and any required support roles.
 13. Add a go or no go checklist with explicit pass criteria.
 14. Capture residual risks that remain after approval.
-15. End the document with status `awaiting-approval`.
-16. Add the final Delivery Gate with a single overall verdict line, exactly `PASS` or `FAIL`, plus the rationale that cites the upstream technical verdicts.
+15. State full-request scope status: delivered obligations, remaining obligations, and next route. Use `application not ready` whenever required scope remains.
+16. End the document with status `awaiting-approval`.
+17. Add the final Delivery Gate with a single overall verdict line, exactly `PASS` or `FAIL`, plus the rationale that cites the upstream technical verdicts.
 
 ## Completion Criteria
 
@@ -206,6 +210,7 @@ Use a direct, reviewable structure like this:
 13. Residual risks.
 14. Status: `awaiting-approval`.
 15. Final Delivery Gate, with one overall verdict line, exactly `PASS` or `FAIL`.
+16. Full-request scope status and next authorized route; never use slice approval to close unresolved required scope.
 
 ## Stop Condition
 
