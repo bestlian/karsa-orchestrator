@@ -1,12 +1,15 @@
 # Antigravity Fullstack Skills
 
-This repository is the Antigravity Fullstack Skills orchestration package for building greenfield full-stack applications end to end. `fullstack-orchestrator` is the natural-language control plane. The other eight skills are phase-specific specialists. The flow guides work from idea and discovery through UX, architecture, planning, implementation, QA, security, and release preparation.
+This repository is the Antigravity Fullstack Skills orchestration package for building greenfield full-stack applications end to end. `fullstack-orchestrator` is the natural-language control plane. The other eight skills are phase-specific specialists. The flow guides work from idea and discovery
+through UX, architecture, planning, implementation, QA, security, and release preparation.
 
 ## About the Project
 
-`fullstack-orchestrator` reads the visible artifacts and recommends the next best skill. It is a control layer, not a worker. For in-scope requests to create a new application, the plugin rules require bootstrap through the orchestrator before native planning, coding, or direct specialist workflows begin.
+`fullstack-orchestrator` reads the visible artifacts, selects the next skill, then loads and executes that specialist inline in the same agent. For in-scope requests to create a new application, the plugin rules require bootstrap through the orchestrator before native planning, coding, or direct
+specialist workflows begin.
 
-It does not run specialist skills directly, does not chain work automatically, does not keep state across chats, does not self-approve, does not create new orchestrator artifacts, does not deploy, and does not replace specialist skill contracts. All skills remain installed as separate directories in the same workspace.
+It does not stop merely after skill selection, create new orchestrator artifacts, self-approve, deploy, replace specialist contracts, or keep state across chats. The selected specialist owns its artifacts and output even when the same agent executes it. All skills remain installed as separate
+directories in the same workspace.
 
 ## Bootstrap Scope and Platform Limits
 
@@ -14,7 +17,8 @@ Bootstrap is mandatory for natural-language requests to create, build, or scaffo
 
 Bootstrap does not apply to bug fixes, changes to an existing application, libraries, CLIs, general questions, or isolated pages or prototypes unless the user explicitly asks for that page or prototype as a new application.
 
-Imported rules are the strongest plugin-level enforcement: a host that follows the imported instructions must perform this bootstrap. The plugin cannot guarantee compliance if the host ignores the imported instructions. This plugin also does not guarantee automatic skill invocation, background execution, or cross-chat state. This suite governs lifecycle and evidence for cross-platform applications; it does not provide platform SDKs, platform code generators, or automatic deployment.
+Imported rules are the strongest plugin-level enforcement: a host that follows the imported instructions must perform this bootstrap, route, load, and inline execution in the active agent. The plugin cannot guarantee compliance if the host ignores the imported instructions. This suite never creates
+concurrent or background subagents for paired branches, does not self-approve, and does not provide cross-chat state, platform SDKs, platform code generators, or automatic deployment.
 
 ## Lifecycle
 
@@ -23,10 +27,10 @@ The official sequence is `discover-product -> (design-experience + define-archit
 Core rules:
 
 - `discover-product` starts from visible evidence, then produces a product brief that is ready for human approval.
-- `design-experience` and `define-architecture` run in parallel only after the product brief is explicitly approved. They form a join, so both approved outputs must exist before moving on.
+- `design-experience` and `define-architecture` are a paired route only after the product brief is explicitly approved. The same agent executes them sequentially, and both approved outputs must exist before moving on.
 - `plan-delivery` runs only after the brief, experience spec, and blueprint are approved.
 - `implement-feature` runs one ready item per cycle, not a batch.
-- `verify-quality` and `review-security` run in parallel only after all required items and the increment manifest are approved. This is also a join, so both reports must exist and be approved before moving on.
+- `verify-quality` and `review-security` are a paired route only after all required items and the increment manifest are approved. The same agent executes them sequentially, and both reports must exist and be approved before moving on.
 - `prepare-release` may only be chosen after quality and security pass according to the applicable rules.
 
 ## Approval and Joins
@@ -36,9 +40,10 @@ Every transition to the next phase requires explicit human approval of the upstr
 - `awaiting-approval` is not approval.
 - `PASS`, `pass`, `pass-with-findings`, `complete`, or a favorable `technical_verdict` does not mean human approval has been granted.
 - `next_skills` is only downstream guidance. It is not evidence that a skill was called, work has started, or approval was given.
-- When two skills are run in parallel, both branches must finish and be approved before the join opens.
+- For each paired route, the same agent runs both specialist contracts sequentially. Both branches must finish and be approved before the join opens; `next_skills` does not invoke either branch.
 
-If `verify-quality` fails or returns `conditional`, or `review-security` returns `block` with fixable findings, the path is remediation. Create one traceable remediation item, ask for human approval, run `implement-feature` for that single item, then repeat both verifications until release requirements are met.
+If `verify-quality` fails or returns `conditional`, or `review-security` returns `block` with fixable findings, the path is remediation. Create one traceable remediation item, ask for human approval, run `implement-feature` for that single item, then repeat both verifications until release
+requirements are met.
 
 ## Handoff and Artifacts
 
@@ -60,7 +65,8 @@ Resumes must start from the visible artifacts, not from chat memory. If you move
 
 ### Project Artifact Root
 
-All `artifacts/...` paths are relative to `<project-root>` and must be resolved as `<project-root>/artifacts/...`. An explicit user target path wins. If there is no explicit path, use the active workspace only when that workspace is clearly the target application and not this plugin repository. If the location is still ambiguous, the orchestrator asks exactly one location question and then stops: `Which project-root path should contain this new application?`
+All `artifacts/...` paths are relative to `<project-root>` and must be resolved as `<project-root>/artifacts/...`. An explicit user target path wins. If there is no explicit path, use the active workspace only when that workspace is clearly the target application and not this plugin repository. If
+the location is still ambiguous, the orchestrator asks exactly one location question and stops for that required input: `Which project-root path should contain this new application?`
 
 The `output_path` value in `fullstack-skill-handoff/v1` remains project-relative to preserve the existing schema. Lifecycle artifacts, manifests, reports, and proofs must not be written to the plugin installation or repository, or to an unrelated current working directory.
 
@@ -89,13 +95,32 @@ Readability means the source code is easier to understand and change for the dev
 
 ## Installation and Package Format
 
-### Antigravity Plugin (Recommended)
+### Native Antigravity Plugin Install
 
-Install the full suite directly from the repository:
+Install the full suite directly from GitHub:
 
 ```bash
 agy plugin install https://github.com/bestlian/antigravity-fullstack-skills
 ```
+
+After installation completes, send the following prompt to Gemini Chat. Use copy, not move, to preserve the plugin's source file:
+
+```text
+Copy the installed fullstack-orchestrator rule to my global Antigravity rules directory.
+
+Source: ~/.gemini/config/plugins/antigravity-fullstack-skills/rules/fullstack-orchestrator.md
+Destination: ~/.gemini/config/rules/fullstack-orchestrator.md
+
+Resolve ~ to my user home directory. Verify that the source exists; if it does not, stop and report the missing path without inventing its contents.
+Create the destination directory if needed. I authorize overwriting the destination file if it already exists.
+Copy the file without changing its contents. Preserve the source file and do not modify any other rules or settings.
+Compare the source and destination SHA-256 hashes and report whether they match.
+Do not claim automatic rule activation merely because the copy succeeded; I will test it in a new session.
+```
+
+This prompt overwrites the rule with the same name. Back it up first if you have customized it. Repeat the copy after installing an update that changes the rule. Native `agy plugin install` does not provide a documented install hook for this global copy.
+
+The paths above match the tested local installation. Other versions may use a different plugin directory. Start a new Antigravity session and test discovery after copying; discovery is not guaranteed across every version or host.
 
 Verify that the plugin is registered:
 
@@ -103,11 +128,20 @@ Verify that the plugin is registered:
 agy plugin list
 ```
 
-This plugin registers all nine skills from `skills/` and the orchestrator rule from `rules/fullstack-orchestrator.md`. Each skill is still selected or activated explicitly; plugin installation does not run skills automatically.
+### Local Installation (Development)
+
+From a local checkout, validate and install with the native CLI, then use the same Gemini Chat prompt above:
+
+```bash
+agy plugin validate .
+agy plugin install .
+```
 
 ### Manual ZIPs (Fallback)
 
 Each ZIP is a portable distribution artifact. Each ZIP must contain exactly one skill.
+
+Standalone ZIPs contain only one `SKILL.md` and `THIRD_PARTY_NOTICES.md`. They do not contain `plugin.json` or the imported rule, so ZIP extraction cannot install or copy the global orchestrator rule.
 
 Steps:
 
@@ -115,18 +149,6 @@ Steps:
 2. After extraction, each skill directory must have `SKILL.md` and `THIRD_PARTY_NOTICES.md` in its root.
 3. Install all nine skill directories in the same Antigravity workspace.
 4. Existing skill names remain unchanged.
-
-### Build and Validate Packages
-
-Run the following commands from the repository root after changing a skill or notice:
-
-```powershell
-.\scripts\build-dist.ps1
-.\scripts\test-package-parity.ps1
-agy plugin validate .
-```
-
-The PowerShell validation checks the nine expected packages, the two exact root archive files, and byte-for-byte parity between each source `SKILL.md` or `THIRD_PARTY_NOTICES.md` file and the ZIP entry. This validation intentionally does not test routing prose content; routing semantics are an instruction contract that requires manual review and acceptance.
 
 ## How to Use
 
