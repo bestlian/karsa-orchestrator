@@ -107,6 +107,8 @@ Test both happy path and meaningful failure path when the acceptance criteria ca
 
 A real boundary test exercises the approved module, public contract, API, persistence, authentication, authorization, or provider boundary and observes its expected and failure behavior. A build, a process launch, or an HTTP 200 is not a substitute for that boundary test.
 
+For timed-resource reservations, test interval semantics, not only equal start values: same start, staggered intersection, containing, contained, and boundary-adjacent valid intervals; reject any duration that crosses approved operating hours. Validate real calendar date/time types, resource bounds, and quantities at the boundary. Test true simultaneous conflicting attempts through separate database connections using the approved deployed-process model, and assert the intended conflict result. For applicable inventory and payments, test reserve and release transitions, owner controls, and idempotent settlement behavior. These are reusable requirement-driven cases, never hardcoded to a product name or one implementation.
+
 ## Verification Rules
 
 Run the checks that fit the change.
@@ -118,6 +120,8 @@ Run the checks that fit the change.
 5. For UI-affecting work, interact with the implementation in a real browser at the product-approved widths. If the visual contract specifies none, use `375`, `768`, and `1280` CSS px. Click and fill actual controls, use relevant keyboard paths, observe persisted and error state outcomes, and record console results. Exercise every relevant specified state, including applicable default, hover, focus, active, disabled, loading, empty, error, and success states, and compare the result with the approved references and acceptance criteria.
 6. For authorization, test staff actions with expected `401` or `403`, cross-role and ownership denials, and relevant negative business cases. Test durable storage and concurrency-sensitive booking flows against dedicated test data and the approved deployed-process model, never a project live database.
 7. A host-native `browser_subagent` may collect bounded browser interaction evidence only. The executing agent retains lifecycle ownership and must make all edits, approvals, routing, and joins.
+
+8. Start an application server only for an imminent bounded test. Use a foreground harness with a deadline or a no-window subprocess whose PID and port are recorded; always clean it up in a finally-equivalent path after pass, failure, block, or cancellation. Do not open command windows, leave a process alive, use broad process kills, or modify global environment dependencies. Record created processes, ports, cleanup action, and cleanup result. A user request to leave development running is a separate explicit instruction.
 
 Screenshots may support visual evidence but do not replace browser interaction evidence. Use deterministic synthetic fixtures for visual verification. Evidence must contain no credentials, personal data, or production secrets. A build success, a running process, or an HTTP 200 only proves its own boundary and cannot substitute for browser UI evidence.
 
@@ -195,6 +199,8 @@ intentional_deviations:
 ```
 
 Use `none` only when a field genuinely has no applicable evidence, and explain why. `browser_evidence` must describe observed interaction results, not only screenshot paths. `run_url`, browser, viewport, actions, observed outcomes, console result, and linked evidence paths are required for UI work. `starter_screen_detection` and `entrypoint_wiring` are required before a newly scaffolded UI can claim application readiness. `reference_comparison` must state how the implementation matches the approved visual acceptance criteria and identify any verified drift.
+
+For every executed check, record command, working directory, exit code, raw-output artifact path, tested source revision or checksum, and any server PID/port plus cleanup result. A browser claim additionally requires real actions, console result, and screenshot artifact paths from that captured run; prose about a viewport is not evidence. Use project-native lint when configured. If no lint exists, report that maintainability gap rather than creating a green claim; keep backend routers, services, domain schemas, and frontend components structured by approved responsibility instead of a monolithic business-and-layout module.
 
 ## Handoff
 
