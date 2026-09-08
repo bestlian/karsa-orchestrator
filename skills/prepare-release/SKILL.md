@@ -27,7 +27,7 @@ Use this skill when the work is ready for release planning and you have approved
 4. Version or build identifier.
 5. Scope summary for the release.
 
-Before planning, confirm the approved quality report has technical verdict exactly `pass`, and the approved security report has technical verdict `pass` or `pass-with-findings` with only nonblocking findings and no blocker.
+Before planning, confirm the approved quality report has technical verdict exactly `pass`, and the approved security report has technical verdict `pass` or `pass-with-findings` with only nonblocking findings and no blocker. Each approval must identify the exact report path and revision; an active editor, another URI, a current phase, or an old revision does not transfer approval.
 
 If either report is missing, unapproved, or contains blockers, or if the technical verdict does not satisfy these rules, stop and report that the release cannot be planned yet.
 
@@ -79,8 +79,9 @@ Set the verdict to `FAIL` if any of these are missing or unresolved:
 1. Required quality evidence, or an approved quality report whose technical verdict is not exactly `pass`.
 2. Required security evidence, or an approved security report whose technical verdict is not `pass` or `pass-with-findings` with only nonblocking findings and no blocker.
 3. Unresolved approvals, blockers, or remediation-only verdicts (`conditional`, `fail`, `block`).
-4. Archive manifest checks.
-5. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`.
+4. For a UI candidate, missing required real-browser evidence, including run URL, viewport, actions and observed outcomes, console result, and linked artifacts. Build success, a running process, or HTTP 200 cannot substitute.
+5. Archive manifest checks.
+6. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`.
 
 The gate must reject mixed status language. Do not claim `ready`, `secure`, `production ready`, or similar wording unless the plan cites evidence for each claim.
 
@@ -172,6 +173,14 @@ status: awaiting-approval
 approval: pending
 next_skills: []
 ```
+
+## Approval Evidence Protocol
+
+Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/release/<candidate-id>-release-plan.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+
+Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+
+These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
 
 The plan stops before deployment. If deployment is requested, hand off to the deployment flow under separate human authorization.
 

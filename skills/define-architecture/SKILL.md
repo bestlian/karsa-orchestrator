@@ -32,9 +32,11 @@ Do not use this skill when:
 
 ## Operating Rules
 
-* Start from the approved brief and only use evidence from that brief, existing product context, and confirmed constraints.
+* Start from the approved brief and only use evidence from that brief, existing product context, and confirmed constraints. Verify that the approval evidence names the exact current brief path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it.
 * If the brief leaves a gap, mark it as an open question or assumption. Do not guess.
 * Do not choose a framework, cloud service, database, queue, or vendor unless the brief or evidence already supports it.
+* Preserve the approved delivery shape and acceptance boundary. A confirmed prototype is explicitly not production full-stack delivery. A confirmed full-stack application must define the backend owner, API boundaries, persistence, shared-data, and authentication/authorization boundaries. When there is no user sign-in, define the anonymous or service identity boundary explicitly; real-payment boundaries are required when payments are in scope.
+* Keep framework neutrality unless the user confirmed a stack or capability. Do not exclude a managed backend/BaaS merely because it is managed when it provides the real backend capability the approved need requires.
 * Do not create a backlog. This skill ends at the blueprint.
 * Do not write code.
 
@@ -62,6 +64,7 @@ Include:
 * The in scope and out of scope parts of the product.
 * The main actors and external dependencies.
 * The system context in text form or a simple diagram description.
+* The confirmed `prototype` or `full-stack` delivery shape, its acceptance boundary, and either the prototype demo limitations or the full-stack backend and persistence boundary.
 
 ### 2. Boundaries And Trust Zones
 
@@ -84,9 +87,8 @@ List the major components and what each one owns.
 Include:
 
 * User facing surfaces.
-* Backend services.
-* Shared services.
-* Storage and integration components.
+* For a confirmed full-stack application, backend services, shared services, and storage and integration components.
+* For a confirmed prototype, the deliberate absence of production backend, persistence, auth, payment, and deployment capabilities, with its demo limitations.
 * The responsibility of each component.
 * What each component must not do.
 * For each major component or module, state its responsibility, public contract, owner, prohibited responsibilities, rationale, tradeoff, and observable contract.
@@ -114,6 +116,8 @@ Include:
 * Data retention and deletion expectations.
 * Data that is derived, cached, replicated, or ephemeral.
 
+For confirmed full-stack work, define the persistent source of truth and the owner for each shared domain. `localStorage` is not an implicit substitute for shared persistence. For a prototype, label sample or local data as demo-only and do not represent it as production persistence.
+
 ### 5. API And Event Contracts
 
 Describe the contract surface between components.
@@ -127,6 +131,8 @@ Include:
 * Idempotency, retries, ordering, and error handling assumptions.
 * How each public `CON-NNN` contract is exercised and verified at module boundaries.
 
+For confirmed full-stack work, include every required backend API and integration boundary. For a prototype, record that there is no production API contract rather than inventing one.
+
 ### 6. Authentication And Authorization
 
 Define identity and access control at the architecture level.
@@ -138,6 +144,8 @@ Include:
 * Roles, permissions, and ownership checks.
 * Service to service trust.
 * Session or token expectations.
+
+For confirmed full-stack work with auth, authorization, or real payments in scope, define those boundaries and their owner. For a prototype with simulated behavior, state the simulation and limitation explicitly; never silently turn it into a production security or payment claim.
 
 ### 7. Privacy
 
@@ -245,11 +253,13 @@ artifact_id: application-blueprint
 output_path: artifacts/architecture/application-blueprint.md
 inputs:
   - approved product brief
+  - confirmed delivery shape and acceptance boundary
   - confirmed constraints and evidence
 requirement_refs:
   - approved product requirement IDs
 decision_refs:
   - architecture decisions, ADR references, and `DEP-NNN` or `MNT-NNN` maintainability decisions
+  - confirmed backend owner, API, persistence, auth, payment, stack, and deployment decisions when applicable
 assumptions:
   - explicitly stated architecture assumptions
 open_questions:
@@ -274,6 +284,14 @@ next_skills:
   - plan-delivery
 ```
 
+## Approval Evidence Protocol
+
+Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/architecture/application-blueprint.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+
+Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+
+These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+
 Do not mark the work approved on your own.
 
 ## Writing Process
@@ -294,6 +312,7 @@ The skill is complete only when all of these are true:
 * `artifacts/architecture/application-blueprint.md` exists.
 * The blueprint is framework-neutral and evidence based.
 * The blueprint covers every required area in this skill.
+* The blueprint preserves the approved delivery shape and acceptance boundary, with explicit prototype limits or required full-stack backend, API, persistence, auth, authorization, payment, and deployment boundaries as applicable.
 * The blueprint states source-code maintainability expectations, module ownership, public contracts, dependency direction, cycle constraints, naming boundaries, and boundary test strategy.
 * The blueprint uses stable `MOD-NNN`, `CON-NNN`, `DEP-NNN`, and `MNT-NNN` identifiers and every maintainability source_refs entry resolves to an exact approved blueprint anchor.
 * Every approved requirement has traceability.

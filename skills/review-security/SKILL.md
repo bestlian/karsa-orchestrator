@@ -116,7 +116,7 @@ Tie severity to exploitability and impact, not to code smell.
 ## Workflow
 
 1. Identify the candidate and its surrounding flow.
-2. Confirm the increment manifest and every required item report are approved. If not, stop and mark the work `blocked`.
+2. Confirm the increment manifest and every required item report are approved at their exact pending artifact paths and revisions. Do not transfer approval from an active editor, another URI, a current phase, or an old revision. If the evidence is absent, mismatched, or unapproved, stop and mark the work `blocked`.
 3. Reconcile threat assumptions and trust boundaries.
 4. Trace attacker-controlled inputs to sensitive sinks.
 5. Check whether auth, authz, session, or tenant checks can be bypassed.
@@ -217,9 +217,17 @@ next_skills:
   - prepare-release
 ```
 
-The report records the technical verdict separately from handoff status. Only a human can change the artifact to `approved`.
+The report records the technical verdict separately from handoff status.
 
 If the verdict is `block`, replace `next_skills` with `implement-feature` after the remediation items are approved, then rerun `verify-quality` and `review-security`. If the verdict is `pass` or `pass-with-findings` and the report is approved, keep `prepare-release`.
+
+## Approval Evidence Protocol
+
+Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/security/<candidate-id>-security-review.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+
+Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+
+These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
 
 ## Completion Criteria
 

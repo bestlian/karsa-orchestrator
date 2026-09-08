@@ -26,12 +26,21 @@ Use this skill for one ready backlog item only. It turns approved specs into a s
 4. Approved specs, meaning the blueprint, acceptance criteria, and any linked decisions are signed off.
 5. Repository conventions, configured quality tools, approved module responsibilities, public contracts, dependency decisions, relevant manifests, relevant code, and existing tests.
 6. For UI-affecting work, the exact approved visual contract reference in canonical form `experience-spec@VDC-NNN#VIS-NNN`, where `NNN` is the exact three-digit approved ID, for example `experience-spec@VDC-001#VIS-001`, including the current approved `VDC-*` revision, every referenced `VIS-*` decision, `visual_acceptance_criteria`, and `expected_visual_proof`.
+7. Foundation: the approved product brief, experience specification, application blueprint, and delivery backlog at their referenced revisions.
+8. A `Development Start Authorization` in the approved backlog body that names that exact backlog revision, authorized scope, first Ready story or task, expected runnable outcome, human identity, and exact user evidence.
+9. The approved delivery shape and acceptance boundary: prototype demo limitations, or full-stack backend, API, persistence, shared-data, and authentication/authorization boundaries for the selected item.
 
 If any of those are missing, stop and ask for the missing input. Do not guess.
 
 ## Artifact Root Contract
 
 `fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including implementation reports, increment manifests, and evidence paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
+## Development Start Gate
+
+Before a scaffold, dependency or package installation, generated starter-app output, or application edit, verify Foundation and the recorded development-start authorization. Each Foundation approval must name its exact current artifact path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it. A Vite or other scaffold is not Foundation. Backlog approval alone is not authorization, and neither a native Process result nor an unrelated plan may be used to infer it.
+
+If authorization is missing, ask exactly: `Shall I start development against [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` Then stop before development. Persist the explicit user answer in the backlog body's `Development Start Authorization` record for that revision and scope. A single exact user answer may also approve the pending backlog revision when it names that revision, scope, first item, and outcome; record the approval and start authorization separately, then re-evaluate without repeating the question. Bare `approved` is insufficient. Do not ask again for the same authorized scope. A material scope or backlog-revision change requires renewed authorization. An epic is never an implementation unit; select one Ready story or task only.
 
 ## First Check
 
@@ -44,7 +53,7 @@ If the item is not ready, or the specs are not approved, do not start.
 ## Work Flow
 
 1. Select one item and restate its ID, scope, acceptance criteria, and expected outcome. For UI-affecting work, also restate the exact approved `VDC-*` revision, referenced `VIS-*` IDs, `visual_acceptance_criteria`, and `expected_visual_proof`.
-2. Map the item to the smallest set of files that need to change.
+2. Map the item to the smallest set of files that need to change, including the approved prototype limitation or full-stack boundary it advances.
 3. Build a simple impact map for module boundaries, public contracts, dependency edges, affected manifests, boundary tests, and checks so you know what behavior, tests, checks, and, where applicable, approved visual decisions and visual acceptance criteria are affected.
 4. Write the failing test first. For UI-affecting work, write a failing visual or behavioral check first when automation exists. When automation does not exist, interact with the pre-change UI in a real browser and record the contract mismatch as red evidence before implementation.
 5. Make the smallest code change that passes the test.
@@ -95,6 +104,8 @@ Use focused tests that match the behavior you changed.
 
 Test both happy path and meaningful failure path when the acceptance criteria call for it. Keep the tests close to the behavior, not the implementation details.
 
+A real boundary test exercises the approved module, public contract, API, persistence, authentication, authorization, or provider boundary and observes its expected and failure behavior. A build, a process launch, or an HTTP 200 is not a substitute for that boundary test.
+
 ## Verification Rules
 
 Run the checks that fit the change.
@@ -105,11 +116,25 @@ Run the checks that fit the change.
 4. Manual QA through the real surface when the change is user visible.
 5. For UI-affecting work, interact with the implementation in a real browser at the product-approved widths. If the visual contract specifies none, use `375`, `768`, and `1280` CSS px. Exercise every relevant specified state, including applicable default, hover, focus, active, disabled, loading, empty, error, and success states, and compare the result with the approved references and acceptance criteria.
 
-Screenshots may support visual evidence but do not replace browser interaction evidence. Use deterministic synthetic fixtures for visual verification. Evidence must contain no credentials, personal data, or production secrets.
+Screenshots may support visual evidence but do not replace browser interaction evidence. Use deterministic synthetic fixtures for visual verification. Evidence must contain no credentials, personal data, or production secrets. A build success, a running process, or an HTTP 200 only proves its own boundary and cannot substitute for browser UI evidence.
 
 Do not mark the work complete unless the checks actually ran, or the repo has no matching surface and that limitation is stated plainly. For UI-affecting work, a missing browser surface or missing required fidelity evidence prevents a complete technical verdict.
 
-If a configured check is unavailable, inspect the changed code directly and record the evidence gap instead of fabricating a pass or requiring a new tool.
+If an optional static check is unavailable, inspect the changed code directly and record the evidence gap instead of fabricating a pass or requiring a new tool. This does not waive required UI browser evidence.
+
+## Browser Capability And Recovery
+
+Use a native browser capability first. A browser skill being listed or installed does not prove its runtime, browser binary, or driver is available. For required UI evidence:
+
+1. Confirm the native browser capability can actually launch and exercise the project-bound application.
+2. If it is missing, use only a documented, supported install or configuration path that stays within the existing permission and project boundary. Do not disable safety controls or invent undocumented commands.
+3. If a built-in driver download fails, record the exact reason and failure output. Try one supported alternative when one is available; do not blindly repeat the same failed download.
+4. Stop and ask a human before an external download, global installation, elevated permission, account change, or other action outside the project boundary.
+5. If no permitted, working browser capability remains, record the required evidence as blocked. Do not waive it because a static tool is optional, and do not claim `technical_verdict: complete`.
+
+A host-provided `browser_subagent` may perform this bounded browser testing only. It is not a lifecycle specialist and cannot edit features, make approval decisions, or select/advance a lifecycle phase; the active agent owns those actions.
+
+For a newly scaffolded UI, first detect and record the starter screen, then prove entrypoint wiring to the intended application before any application-ready claim. Treat this as an explicit transition from starter to product surface, not as evidence that the application itself is ready.
 
 ## Evidence Report
 
@@ -154,15 +179,21 @@ visual_contract_ref:
 visual_decision_refs:
 implemented_decisions:
 rejected_defaults_checked:
+run_url:
+browser_and_version:
 viewports_checked:
 states_exercised:
+actions_and_observed_outcomes:
+console_errors:
 browser_evidence:
 screenshot_evidence:
+starter_screen_detection:
+entrypoint_wiring:
 reference_comparison:
 intentional_deviations:
 ```
 
-Use `none` only when a field genuinely has no applicable evidence, and explain why. `browser_evidence` must describe observed interaction results, not only screenshot paths. `reference_comparison` must state how the implementation matches the approved visual acceptance criteria and identify any verified drift.
+Use `none` only when a field genuinely has no applicable evidence, and explain why. `browser_evidence` must describe observed interaction results, not only screenshot paths. `run_url`, browser, viewport, actions, observed outcomes, console result, and linked evidence paths are required for UI work. `starter_screen_detection` and `entrypoint_wiring` are required before a newly scaffolded UI can claim application readiness. `reference_comparison` must state how the implementation matches the approved visual acceptance criteria and identify any verified drift.
 
 ## Handoff
 
@@ -197,6 +228,7 @@ validation_evidence:
   - maintainability evidence for module boundaries, dependency direction, cohesion, naming, duplication, dead code, and unused dependencies
   - manual QA evidence when user visible
   - visual fidelity browser, viewport, state, and reference comparison evidence when UI affecting
+  - run URL, actions, observed outcomes, console results, starter-screen detection, and entrypoint wiring when applicable
   - increment manifest update
 status: awaiting-approval
 approval: pending
@@ -205,6 +237,14 @@ next_skills:
 ```
 
 Record the technical verdict in the report body. The handoff status stays on the artifact lifecycle and only moves to `approved` after explicit human approval. While required slice items remain, emit only `implement-feature` in `next_skills`. After every required item report and the increment manifest are explicitly approved, replace that route and emit only `verify-quality` and `review-security` in `next_skills`.
+
+## Approval Evidence Protocol
+
+Before requesting review, label each document body with an immutable `Artifact Revision`; its combination with the implementation report or increment-manifest path is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to the exact specialist output under review; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+
+Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+
+These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. Development Start Authorization decision/evidence is also closed metadata only when it fills an already specified backlog revision and scope. None of these updates may change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision, resets approval, and re-evaluates/rebinds start authorization. A revise or remediation request never grants downstream permission.
 
 ## Technical Verdict
 
@@ -215,6 +255,8 @@ Record one value in the report body:
 - `technical_verdict: blocked`
 
 Use `technical_verdict` for the implementation outcome only. Do not turn it into an artifact status. `technical_verdict: complete` can survive missing optional tooling only when direct evidence establishes the required properties. Otherwise, use `technical_verdict: partial` or `technical_verdict: blocked`.
+
+State the result at the correct boundary: `item complete`, `slice complete`, `slice incomplete`, `application ready`, or `application not ready`. Completing one item never completes its slice or the application. An exactly approved scaffold story or task may be `technical_verdict: complete` when its own concrete acceptance criteria and required tests pass, but it must say `slice incomplete` and `application not ready`. A scaffold used to stand in for a broader functional story is `technical_verdict: partial`.
 
 ## Completion Criteria
 
@@ -232,5 +274,6 @@ Treat the item as complete only when all of these are true:
 10. The complete `## Design And Maintainability` evidence set is present for the touched slice, and no unresolved module-boundary or public-contract violation, forbidden dependency direction, circular dependency, material cohesion or complexity or size risk, unjustified duplication or abstraction, risky dead code or unused dependency, domain-naming readability risk, or missing material boundary test remains.
 11. For UI-affecting work, the implementation matches the current approved `VDC-*` revision and referenced `VIS-*` decisions, including all applicable visual acceptance criteria, responsive states, accessibility requirements, and any referenced signature moment.
 12. For UI-affecting work, the required real-browser fidelity evidence is complete at every approved or fallback viewport and relevant state, with rejected defaults checked and every intentional deviation tied to an approved decision reference.
+13. For UI-affecting work, browser evidence names the actual run URL, browser, viewport, actions, observed outcomes, console errors, and linked artifacts; newly scaffolded work also records starter-screen detection and entrypoint wiring before any application-ready claim.
 
-If any of those fail, report `technical_verdict: partial` or `technical_verdict: blocked` instead of `technical_verdict: complete`. Missing required fidelity evidence, a missing referenced signature moment, or verified unapproved visual drift can never receive `technical_verdict: complete`.
+If any of those fail, report `technical_verdict: partial` or `technical_verdict: blocked` instead of `technical_verdict: complete`. Missing required browser or fidelity evidence, a missing referenced signature moment, or verified unapproved visual drift can never receive `technical_verdict: complete`. Build success and HTTP 200 results do not change that outcome.
