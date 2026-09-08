@@ -1,15 +1,15 @@
 ---
 name: fullstack-orchestrator
-description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, infers visible artifact state, requires explicit human approval at every phase boundary, and routes to enabled specialist skills without invoking them directly.
+description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, infers visible artifact state, requires explicit human approval at every phase boundary, and routes then executes enabled specialist skills inline in the same agent.
 ---
 
 # Full-Stack Orchestrator
 
 ## Role
 
-This skill is a deterministic natural-language routing and control-plane contract for greenfield full-stack work. It inspects visible evidence and names the next specialist route.
+This skill is a deterministic natural-language routing and execution contract for greenfield full-stack work. It inspects visible evidence, selects the next specialist route, loads that skill contract, and executes it inline in the same agent.
 
-It is not a worker, artifact producer, approval authority, persistent state store, direct skill invoker, deployment tool, or replacement for any specialist. It MUST NOT write specialist artifacts, invoke skills, promise Antigravity auto-execution, run work in the background, chain work automatically, or claim cross-chat persistence. A human or the hosting environment must activate each selected specialist.
+The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST load and execute the selected contract inline. It MUST NOT invoke background, concurrent, or subagents, or promise host-managed auto-execution.
 
 ## Mandatory Bootstrap Scope
 
@@ -23,7 +23,7 @@ Resolve `<project-root>` before inspecting lifecycle evidence or selecting a spe
 
 1. An explicit user target path wins.
 2. Otherwise, use the active workspace only when it is clearly the target application and is not this plugin repository.
-3. If the location is ambiguous, ask exactly one question: `Which project-root path should contain this new application?` Then STOP. Do not ask a second routing or discovery question.
+3. If the location is ambiguous, ask exactly one question: `Which project-root path should contain this new application?` Then stop for that required input. Do not ask a second routing question. After the root is resolved, a selected specialist may ask the discovery questions required by its own contract.
 
 All lifecycle artifacts and evidence paths are project-relative. Resolve every `artifacts/...` path in this contract as `<project-root>/artifacts/...`, including product, UX, architecture, planning, implementation, quality, security, release, proof, and manifest artifacts. Never write lifecycle artifacts into the plugin installation or repository, or into an unrelated current working directory. Keep `fullstack-skill-handoff/v1` `output_path` values as their existing project-relative `artifacts/...` paths; the root is execution context, not a new handoff field.
 
@@ -69,33 +69,35 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 
 ## Deterministic Routing Procedure
 
-After resolving `<project-root>`, apply these routing rules in order. The first matching rule determines the candidate route. Before emitting that route, apply the specialist availability guard below.
+After resolving `<project-root>`, apply these routing rules in order. The first matching rule determines the candidate route and its inline execution. Before emitting that route, apply the specialist availability guard below. A selected route is not a stop condition.
 
-1. Evidence conflict or ambiguity: If artifacts disagree about status, approval, IDs, candidate, slice, current revision, or ownership, list the conflict, ask exactly one precise question that resolves the route, and STOP. Do not guess.
-2. New-chat recovery: Reconstruct state from visible artifacts below `<project-root>/artifacts/` and `fullstack-skill-handoff/v1` handoffs. If prior progress is claimed but the evidence is absent, request only the latest artifact and handoff needed to prove that state, then STOP. If visible evidence shows an incomplete chain, route to the earliest missing prerequisite. If no lifecycle artifact exists, route to `discover-product`.
-3. Approval stop: If the current artifact or either artifact at a join is `awaiting-approval`, ask the named human for one explicit `approve`, `reject`, or `revise` decision and STOP. Downstream routing MUST wait until the decision is recorded as authoritative evidence.
-4. Rejection or revision: If an artifact is `rejected`, or a human requests revision, route only to the specialist that owns that artifact and STOP at its next approval boundary.
-5. Draft or blocked work: Route a `draft` artifact to its owner. For `blocked`, route to the owner of the earliest missing or rejected prerequisite named by the evidence. If the blocker is ambiguous, apply rule 1.
-6. Visual freshness: Before planning, UI implementation, verification, remediation, or release routing, compare every governing visual reference with the current approved experience specification. Every reference MUST exactly match `experience-spec@VDC-NNN#VIS-NNN`, with three decimal digits in both IDs. A revision-only, noncanonical, stale, superseded, or mismatched reference MUST STOP the normal route. Route first to `design-experience`; after the revised experience specification is explicitly approved, route to `plan-delivery`; after the updated backlog is explicitly approved, route affected items one at a time to `implement-feature` to regenerate implementation and evidence. Both verifiers MUST then be rerun when their prerequisites are approved. Never silently carry a prior visual reference forward.
-7. Lifecycle route: If none of the stop rules applies, select the next route from the lifecycle below.
+1. Evidence conflict or ambiguity: If artifacts disagree about status, approval, IDs, candidate, slice, current revision, or ownership, list the conflict, ask exactly one precise question that resolves the route, and stop for that required input. Do not guess.
+2. New-chat recovery: Reconstruct state from visible artifacts below `<project-root>/artifacts/` and `fullstack-skill-handoff/v1` handoffs. If prior progress is claimed but the evidence is absent, request only the latest artifact and handoff needed to prove that state, then stop for that required input. If visible evidence shows an incomplete chain, select and execute the earliest missing prerequisite. If no lifecycle artifact exists, select and execute `discover-product`.
+3. Approval stop: If the current artifact or either artifact at a join is `awaiting-approval`, ask the named human for one explicit `approve`, `reject`, or `revise` decision and stop for that approval. Downstream routing MUST wait until the decision is recorded as authoritative evidence.
+4. Rejection or revision: If an artifact is `rejected`, or a human requests revision, select and execute only the specialist that owns that artifact. That specialist stops at its next approval boundary.
+5. Draft or blocked work: Select and execute the owner of a `draft` artifact. For `blocked`, select and execute the owner of the earliest missing or rejected prerequisite named by the evidence. If the blocker is ambiguous, apply rule 1.
+6. Visual freshness: Before planning, UI implementation, verification, remediation, or release routing, compare every governing visual reference with the current approved experience specification. Every reference MUST exactly match `experience-spec@VDC-NNN#VIS-NNN`, with three decimal digits in both IDs. A revision-only, noncanonical, stale, superseded, or mismatched reference stops the normal route for missing current input. Select and execute `design-experience` first; after the revised experience specification is explicitly approved, select and execute `plan-delivery`; after the updated backlog is explicitly approved, select and execute affected `implement-feature` items one at a time to regenerate implementation and evidence. Run both verifiers sequentially in this same agent when their prerequisites are approved. Never silently carry a prior visual reference forward.
+7. Lifecycle route: If none of the stop rules applies, select and execute the next route from the lifecycle below.
 
-Specialist availability guard: Before naming a candidate route, confirm every selected specialist is enabled or available. If one is not, identify its exact name and STOP. Tell the human to enable that skill or upload its `SKILL.md` contract and required input artifacts, then retry. MUST NOT substitute another skill.
+Specialist availability guard: Before executing a selected route, confirm every selected specialist is enabled or available. If one is not, identify its exact name and stop for the missing skill contract or required input artifacts. Tell the human to enable that skill or provide its `SKILL.md` contract and required input artifacts, then retry. MUST NOT substitute another skill.
 
 Every transition to a downstream phase requires explicit human approval of every upstream artifact used by that phase. The router MUST NOT weaken a specialist's own preconditions.
 
 ## Lifecycle And Join Rules
 
-1. Discovery: With no approved product brief, route to `discover-product`. STOP when its brief is `awaiting-approval`.
-2. Experience and architecture: Only after the product brief is explicitly approved, route `design-experience` and `define-architecture` as parallel branches. This names two independent routes; it does not invoke or background either skill.
-3. Design-architecture join: `plan-delivery` MUST NOT be selected until both the experience specification and application blueprint are explicitly approved. If one branch is approved and the other is missing, draft, rejected, or blocked, route only the incomplete branch. A change to shared approved input that invalidates either branch reopens that branch.
-4. Planning: After the product brief, current experience specification, and application blueprint are approved, route to `plan-delivery`. STOP for explicit approval of the delivery backlog.
-5. One-item implementation loop: After the delivery backlog is approved, route exactly one Ready backlog item to `implement-feature`. Never batch items. STOP for required approval of each resulting item report and increment-manifest state. If required slice items remain after approval, route the next single Ready item to `implement-feature`.
-6. Quality-security gate: Route `verify-quality` and `review-security` as parallel branches only after every required item report and the release-slice increment manifest are explicitly approved. Both MUST review the same candidate and approved evidence set. This names two independent routes; it does not invoke or background either skill.
+1. Discovery: With no approved product brief, select and execute `discover-product`. It stops only for required discovery input or the resulting brief's human-approval boundary.
+2. Experience and architecture: Only after the product brief is explicitly approved, select `design-experience` and `define-architecture` as a paired route. Load and execute them sequentially in this order in the same agent. Each branch has the same approved brief prerequisite and retains its own output and approval boundary.
+3. Design-architecture join: `plan-delivery` MUST NOT be selected until both the experience specification and application blueprint are explicitly approved. If one branch is approved and the other is missing, draft, rejected, or blocked, select and execute only the incomplete branch. A change to shared approved input that invalidates either branch reopens that branch.
+4. Planning: After the product brief, current experience specification, and application blueprint are approved, select and execute `plan-delivery`. It stops at the delivery backlog's explicit human-approval boundary.
+5. One-item implementation loop: After the delivery backlog is approved, select and execute exactly one Ready backlog item with `implement-feature`. Never batch items. It stops for required approval of each resulting item report and increment-manifest state. If required slice items remain after approval, select and execute the next single Ready item with `implement-feature`.
+6. Quality-security gate: Select `verify-quality` and `review-security` as a paired route only after every required item report and the release-slice increment manifest are explicitly approved. Both MUST review the same candidate and approved evidence set. Load and execute them sequentially in this order in the same agent.
 7. Quality-security join: One verifier cannot satisfy the other branch. The join remains closed until both reports exist and are explicitly approved. Quality `conditional` or `fail`, or security `block`, enters remediation regardless of artifact approval. Security `pass-with-findings` is eligible only when every finding is nonblocking and no blocker exists.
-8. Remediation: After blocking quality or security evidence is approved, route to `plan-delivery` for one traceable remediation backlog item. STOP for explicit human approval of that item. Then route that one item to `implement-feature`, STOP for approval of its report and updated manifest, and rerun both `verify-quality` and `review-security` against the remediated candidate. Repeat until both approved verifier reports satisfy the release criteria. A waiver MUST NOT convert `conditional`, `fail`, or `block` into an eligible verdict.
-9. Release planning: Route to `prepare-release` only when the approved quality report has technical verdict `pass`, the approved security report has technical verdict `pass` or nonblocking `pass-with-findings`, no blocker exists, and all required evidence is approved and current. STOP when the release plan is `awaiting-approval`. This suite does not deploy.
+8. Remediation: After blocking quality or security evidence is approved, select and execute `plan-delivery` for one traceable remediation backlog item. Stop for explicit human approval of that item. Then select and execute that one item with `implement-feature`, stop for approval of its report and updated manifest, and execute `verify-quality` then `review-security` against the remediated candidate. Repeat until both approved verifier reports satisfy the release criteria. A waiver MUST NOT convert `conditional`, `fail`, or `block` into an eligible verdict.
+9. Release planning: Select and execute `prepare-release` only when the approved quality report has technical verdict `pass`, the approved security report has technical verdict `pass` or nonblocking `pass-with-findings`, no blocker exists, and all required evidence is approved and current. It stops when the release plan reaches its human-approval boundary. This suite does not deploy.
 
-The only parallel routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Every join MUST wait for both branches and all required human approvals.
+The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Execute each pair sequentially in the same agent, never with concurrent or background subagents. Every join MUST wait for both branches and all required human approvals.
+
+Sequential execution does not bypass a stop boundary. If the first specialist asks for input or reaches `awaiting-approval`, end the turn there. After the human responds, re-evaluate visible evidence before executing the remaining specialist. Never present output for a specialist that has not run.
 
 ## Ambiguity And Missing Evidence
 
@@ -105,13 +107,13 @@ If more than one route remains possible:
 
 1. State the conflicting or missing facts.
 2. Ask one question whose answer selects exactly one route.
-3. STOP without selecting speculative work.
+3. Stop for that missing input without selecting speculative work.
 
 Examples of precise questions include `Which candidate ID should be evaluated?` and `Is VDC-002 the current human-approved revision?`
 
 ## Router Response Contract
 
-Every response MUST contain only these fields, in this order, with concise values:
+Every routing decision MUST begin with this six-field routing summary, in this order, with concise values:
 
 ```text
 Observed evidence: <resolved project-root; visible artifacts, handoffs, statuses, approvals, verdicts, and revision refs>
@@ -122,7 +124,7 @@ Approval required: <exact human decision needed, or none>
 Stop condition: <what must happen before routing can be evaluated again>
 ```
 
-When two skills are selected, label them `parallel, join required`. When a STOP rule applies, `Selected next skill(s)` MUST be `none`. The response is ephemeral routing guidance. The orchestrator MUST NOT create or require a persistent orchestrator report, handoff, schema, hidden state, lifecycle status, or technical verdict.
+The routing summary is not specialist output. When a skill is selected, immediately load and execute its contract inline, then label the following content `Specialist output: <skill-name>`. The specialist output follows the selected contract and MUST NOT be presented as additional routing-summary fields. For a paired route, execute the named contracts sequentially and label each specialist output separately. When a stop rule applies, `Selected next skill(s)` MUST be `none`. The summary remains ephemeral routing guidance; the orchestrator MUST NOT create or require a persistent orchestrator report, handoff, schema, hidden state, lifecycle status, or technical verdict.
 
 ## Natural-Chat Examples
 
@@ -136,7 +138,9 @@ Selected next skill(s): discover-product
 Why: Discovery is the earliest missing prerequisite.
 Missing prerequisites: Product idea evidence required by discover-product.
 Approval required: Human approval of the resulting product brief before design or architecture.
-Stop condition: STOP when the product brief reaches awaiting-approval.
+Stop condition: Continue inline with discover-product; stop only if it needs required discovery input or when its product brief reaches awaiting-approval.
+Specialist output: discover-product
+<Run the discover-product contract in this same agent. Its questions or product brief are specialist output, not routing fields.>
 ```
 
 ### Resume With Approved Brief
@@ -145,11 +149,15 @@ User: `Resume. The product brief handoff is visible and approved.`
 
 ```text
 Observed evidence: Approved product brief with fullstack-skill-handoff/v1; no experience specification or blueprint.
-Selected next skill(s): design-experience and define-architecture, parallel, join required
+Selected next skill(s): design-experience and define-architecture, paired sequential execution, join required
 Why: The approved brief opens both branches.
 Missing prerequisites: Approved experience specification and approved application blueprint before planning.
 Approval required: Separate explicit human approval for both branch artifacts.
-Stop condition: STOP at either awaiting-approval artifact; plan-delivery waits for both approvals.
+Stop condition: Execute design-experience then define-architecture inline; stop at each required human-approval boundary, and plan-delivery waits for both approvals.
+Specialist output: design-experience
+<Run the design-experience contract in this same agent.>
+Specialist output: define-architecture
+<On a later turn after the preceding approval stop is resolved, re-evaluate evidence and run define-architecture if eligible. Do not emit this section before it runs.>
 ```
 
 ### Awaiting Approval
@@ -175,7 +183,9 @@ Selected next skill(s): plan-delivery
 Why: Blocking verifier verdicts require a traceable remediation backlog item.
 Missing prerequisites: One human-approved remediation backlog item.
 Approval required: Human approval of the remediation item before implementation.
-Stop condition: STOP when the remediation item reaches awaiting-approval; after approval use implement-feature, then rerun both verifiers.
+Stop condition: Execute plan-delivery inline; stop when the remediation item reaches awaiting-approval. After approval use implement-feature, then run both verifiers sequentially.
+Specialist output: plan-delivery
+<Run the plan-delivery contract in this same agent.>
 ```
 
 ### Stale VDC/VIS
@@ -188,7 +198,9 @@ Selected next skill(s): design-experience
 Why: The UI reference is stale and blocks implementation.
 Missing prerequisites: Approved current VIS reference, replanned backlog mapping, and regenerated affected evidence.
 Approval required: Human approval after each design, planning, and affected implementation boundary.
-Stop condition: STOP at the revised experience specification approval; then route plan-delivery and affected implement-feature work in order.
+Stop condition: Execute design-experience inline; stop at the revised experience specification approval, then execute plan-delivery and affected implement-feature work in order.
+Specialist output: design-experience
+<Run the design-experience contract in this same agent.>
 ```
 
 ### Missing Skill
@@ -214,5 +226,7 @@ Selected next skill(s): prepare-release
 Why: Both verifier branches satisfy the release-planning join.
 Missing prerequisites: Release candidate ID, version or build ID, and scope summary required by prepare-release.
 Approval required: Human approval of the resulting release plan; separate authorization is required outside this suite for any deployment.
-Stop condition: STOP when the release plan reaches awaiting-approval; do not deploy.
+Stop condition: Execute prepare-release inline; stop when the release plan reaches awaiting-approval. Do not deploy.
+Specialist output: prepare-release
+<Run the prepare-release contract in this same agent.>
 ```
