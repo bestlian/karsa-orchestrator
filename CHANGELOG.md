@@ -21,6 +21,9 @@ This project follows Keep a Changelog.
 - A confirmed default offer for new unspecified full-stack work: FastAPI backend with React and Vite frontend, while preserving explicit and existing project stacks and leaving database choice unassigned.
 - Sequential proposal-based discovery: one domain-informed recommendation at a time, exact Yes/No/Revision/custom response handling, persisted decision evidence, and no ambiguous or batched Yes approvals.
 - Host-verified project-root handling that requires an absolute active registered or mounted directory, reports the verification source, and stops rather than substituting a scratch, product-name, or unseen shell directory.
+- An application obligation ledger that maps every original requirement and accepted proposal to executable items, release slices, and verified completion evidence.
+- Secure authentication and manual-settlement architecture requirements, including generated local bootstrap credentials, modern password hashing, protected ownership and staff operations, and settlement auditability.
+- Reservation interval, simultaneous-connection, inventory, ownership, and idempotency test contracts, plus time-bounded test-server cleanup requirements.
 
 ### Changed
 - All eight specialist contracts now inherit the same artifact-root contract, while their relative `fullstack-skill-handoff/v1` `output_path` values stay unchanged.
@@ -37,3 +40,4 @@ This project follows Keep a Changelog.
 - Removed unsupported review metadata guidance. Canonical artifacts are written normally; host-native review presentation is optional and cannot become an authoritative proxy.
 - Backlog approval and development authorization are now separate Yes/No/Revision decisions; a rejected authorization never starts, scaffolds, installs, or edits an application until the user explicitly requests it.
 - Local payment discovery now recommends authenticated staff-recorded manual or cash settlement when no gateway configuration exists; fake paid QR codes and simulated gateways cannot support a live-paid claim.
+- Source-backed QA now requires command, working directory, exit code, raw-output path, tested source identity, captured browser artifacts, and process-cleanup evidence; absent project-native lint is reported as a maintainability gap.
