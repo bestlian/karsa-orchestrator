@@ -40,30 +40,33 @@ Required inputs when available:
 - constraints, deadlines, budget limits, or compliance concerns;
 - the person who can approve the brief.
 
-Ask early, in the first focused discovery round when the answer is not already explicit:
+## Proposal-Based Discovery
 
-- Is the requested result a `prototype` or a `production-ready` application? If the user says `MVP`, record it as a separate scope or release label and map it to one of those readiness targets.
-- Independently, must the architecture be `frontend-only` or `full-stack`? A readiness target never implies an architecture shape.
-- Is a visually minimal or restrained experience a product-direction choice? It is independent of the architecture and stack choice.
-- Will data be single-user/local or multi-user/shared, and what persistence is required?
-- Which identities, including staff roles, permissions, ownership checks, and service or anonymous access, are in scope? Do not silently defer staff authorization.
-- Are authentication, authorization, and payments simulated or real? For real payments, which provider and operational boundary are approved?
-- Is a stack required, or may the user approve a recommendation? For a new full-stack application with no explicit stack, offer FastAPI for the backend and React with Vite for the frontend, then confirm once. Record the explicit choice or confirmed offer separately from visual direction; do not ask again after an explicit user choice.
-- What run target, expected concurrency, security, persistence, backup, migration, configuration, secret handling, logging, and operations scope are proportionate to the requested readiness target?
+After the orchestrator has supplied a resolved root, ask only one active `Discovery Proposal` at a time. A proposal makes one concrete, domain-informed recommendation and ends with one binary question. Display the exact question and these response paths: `Yes` (accept this exact proposal), `No` (reject it without selecting an alternative), `Revision` (give changes), or custom freeform text (state a different requirement). Never ask an either-or question that makes a bare `Yes` ambiguous, never batch questions, and never treat one reply as approval for several choices. A reply may resolve only the currently displayed proposal; answers to earlier, later, summary, or implied questions have no effect.
 
-For shared booking data, recommend a full-stack architecture when evidence supports it, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, a backend substitute, or a database. A recorded approval for simulated payments is an approved simulation, not an unapproved gap, but it prevents a live-payment-ready claim. Capture only scope-relevant operations needs; do not prescribe universal Kubernetes, managed services, or other gold plating. Respect a technically specified or existing project stack. Otherwise offer, but do not impose, FastAPI with React and Vite for a new full-stack application; a frontend-only prototype may use React and Vite without a FastAPI backend. Keep architecture framework-neutral until a stack is confirmed.
+Use prompt evidence to choose the recommendation, not a product-specific script. If the delivery target is missing, begin with a self-contained target proposal such as: `I recommend a production-ready full-stack application for [prompt-specific goal], with a runnable frontend, backend API, and durable data. Proceed with this target?` A `Yes` confirms only that shown target, including its separately recorded readiness target and architecture shape; it never approves a brief, architecture, backlog, or development start. If the evidence instead supports a prototype or a frontend-only result, make that single recommendation explicit. `MVP` remains a separate optional scope or release label that must map to the accepted readiness target.
 
-A `production-ready` target requires the substantive backend and frontend acceptance boundary defined by this suite. If a user requests both `production-ready` and `frontend-only`, record the conflict and require a revised target or architecture decision; do not silently downgrade the target or invent a backend.
+After an accepted target proposal, ask the next missing material decision as a new proposal. Normally, use this sequence when the prompt has not already settled it:
+
+1. Access and roles: recommend one least-privileged staff/customer or service-access model supported by the prompt, name the staff authority boundary, and ask whether to use that exact model. Do not silently defer staff authorization.
+2. Stack: preserve an explicit or existing stack. Otherwise offer `FastAPI` for the backend and `React` with `Vite` for the frontend, then ask whether to use that exact offer once.
+3. Persistence: for an explicitly local, single-process scope, recommend SQLite with migrations, constraints, and persistence tests. For shared, scaled, or operationally concurrent use, recommend one proportionate server database, normally PostgreSQL, or MySQL only when the prompt's environment or operations evidence favors it; explain why and ask for that exact database. SQLite is not mandatory, and no database is confirmed until its own proposal receives `Yes`.
+4. Payments: for local operations without gateway credentials, recommend authenticated staff recording an actual manual or cash settlement against the payment record. Do not call that a live gateway payment, default a fake QR code, or mark a simulated gateway as paid. If a gateway is requested, ask for its provider and approved configuration boundary; report the work blocked until the required configuration is available and never request or invent secrets in chat.
+5. Only then ask any remaining material scope, visual, operations, or deployment-boundary proposal. Do not require trivia, personal facts, or open-ended questions when a reasonable recommendation can be made. If fixture people, brand values, inventory, or similar facts are absent, label them as proposed sample fixtures rather than real data.
+
+Record the answer after each proposal before asking the next one. A production-ready local or single-site scope is not a blanket claim that the application is deployed or internet-ready. Capture only operations and deployment details that materially affect the accepted target; do not prescribe universal Kubernetes, managed services, or other gold plating.
+
+A `production-ready` target requires the substantive backend and frontend acceptance boundary defined by this suite. If a user rejects a proposed target, do not silently downgrade it, choose its opposite, or begin another decision; ask only for the replacement target or revision needed to form the next proposal.
 
 ## Evidence-First Workflow
 
 1. Read every available artifact before asking questions.
 2. Separate facts, assumptions, and open questions.
-3. Ask 2 to 4 focused questions at a time, only about gaps that can change the brief. Ask the readiness-target and architecture-shape questions early unless their answers are already explicit.
-4. Prefer evidence over memory, opinions, or guesses.
-5. Restate what is confirmed after each round.
-6. Keep the brief product-level only, no solution design.
-7. Stop when the brief is approval-ready or when a material blocker remains.
+3. If the root is unresolved, ask only the orchestrator's root question and do not include a readiness or other discovery proposal in that response.
+4. Otherwise, issue one active discovery proposal for the earliest missing material decision. A bare `Yes` accepts only the exact current proposal; a `No`, `Revision`, or custom answer never fills any other decision.
+5. Prefer evidence over memory, opinions, or guesses, and restate only the confirmed decision after each accepted proposal.
+6. Persist each accepted decision in the draft brief with its topic, proposed value, exact question, displayed options, literal `Yes` reply, prompt evidence, and resulting facts. Keep rejected, revised, and custom answers visible rather than rewriting them as confirmation.
+7. Keep the brief product-level only, no solution design. Stop when the brief is approval-ready or when a material blocker remains.
 
 ## Anti-Slop Filter
 
@@ -95,7 +98,7 @@ Create one product brief at `artifacts/discovery/product-brief.md`.
 
 ## Artifact Root Contract
 
-`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+`fullstack-orchestrator` resolves and verifies one absolute `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, an auto-created scratch or product-name directory, or an unrelated current working directory. If bootstrap did not supply a host-verified active root, STOP for bootstrap; do not independently infer a root or ask a second location question.
 
 The brief must be plain, concrete, and short enough to review quickly. It should include only the information needed to decide whether the idea is worth building.
 
@@ -145,7 +148,7 @@ Record the two independent delivery decisions before product requirements:
 - managed-backend/BaaS capability and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice;
 - a proportional operations scope covering run target, concurrency, security, persistence, backups, migrations, configuration, secrets, logging, and ownership.
 
-This is scope confirmation, not an architecture implementation. Do not select a database, provider, framework, or deployment service without confirmed evidence. The default stack is an offer, not evidence to invent a database, vendor, or TypeScript policy.
+This is scope confirmation, not an architecture implementation. Do not record a database, provider, framework, or deployment service as confirmed without the exact accepted proposal evidence. The default stack is an offer, not evidence to invent a database, vendor, TypeScript policy, or gateway configuration.
 
 ### 5. Functional Requirements
 
