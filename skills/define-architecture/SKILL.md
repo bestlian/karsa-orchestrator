@@ -145,6 +145,8 @@ Include:
 
 For confirmed full-stack work, define the persistent source of truth and the owner for each shared domain. `localStorage` is not an implicit substitute for shared persistence. For a prototype, label sample or local data as demo-only and do not represent it as production persistence.
 
+For resource reservations, define an interval model with an authoritative resource ID, real start and end date-time values, and an end-after-start invariant. A unique `start_time` alone is not a conflict control for multi-hour reservations. Define the database or service-level exclusion strategy and transaction boundary that rejects same-start, staggered overlap, enclosing, and enclosed intervals while allowing adjacent intervals. Define stock, order, payment, manual settlement, audit event, and financial-total ownership together when they must commit as one business action; manual settlement must be authenticated Staff-only and idempotent by a stable business key.
+
 ### 5. API And Event Contracts
 
 Describe the contract surface between components.
@@ -159,6 +161,8 @@ Include:
 * How each public `CON-NNN` contract is exercised and verified at module boundaries.
 
 For confirmed full-stack work, include every required backend API and integration boundary. For a prototype, record that there is no production API contract rather than inventing one.
+
+For authenticated production-ready full-stack work, publish an endpoint matrix. Treat only approved catalog, login, and registration routes as public. Namespace protected routes as `/api/user/...` and `/api/staff/...`, or record an equally clear approved equivalent. User routes must enforce the token subject's ownership for booking read, create, cancel, and order operations. Staff routes must enforce server-side roles for stock, settlement, and revenue operations. Missing, malformed, invalid-signature, or expired credentials produce `401`; a valid identity without role or ownership produces `403`, or a scoped `404` only where the approved privacy policy intentionally hides existence.
 
 ### 6. Authentication And Authorization
 
@@ -175,6 +179,12 @@ Include:
 For confirmed full-stack work with auth, authorization, or real payments in scope, define those boundaries and their owner. For a prototype with simulated behavior, state the simulation and limitation explicitly; never silently turn it into a production security or payment claim.
 
 For customer or staff authentication, specify the approved identity lifecycle, password hashing algorithm and parameters, session or token storage, secure first-admin setup in the project test environment, and credential source. Never seed a shared default administrator password or a fast unsalted hash such as SHA-256. When initial local credentials are needed, plan generated environment-bound credentials or a documented one-time bootstrap, not a user-invented secret. Define ownership checks for booking read and cancellation, and role checks for staff inventory, reports, and manual settlement. A manual settlement is an authenticated staff action that persists an auditable actor, amount, state transition, and idempotency reference; do not represent it as a simulated paid state unless that simulation is explicitly approved.
+
+### JWT User And Staff Baseline
+
+For an authenticated production-ready full-stack target, the blueprint must make JWT verification a server-owned boundary, not a header-presence check. Record the fixed allowed signing algorithm, required expiry, issuer or audience checks when used, secure production secret source, rotation or invalidation assumptions, and an active account plus current role lookup by token subject on every protected request. The verifier must select only the configured allowed algorithm, never an algorithm supplied by the token header. Production secrets come from the approved environment or secret boundary with no hard-coded fallback. Ephemeral generated secrets may be used only in isolated development or test fixtures and must be labeled as such.
+
+Passwords must use Argon2 or bcrypt with modern parameters and must never use raw SHA-256 or a shared default password. First Staff provisioning must be a secure one-time bootstrap path with no world-known credential, and public registration can create only the approved unprivileged User identity. The frontend contract must state how it sends a Bearer token for protected calls, its token storage choice and XSS or CSRF tradeoff, refresh behavior if any, expiry recovery, logout or revocation behavior, and the prohibition on logging tokens or secrets. Require HTTPS in the production deployment plan without performing a deployment.
 
 ### 7. Privacy
 
@@ -270,6 +280,8 @@ Include:
 * Whether it is solved, deferred, or blocked.
 * Any assumption tied to the requirement.
 * A source_refs entry or equivalent exact anchor for every maintainability decision and contract reference, resolved through the stable IDs in this blueprint.
+
+The traceability map must retain every original `FR-*` and accepted proposal from the product obligation ledger. For each required entry, name the planned vertical stories and release slice or mark it blocked with the owning decision. A release slice cannot erase an unmapped requirement.
 
 ### 15. Handoff
 
