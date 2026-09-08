@@ -48,10 +48,10 @@ Ask early, in the first focused discovery round when the answer is not already e
 - Will data be single-user/local or multi-user/shared, and what persistence is required?
 - Which identities, including staff roles, permissions, ownership checks, and service or anonymous access, are in scope? Do not silently defer staff authorization.
 - Are authentication, authorization, and payments simulated or real? For real payments, which provider and operational boundary are approved?
-- Is a stack required, or may the user approve a recommendation? Record the explicit stack choice or the recommendation approval separately from visual direction.
+- Is a stack required, or may the user approve a recommendation? For a new full-stack application with no explicit stack, offer FastAPI for the backend and React with Vite for the frontend, then confirm once. Record the explicit choice or confirmed offer separately from visual direction; do not ask again after an explicit user choice.
 - What run target, expected concurrency, security, persistence, backup, migration, configuration, secret handling, logging, and operations scope are proportionate to the requested readiness target?
 
-For shared booking data, recommend a full-stack architecture when evidence supports it, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, or a backend substitute. A recorded approval for simulated payments is an approved simulation, not an unapproved gap, but it prevents a live-payment-ready claim. Capture only scope-relevant operations needs; do not prescribe universal Kubernetes, managed services, or other gold plating. Respect a technically specified stack; otherwise keep the architecture framework-neutral.
+For shared booking data, recommend a full-stack architecture when evidence supports it, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, a backend substitute, or a database. A recorded approval for simulated payments is an approved simulation, not an unapproved gap, but it prevents a live-payment-ready claim. Capture only scope-relevant operations needs; do not prescribe universal Kubernetes, managed services, or other gold plating. Respect a technically specified or existing project stack. Otherwise offer, but do not impose, FastAPI with React and Vite for a new full-stack application; a frontend-only prototype may use React and Vite without a FastAPI backend. Keep architecture framework-neutral until a stack is confirmed.
 
 A `production-ready` target requires the substantive backend and frontend acceptance boundary defined by this suite. If a user requests both `production-ready` and `frontend-only`, record the conflict and require a revised target or architecture decision; do not silently downgrade the target or invent a backend.
 
@@ -141,10 +141,11 @@ Record the two independent delivery decisions before product requirements:
 - the acceptance boundary: what demonstrates the prototype, item, slice, application, and, where applicable, production readiness;
 - for a prototype, demo limitations and an explicit statement that it is not a production-ready claim;
 - for a production-ready full-stack target, the backend owner, API and integration boundaries, persistence expectation, shared-data model, staff roles and permissions, and real or simulated auth and payment decisions;
-- a confirmed stack or approved recommendation, managed-backend/BaaS capability, and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice;
+- the confirmed stack decision and evidence: explicit user stack, preserved existing stack, or confirmed FastAPI backend with React and Vite frontend offer for a new full-stack application; a frontend-only prototype may confirm React and Vite without FastAPI;
+- managed-backend/BaaS capability and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice;
 - a proportional operations scope covering run target, concurrency, security, persistence, backups, migrations, configuration, secrets, logging, and ownership.
 
-This is scope confirmation, not an architecture implementation. Do not select a database, provider, framework, or deployment service without confirmed evidence.
+This is scope confirmation, not an architecture implementation. Do not select a database, provider, framework, or deployment service without confirmed evidence. The default stack is an offer, not evidence to invent a database, vendor, or TypeScript policy.
 
 ### 5. Functional Requirements
 
@@ -253,15 +254,13 @@ The handoff stays product-level. It records the confirmed readiness target, arch
 
 Attribution: adapted from anti-slop v3.2.4, commit `44be687`, MIT. See `THIRD_PARTY_NOTICES.md`.
 
-## Review, Approval, And IDE Presentation Protocol
+## Chat Review Protocol
 
-Before review, label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical product brief may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and host presentation reference or `none`.
+Before review, label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. The active record binds its request ID, canonical product-brief path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and source user reply or decision evidence.
 
-Use normal filesystem operations for canonical project artifacts. Do not intentionally open or focus an IDE editor after reading or writing. Host evidence shows that `write_to_file` with `ArtifactMetadata` for a project artifact fails with `invalid path ... must be inside brain`; do not retry that unsupported feedback path or invent unsupported metadata fields. A native presentation is optional only when the host supports it, cannot become an authoritative duplicate, and may use `UserFacing: false` only when that field is actually supported. The plugin cannot prevent host-driven file opening.
+Use native `ask_question` only when the active host exposes it with its actual schema; otherwise ask in plain chat: `Review artifacts/discovery/product-brief.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (give meaningful freeform feedback). A direct short Yes or No is valid only for this unchanged shown question; no path, revision, or host ID is required. A stale, duplicate, host, summary, or unrelated reply has no effect. On resume, re-read the canonical brief and display its bound pending question once.
 
-An `implementation_plan` presentation is view-only. Accept `Proceed` only when its host event binds the pending canonical path and revision; otherwise ask in chat for an exact `approve`, `reject`, or `revise` decision. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot create a decision or self-approval. A substantive change before a terminal decision supersedes the pending record, creates a new revision, and resets approval; create a new pending record only when the revised brief returns to `awaiting-approval`.
-
-After a valid Proceed, re-evaluate routing. If a supported safe close action exists, close only the review tab without discarding unsaved changes; otherwise say the review is resolved but cannot be auto-closed. Reopen or update a supported review presentation once only when the next approval is needed. Never promise tab control or disable approvals.
+Yes resolves the record and updates only closed governance metadata to `status: approved` and `approval: approved`. No resolves it as rejected and stops until the user explicitly asks to revise. Revision without meaningful feedback asks only for the missing feedback; sufficient feedback resolves the request, sets the brief to `draft`, and routes to this owner. A substantive content revision supersedes the prior record, creates a new Artifact Revision, invalidates affected approvals, and asks again only when the revised brief returns to `awaiting-approval`. Preserve a confirmed stack unless the user explicitly changes it. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata; native host presentation is not approval evidence and any host-mandated opening is outside plugin control.
 
 ## Approval Gate
 
