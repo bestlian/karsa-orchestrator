@@ -49,6 +49,7 @@ The backlog must include:
 - Security tasks and quality tasks where they are needed
 - Risks and blockers that can stop the work
 - A delivery-shape trace from the approved brief and blueprint into every affected item's Ready criteria and verification
+- An application obligation ledger that maps every original requirement and accepted discovery proposal to one or more executable story or task IDs, release slice, scope status (`required`, `complete`, `blocked`, or specific human-approved `out-of-scope`), and the implementation, manifest, and verifier evidence required to mark it verified
 
 ## Shared Evidence, Unknown, Filler, And Validation Filter
 
@@ -78,9 +79,11 @@ Also reject filler language that hides missing scope or proof, including vague t
 - Do not add deployment work unless it is part of the approved scope.
 - Do not rewrite scope, invent new goals, or widen the release plan.
 - Keep discovery assumptions marked as assumptions until they are confirmed by approved source material or delivery evidence.
+- A generic Yes to a backlog, item, slice, or partial summary never makes an omitted requirement out of scope. Only a specific human decision naming the requirement and rationale may do that. If a required obligation has no Ready item, keep it visible and plan a repair; never use a release plan to hide it.
 - Do not turn an assumption into a fact, acceptance criterion, or dependency without proof.
 - For a production-ready full-stack target, plan substantive backend API, database integration, shared-data, staff authorization, and frontend API-consumption work. Include `backend/` and `frontend/` runnable deliverables with start, environment, and applicable test documentation; empty folders or `localStorage` substitutes fail. When there is no user sign-in, plan the explicit anonymous or service identity boundary instead of omitting it. Plan real-payment boundary work when payments are in scope. A recorded simulation approval remains approved simulation, but it prevents a live-payment-ready claim. For a prototype, record its demo limitations and no production-ready claim.
 - Make production-readiness work proportional: plan only applicable concurrency/process, persistence, backup/restore, migrations, configuration/secrets, logging/operations, security, and audit recommendations. SQLite is legitimate when its documented operational requirements match the approved target. For an approved database, plan verification of its actual driver or connection, authoritative API read/write path, and isolated write/restart persistence behavior; writable JSON may only be a labeled non-authoritative fixture or seed unless an approved architecture revision changes the storage decision. Do not prescribe a framework, Kubernetes, or a vendor merely to satisfy a checklist.
+- Keep release slices as separate manifests and use thin vertical stories. Do not pack all remaining requirements into a megastory. Authentication, authorization, and ownership controls must be implemented and verified before any sensitive endpoint is exposed; sensitive booking reads/cancels and staff inventory, reports, or manual settlement work cannot be Ready without their approved auth model.
 - Carry the confirmed stack evidence from the brief and blueprint into affected items. For a confirmed default on new full-stack work, plan FastAPI backend and React with Vite frontend work; an explicit user stack or existing project stack wins. A frontend-only prototype using React and Vite does not require FastAPI. Do not add a database choice that was not approved.
 
 ## Development Start Authorization
@@ -229,6 +232,8 @@ Release slices stay intact even when delivery gates change, and a gate never rew
 
 The release slice is the unit whose approved item reports later join `verify-quality` and `review-security`. Completion of an item never claims the slice or application is complete. An exactly approved scaffold item may state `item complete` after its own acceptance proof, but it must state `slice incomplete` and `application not ready`; a scaffold standing in for a broader functional story is partial.
 
+Every slice owns its own increment manifest. The manifest lists its required items, their approved reports, slice-only evidence, unresolved obligations, and next eligible item. It is not an application-wide workflow engine. A slice may pass its own gate only when its required items are verified, but the application obligation ledger remains authoritative for whole-application readiness.
+
 ## Delivery Gate
 
 Every backlog item must carry a delivery gate value:
@@ -245,6 +250,8 @@ A `PASS` gate does not replace human approval. It only says the item is backed b
 ## Requirement Traceability
 
 Every epic, story, and task must map back to approved source IDs.
+
+The application obligation ledger is mandatory and must be auditable: each row names the original requirement or accepted proposal, source evidence, mapped item IDs, release slice, status, and current proof. `complete` requires the mapped implementation evidence plus current approved manifest and applicable verifier evidence. `out-of-scope` requires a specific human choice, not an inferred waiver.
 
 Use traceability to show:
 
@@ -280,6 +287,7 @@ An item is ready only when all of these are true:
 - For genuinely non-UI work, empty visual fields have an explicit reason in `summary`
 - For non-code work, any maintainability evidence that is not applicable is explained in `summary`
 - For confirmed full-stack work, affected API, persistence, shared-data, auth, authorization, payment, backend-owner, and boundary-test acceptance is explicit; for a prototype, its approved demo limitation is explicit
+- For sensitive endpoints, the approved auth model, role/ownership policy, denial tests, and password/bootstrap policy are explicit before the endpoint is Ready
 - A confirmed full-stack backlog contains testable backend API, persistent-data, and authentication/authorization-boundary work before dependent user-facing work is considered Ready
 - For a production-ready full-stack target, the backlog also contains testable `backend/` server/database and `frontend/` API-consumption work, its run/environment/test documentation, and applicable readiness-gate evidence before dependent user-facing work is Ready
 - Risks and blockers are noted
@@ -384,6 +392,7 @@ This skill is complete when all of these are true:
 
 - `artifacts/planning/delivery-backlog.md` exists
 - All approved product requirements are traced into the backlog
+- The application obligation ledger maps every original requirement and accepted proposal to executable items and release slices, with no inferred waivers
 - All in-scope UX and architecture decisions are reflected
 - All code-affecting items carry maintainability traceability from approved architecture decisions to acceptance criteria, checks, and proof or named gaps
 - Every UI-affecting item preserves the exact approved VDC revision and required VIS references through visual acceptance criteria and expected visual proof artifact target paths
