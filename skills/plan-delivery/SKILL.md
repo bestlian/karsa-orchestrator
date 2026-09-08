@@ -81,18 +81,20 @@ Also reject filler language that hides missing scope or proof, including vague t
 - Do not turn an assumption into a fact, acceptance criterion, or dependency without proof.
 - For a production-ready full-stack target, plan substantive backend API, database integration, shared-data, staff authorization, and frontend API-consumption work. Include `backend/` and `frontend/` runnable deliverables with start, environment, and applicable test documentation; empty folders or `localStorage` substitutes fail. When there is no user sign-in, plan the explicit anonymous or service identity boundary instead of omitting it. Plan real-payment boundary work when payments are in scope. A recorded simulation approval remains approved simulation, but it prevents a live-payment-ready claim. For a prototype, record its demo limitations and no production-ready claim.
 - Make production-readiness work proportional: plan only applicable concurrency/process, persistence, backup/restore, migrations, configuration/secrets, logging/operations, security, and audit recommendations. SQLite is legitimate when its documented operational requirements match the approved target. For an approved database, plan verification of its actual driver or connection, authoritative API read/write path, and isolated write/restart persistence behavior; writable JSON may only be a labeled non-authoritative fixture or seed unless an approved architecture revision changes the storage decision. Do not prescribe a framework, Kubernetes, or a vendor merely to satisfy a checklist.
+- Carry the confirmed stack evidence from the brief and blueprint into affected items. For a confirmed default on new full-stack work, plan FastAPI backend and React with Vite frontend work; an explicit user stack or existing project stack wins. A frontend-only prototype using React and Vite does not require FastAPI. Do not add a database choice that was not approved.
 
 ## Development Start Authorization
 
-The approved backlog body must contain a `Development Start Authorization` record before implementation begins. It does not add a new top-level `fullstack-skill-handoff/v1` field. Use the record to persist:
+The approved backlog body must contain a `Development Start Authorization` record before implementation begins. It does not add a new top-level `fullstack-skill-handoff/v1` field. It is a separate request from backlog review and persists:
 
 - the exact approved backlog revision;
+- request ID, canonical backlog path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and source user reply or decision evidence;
 - authorized scope and first Ready story or task;
 - expected runnable outcome;
-- human identity, explicit `authorized` or `not authorized` decision, and exact user evidence;
+- human identity, `authorized` or `rejected` decision, and exact user evidence;
 - whether a material scope change has invalidated the authorization.
 
-When there is no valid record, `fullstack-orchestrator` asks: `Shall I start development against [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` and stops before any scaffold, install, or application edit. A single exact user response may approve this pending backlog revision and authorize its already specified scope, first item, and outcome; record the lifecycle approval and the start decision separately. Backlog approval alone, bare `approved`, a native Process result, or an unrelated plan cannot fill this record. Do not ask again for the same authorized revision and scope; renew it for a material scope change.
+After the backlog is approved and no other review request is active, `fullstack-orchestrator` asks: `Start development for [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` Options are `Yes`, `No`, and `Revision`. It stops before any scaffold, install, or application edit. Yes persists authorization for only the shown approved scope without changing the backlog content revision. No persists rejected authorization, makes no application changes, and is not asked again until the user explicitly requests start or revision. Revision requires meaningful freeform feedback and routes to planning, or the owning prerequisite for scope changes, then fresh Foundation approvals as needed; it never starts coding. Backlog approval, a native Process result, or an unrelated plan cannot fill this record. Do not ask again for the same authorized revision and scope; renew it for a material scope change.
 
 ## Source And Evidence Reconciliation
 
@@ -345,6 +347,7 @@ decision_refs:
   - backlog prioritization and release slicing decisions
   - exact approved VDC revision and VIS decision references propagated into UI-affecting items
   - confirmed readiness target, architecture shape, and acceptance boundary propagated from the brief and blueprint
+  - confirmed stack decision and evidence propagated from the brief and blueprint
 assumptions:
   - any planning assumptions that remain visible in the backlog
 open_questions:
@@ -367,11 +370,13 @@ next_skills:
   - implement-feature
 ```
 
-## Review And Approval Protocol
+## Chat Review Protocol
 
-Label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical backlog may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and host-presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact path (`invalid path ... must be inside brain`) or invent feedback metadata. A supported native presentation is view-only and cannot replace the canonical backlog.
+Label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and permit only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and the source user reply or decision evidence.
 
-Accept `Proceed` only when its event binds the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. Closed review and authorization metadata cannot change scope, first item, expected outcome, acceptance, or technical result; a substantive change before a terminal decision supersedes the pending record, creates a new revision, and creates a new pending record only when the backlog returns to `awaiting-approval`.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/planning/delivery-backlog.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and requires no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the backlog and show the bound pending question once.
+
+Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Revision without meaningful feedback asks only for that feedback; sufficient feedback sets the backlog to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals and start authorization, and asks again only after the revised backlog returns to `awaiting-approval`. Closed review and authorization metadata cannot change scope, first item, expected outcome, acceptance, or technical result. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
 ## Completion Criteria
 
