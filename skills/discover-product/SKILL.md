@@ -48,7 +48,7 @@ Use prompt evidence to choose the recommendation, not a product-specific script.
 
 After an accepted target proposal, ask the next missing material decision as a new proposal. Normally, use this sequence when the prompt has not already settled it:
 
-1. Access and roles: recommend one least-privileged staff/customer or service-access model supported by the prompt, name the staff authority boundary, and ask whether to use that exact model. Do not silently defer staff authorization.
+1. Access and roles: recommend one least-privileged User/Staff or service-access model supported by the prompt, name the Staff authority boundary, and ask whether to use that exact model. For an authenticated production-ready full-stack target, record JWT-protected privileged work as an early dependency, public registration that cannot assign Staff, and secure first-Staff bootstrap without world-known credentials. Never silently defer staff authorization or propose a shared default administrator password, raw SHA-256 password scheme, or hard-coded token secret.
 2. Stack: preserve an explicit or existing stack. Otherwise offer `FastAPI` for the backend and `React` with `Vite` for the frontend, then ask whether to use that exact offer once.
 3. Persistence: for an explicitly local, single-process scope, recommend SQLite with migrations, constraints, and persistence tests. For shared, scaled, or operationally concurrent use, recommend one proportionate server database, normally PostgreSQL, or MySQL only when the prompt's environment or operations evidence favors it; explain why and ask for that exact database. SQLite is not mandatory, and no database is confirmed until its own proposal receives `Yes`.
 4. Payments: for local operations without gateway credentials, recommend authenticated staff recording an actual manual or cash settlement against the payment record. Do not call that a live gateway payment, default a fake QR code, or mark a simulated gateway as paid. If a gateway is requested, ask for its provider and approved configuration boundary; report the work blocked until the required configuration is available and never request or invent secrets in chat.
@@ -134,6 +134,12 @@ State:
 - what is explicitly out of scope;
 - what should stay manual for now;
 - what is deferred to later discovery.
+
+### 3.1 Full-Request Obligation Ledger
+
+Preserve the original request as a ledger, not as a summary. Every accepted discovery proposal and every `FR-*` requirement must have an entry with its source evidence, requirement or decision ID, required or optional status, exact intended outcome, and initial state `unplanned`. The later blueprint and backlog extend the same entries with mapped stories, release slices, and evidence; they do not replace them.
+
+Required entries may progress through `planned`, `in-progress`, `validated`, and `released`, but they may become `scope-reduced` only after an explicit user scope-reduction decision names the exact obligation. A bare `Yes` to a brief, backlog, item report, increment manifest, verifier report, or slice release plan never reduces, defers, or completes another obligation. Do not call the brief approval-ready while a required accepted proposal or original functional request has been silently omitted or described only as a future idea.
 
 ### 4. Delivery Shape And Acceptance Boundary
 
@@ -278,6 +284,7 @@ The brief is approval-ready only when all of the following are true:
 - risks, assumptions, and open questions are visible;
 - the approval owner is known;
 - the independent readiness target and architecture shape are confirmed, including visible prototype limitations or production-ready backend, persistence, staff authorization, and payment boundaries;
+- the full-request obligation ledger contains every accepted proposal and `FR-*` item, with no required item silently deferred;
 - no unresolved question can materially change the product brief.
 
 If any of these are false, mark the output `blocked` or `draft`, and explain why.
