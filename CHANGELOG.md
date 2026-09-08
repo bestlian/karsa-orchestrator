@@ -19,6 +19,8 @@ This project follows Keep a Changelog.
 - Per-project MCP preflight guidance with official Antigravity and Playwright MCP sources, project configuration, verified CLI syntax, scope caveats, and least-privilege recommendations.
 - Chat-only lifecycle approval with one canonical, request-bound Yes/No/Revision Review Record at a time, including freeform revision feedback, stale-reply protection, and separate sequential reviews for independent artifacts.
 - A confirmed default offer for new unspecified full-stack work: FastAPI backend with React and Vite frontend, while preserving explicit and existing project stacks and leaving database choice unassigned.
+- Sequential proposal-based discovery: one domain-informed recommendation at a time, exact Yes/No/Revision/custom response handling, persisted decision evidence, and no ambiguous or batched Yes approvals.
+- Host-verified project-root handling that requires an absolute active registered or mounted directory, reports the verification source, and stops rather than substituting a scratch, product-name, or unseen shell directory.
 
 ### Changed
 - All eight specialist contracts now inherit the same artifact-root contract, while their relative `fullstack-skill-handoff/v1` `output_path` values stay unchanged.
@@ -34,3 +36,4 @@ This project follows Keep a Changelog.
 - Contracts now require revision-bound decisions, explicit start authorization, and correct item/slice/application scope before downstream work or release claims proceed.
 - Removed unsupported review metadata guidance. Canonical artifacts are written normally; host-native review presentation is optional and cannot become an authoritative proxy.
 - Backlog approval and development authorization are now separate Yes/No/Revision decisions; a rejected authorization never starts, scaffolds, installs, or edits an application until the user explicitly requests it.
+- Local payment discovery now recommends authenticated staff-recorded manual or cash settlement when no gateway configuration exists; fake paid QR codes and simulated gateways cannot support a live-paid claim.
