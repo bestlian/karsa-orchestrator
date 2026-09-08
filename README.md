@@ -35,7 +35,9 @@ Describe the application you want:
 Build a new web application for managing padel court bookings, rentals, and payments.
 ```
 
-The first discovery round asks, unless already answered, whether the result is a prototype or production-ready application. `MVP` is a separate optional scope or release label and must map to one of those readiness targets. Discovery separately confirms frontend-only or full-stack architecture, visual direction, staff roles and permissions, payment simulation or live boundary, and stack choice. For a new full-stack application with no stated stack, it offers FastAPI for the backend and React with Vite for the frontend, then confirms that choice once. Answers you already supplied should not be requested again.
+Before discovery, the host must expose the actual active registered or mounted project directory. The first routing summary names that verified absolute root and its verification source. An explicit path must match it; the plugin does not infer a shell cwd, bind a CLI workspace, or replace it with a scratch or product-name folder. If the host does not expose a root or reports a conflict, it asks only for root resolution and writes nothing.
+
+Discovery presents one concrete recommendation at a time with `Yes`, `No`, `Revision`, or custom freeform response. A bare `Yes` approves only the exact displayed proposal, never an unmentioned alternative or a later decision. For an unspecified app, it first offers one prompt-specific target, such as a production-ready full-stack application, then separately proposes only missing material choices: one least-privileged staff/customer access model, an existing or FastAPI plus React/Vite stack, suitable persistence, payments, and remaining scope. For an explicitly local single-process deployment, SQLite with migrations, constraints, and persistence tests is a recommendation; shared or scaled use instead receives one proportionate PostgreSQL proposal, or MySQL only when prompt evidence favors it. With no gateway credentials, it recommends authenticated staff record manual or cash settlements rather than a fake paid QR or simulated live gateway. A local production-ready scope is not an internet-deployment claim. `MVP` remains a separate optional scope or release label mapped to an explicit readiness target.
 
 If automatic discovery does not work, start explicitly with `/fullstack-orchestrator`. Rule loading and compliance depend on the host; installation alone does not guarantee execution.
 
@@ -59,7 +61,7 @@ Design and architecture must both be approved before planning. Quality and secur
 
 ## Important Rules
 
-- **Approve in chat.** Only one Review Record may be active across the lifecycle. It binds a displayed Yes/No/Revision question to the canonical artifact path, content revision, request ID, prompt evidence, and eventual source reply. A direct `Yes` or `No` is valid only for that unchanged current question; `Revision` collects meaningful freeform feedback. No long path command is required. Rejected work stays rejected until the user explicitly asks to revise it.
+- **Approve in chat.** Only one Review Record may be active across the lifecycle. It binds a displayed Yes/No/Revision question to the canonical artifact path, content revision, request ID, prompt evidence, and eventual source reply. A direct `Yes` or `No` is valid only for that unchanged current question; `Revision` collects meaningful freeform feedback. Discovery proposals are earlier input decisions, not artifact approval or development authorization. No long path command is required. Rejected work stays rejected until the user explicitly asks to revise it.
 - **Confirm development separately.** Once the brief, UX, blueprint, and backlog are approved, the agent asks a separate `Start development?` Yes/No/Revision question naming the first item and expected outcome. A `Yes` authorizes only that approved backlog scope and is saved for reuse; a `No` makes no application changes and is not polled again.
 - **Build real production-ready applications.** A production-ready full-stack target has substantive `backend/` and `frontend/` deliverables: a runnable API with database integration and a client that consumes it, with start, environment, and applicable test commands. Empty folders or `localStorage` substitutes fail. Approved payment simulation remains simulation, never a live-payment-ready claim.
 - **Reconcile evidence.** Before resume, QA, or release, the agent re-reads exact source reports, approvals, technical results, and manifest entries. Tested executable, configuration, and source scope is tied to a stable revision or checksum; governance records do not invalidate evidence. Existing backlogs and manifests hold resume state.
@@ -70,7 +72,7 @@ Design and architecture must both be approved before planning. Quality and secur
 
 ## Artifacts
 
-All lifecycle documents, reports, and evidence belong in **`<project-root>/artifacts/`**, never in the plugin directory. The explicit user target path takes priority; if the project root is unclear, the agent asks before proceeding.
+All lifecycle documents, reports, and evidence belong in **`<project-root>/artifacts/`**, never in the plugin directory. The explicit user target path takes priority only after it matches the host-visible registered project root; if the host root is unclear or conflicts, the agent asks before proceeding and does not create a substitute directory.
 
 Handoffs retain `fullstack-skill-handoff/v1` and project-relative `output_path` values. Detailed approval, testing, visual, and maintainability contracts live in each [skill's `SKILL.md`](skills/).
 
