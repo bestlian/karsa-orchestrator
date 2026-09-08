@@ -30,7 +30,7 @@ The brief should provide, at minimum:
 - problem statement and intended outcome;
 - target users and primary job;
 - scope boundaries and exclusions;
-- confirmed delivery shape and acceptance boundary, including prototype limitations or full-stack auth, persistence, and payment boundaries;
+- approved readiness target and architecture shape, including prototype limits or production-ready auth, persistence, staff authorization, and payment boundaries;
 - requirement IDs or a clear source of truth for them;
 - known constraints, risks, and dependencies.
 
@@ -44,7 +44,7 @@ The brief should provide, at minimum:
 6. Keep the prototype lightweight enough to validate the experience only.
 7. Do not mark the work approved. Human approval is required.
 8. Do not allow UI planning to proceed until the Visual Direction Contract has an explicit approval from its named human approval owner.
-9. Preserve the approved delivery shape. A prototype experience must state its demo limits and cannot be presented as production full-stack behavior; a confirmed full-stack experience must expose the UX implications of backend, shared data, auth, authorization, and real-payment decisions without choosing their implementation.
+9. Preserve the independent approved readiness target and architecture shape. A prototype experience must state its demo limits and cannot be presented as production-ready behavior; a full-stack experience must expose the UX implications of backend, shared data, staff authorization, and real-payment decisions without choosing their implementation. A restrained visual direction never selects a technology stack.
 
 ## Curated UX Filter
 
@@ -88,7 +88,7 @@ The spec should be concise, reviewable, and ready for approval.
 - approved brief reference;
 - scope in one short paragraph;
 - out of scope items;
-- confirmed delivery shape and acceptance boundary, including prototype demo limitations or the full-stack behaviors that the experience must cover;
+- confirmed readiness target and architecture shape, including prototype demo limitations or the full-stack behaviors that the experience must cover;
 - experience status.
 
 ### 2. Visual Direction Contract
@@ -240,7 +240,7 @@ Do not claim compliance unless the project has agreed verification evidence.
 
 ### 10. Prototype Or Full-Stack Experience Expectations
 
-Describe the appropriate review surface for the confirmed delivery shape.
+Describe the appropriate review surface for the confirmed readiness target and architecture shape.
 
 For a confirmed prototype, keep it to:
 
@@ -277,7 +277,7 @@ requirement_refs:
   - approved product requirement IDs
 decision_refs:
   - approved product brief
-  - confirmed delivery shape and acceptance boundary from the product brief
+  - confirmed readiness target, architecture shape, and acceptance boundary from the product brief
   - approved Visual Direction Contract revision in VDC-NNN format
   - "exact approved visual decision references in experience-spec@VDC-NNN#VIS-NNN format"
   - named human visual approval decision for the current VDC-NNN revision
@@ -304,22 +304,20 @@ next_skills:
   - plan-delivery
 ```
 
-The handoff stays experience-level. It does not add backend architecture, production implementation detail, or deployment steps, but it preserves the approved prototype or full-stack acceptance boundary for planning.
+The handoff stays experience-level. It does not add backend architecture, production implementation detail, or deployment steps, but it preserves the approved readiness target, architecture shape, and acceptance boundary for planning.
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/ux/experience-spec.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the canonical specification with its immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical specification may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact route (`invalid path ... must be inside brain`) or invent feedback metadata. A supported presentation is view-only and cannot become another authority.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when the host proves binding to the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. A substantive revision before a terminal decision supersedes the pending record, resets approval, and creates a new pending record only when the specification returns to `awaiting-approval`.
 
 ## Completion Criteria
 
 The task is complete when all of these are true:
 
 - the product brief is approved and cited;
-- the confirmed delivery shape and acceptance boundary are cited, with prototype demo limitations or full-stack state coverage reflected in the experience;
+- the confirmed readiness target, architecture shape, and acceptance boundary are cited, with prototype demo limitations or full-stack state coverage reflected in the experience;
 - the Visual Direction Contract has a unique `VDC-NNN` revision, a named human approval owner, a direction mode, product-specific rationale, provenance, validation widths, and complete unique `VIS-NNN` decisions;
 - every visual decision defines all required visual-system fields, states, a signature moment, and rejected defaults with product-specific reasons;
 - visual validation covers the product-approved widths, or 375, 768, and 1280 CSS px when none exist;

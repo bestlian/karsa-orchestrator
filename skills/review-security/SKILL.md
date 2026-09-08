@@ -116,7 +116,7 @@ Tie severity to exploitability and impact, not to code smell.
 ## Workflow
 
 1. Identify the candidate and its surrounding flow.
-2. Confirm the increment manifest and every required item report are approved at their exact pending artifact paths and revisions. Do not transfer approval from an active editor, another URI, a current phase, or an old revision. If the evidence is absent, mismatched, or unapproved, stop and mark the work `blocked`.
+2. Re-read the increment manifest and every required item report at their exact paths and revisions. Confirm explicit approval and technical result, compare them with the candidate, and block on any mismatch. Tie reviewed code to a stable revision or checksum of executable, configuration, and source scope only; a change in that scope invalidates affected review evidence, while governance documents and review state do not. Never trust a compaction summary, screenshot, label, or metadata normalization as authoritative evidence.
 3. Reconcile threat assumptions and trust boundaries.
 4. Trace attacker-controlled inputs to sensitive sinks.
 5. Check whether auth, authz, session, or tenant checks can be bypassed.
@@ -124,6 +124,8 @@ Tie severity to exploitability and impact, not to code smell.
 7. Check for injection, SSRF, upload abuse, or dependency risk.
 8. Confirm whether the issue can be reached in a realistic deployment.
 9. Write the result with evidence, severity, remediation, and claim status.
+
+For production-ready work, review the substantive backend API/database integration and frontend API use, staff roles and authorization, secrets/configuration, logging, durable storage, migrations, backups, and process/concurrency assumptions that apply to the approved scope. Recommend an independent security or operational audit when warranted by payment, sensitive data, or privilege risk; that recommendation is not an audit result. Use isolated nonproduction fixtures and never a project live database.
 
 ## Report Output
 
@@ -221,13 +223,11 @@ The report records the technical verdict separately from handoff status.
 
 If the verdict is `block`, replace `next_skills` with `implement-feature` after the remediation items are approved, then rerun `verify-quality` and `review-security`. If the verdict is `pass` or `pass-with-findings` and the report is approved, keep `prepare-release`.
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/security/<candidate-id>-security-review.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the canonical review with its immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical review may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported presentation reference or `none`. Use normal filesystem reads and writes without intentionally opening or focusing an IDE editor. Do not retry the known unsupported `write_to_file` plus `ArtifactMetadata` project-artifact route (`invalid path ... must be inside brain`) or invent feedback metadata. A supported presentation is view-only and cannot replace the canonical review.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when its host event binds the pending canonical path and revision; otherwise require exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, close only a supported review tab without discarding unsaved changes; otherwise report that auto-close is unavailable. Reopen or update a supported presentation once only for the next approval. A substantive revision before a terminal decision supersedes the pending record, resets approval, invalidates affected evidence, and creates a new pending record only when the review returns to `awaiting-approval`.
 
 ## Completion Criteria
 

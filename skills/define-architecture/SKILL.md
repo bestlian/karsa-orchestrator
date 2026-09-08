@@ -35,10 +35,37 @@ Do not use this skill when:
 * Start from the approved brief and only use evidence from that brief, existing product context, and confirmed constraints. Verify that the approval evidence names the exact current brief path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it.
 * If the brief leaves a gap, mark it as an open question or assumption. Do not guess.
 * Do not choose a framework, cloud service, database, queue, or vendor unless the brief or evidence already supports it.
-* Preserve the approved delivery shape and acceptance boundary. A confirmed prototype is explicitly not production full-stack delivery. A confirmed full-stack application must define the backend owner, API boundaries, persistence, shared-data, and authentication/authorization boundaries. When there is no user sign-in, define the anonymous or service identity boundary explicitly; real-payment boundaries are required when payments are in scope.
-* Keep framework neutrality unless the user confirmed a stack or capability. Do not exclude a managed backend/BaaS merely because it is managed when it provides the real backend capability the approved need requires.
+* Preserve the independent approved readiness target and architecture shape. A prototype is explicitly not a production-ready claim. A production-ready full-stack application must define the backend owner, API boundaries, persistence, shared-data, staff roles and permissions, and authentication/authorization boundaries. When there is no user sign-in, define the anonymous or service identity boundary explicitly; real-payment boundaries are required when payments are in scope.
+* Keep framework neutrality unless the user confirmed a stack or approved a recommendation. Visual minimalism is a design-direction decision, not a stack decision. Do not exclude a managed backend/BaaS merely because it is managed when it provides the real backend capability the approved need requires.
 * Do not create a backlog. This skill ends at the blueprint.
 * Do not write code.
+
+## Project MCP Preflight
+
+Before architecture is finalized, recommend only project-relevant MCP capabilities. Prefer native tools and do not require an MCP to run the application. For every recommendation, document its purpose, project scope, prerequisites, configuration or install action, verification, minimum permissions, and restart/reload note. Do not install, register, or overwrite configuration.
+
+For browser evidence, recommend merging this documented Playwright configuration into `<project-root>/.agents/mcp_config.json` without replacing existing servers:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
+```
+
+Antigravity documents project `.agents/mcp_config.json` and global `~/.gemini/config/mcp_config.json`. `npx` starts the server for the host; it is not an application dependency. The verified optional CLI registration is `agy mcp add --type stdio playwright npx @playwright/mcp@latest`, then `agy mcp list`, but neither the current help nor the official docs exposes a project-scope flag. Do not call that registration project-scoped or invent `--scope`; prefer the project config for project scope. Recommend database MCP only for an approved need, with read-only nonproduction credentials and no automatic mutation. Omit GitHub or documentation MCP unless the project needs it and a current vendor command is verified. Sources: https://antigravity.google/docs/cli/mcp/ and https://github.com/microsoft/playwright-mcp.
+
+## Production-Ready Architecture Gate
+
+For a `production-ready` target, specify substantive `<project-root>/backend/` and `<project-root>/frontend/` output. The backend must be a runnable server with API contracts and database integration; the frontend must be a runnable client that consumes the API. Empty directories and `localStorage` substitutes fail this gate. Each area needs start, environment, and applicable test documentation. A managed backend remains valid only with substantive configuration, functions, and API contracts. Root `artifacts/`, shared code, and optional shared tests may remain at root; this does not prescribe restructuring this plugin.
+
+Make gates proportional to the approved scope. Cover applicable run target, process/concurrency model, security and staff authorization, durable persistence, backup/restore, migrations, configuration and secrets, logging/operations, and payment boundary. SQLite is legitimate when file location, permissions, backup/restore, migrations, locking/concurrency, and operating limits are documented. Add an independent audit recommendation when risk warrants it, but do not claim an audit passed or prescribe Kubernetes, a cloud vendor, or other gold plating.
+
+When the approved architecture names SQLite or another database as authoritative storage, record its driver or connection boundary, schema and migration path, and the API path that reads and writes it. Implementation MUST NOT replace it with a writable JSON store unless a human approves an architecture revision. JSON may be used only as a non-authoritative fixture or seed when labeled as such.
 
 ## Architecture Quality Filter
 
@@ -64,7 +91,7 @@ Include:
 * The in scope and out of scope parts of the product.
 * The main actors and external dependencies.
 * The system context in text form or a simple diagram description.
-* The confirmed `prototype` or `full-stack` delivery shape, its acceptance boundary, and either the prototype demo limitations or the full-stack backend and persistence boundary.
+* The confirmed readiness target and architecture shape, its acceptance boundary, and either the prototype demo limits or production-ready backend and persistence boundary.
 
 ### 2. Boundaries And Trust Zones
 
@@ -253,7 +280,7 @@ artifact_id: application-blueprint
 output_path: artifacts/architecture/application-blueprint.md
 inputs:
   - approved product brief
-  - confirmed delivery shape and acceptance boundary
+  - confirmed readiness target, architecture shape, and acceptance boundary
   - confirmed constraints and evidence
 requirement_refs:
   - approved product requirement IDs
@@ -284,13 +311,11 @@ next_skills:
   - plan-delivery
 ```
 
-## Approval Evidence Protocol
+## Review And Approval Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/architecture/application-blueprint.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical blueprint may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and supported host-presentation reference or `none`. Do not intentionally open or focus an IDE editor after normal filesystem reads or writes. `write_to_file` with `ArtifactMetadata` for project artifacts is known to fail with `invalid path ... must be inside brain`; do not retry it or invent feedback metadata. A native UI may only be a supported view-only presentation, never a duplicate authority.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+Accept `Proceed` only when its event binds the pending canonical path and revision; otherwise request exact chat `approve`, `reject`, or `revise`. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot self-approve. After any terminal decision, safely close only the review tab if the host supports it without discarding unsaved work; otherwise state the limitation. Reopen or update a supported presentation once only for the next approval. A substantive change before a terminal decision supersedes the pending record, creates a new revision, resets approval, and creates a new pending record only when the blueprint returns to `awaiting-approval`.
 
 Do not mark the work approved on your own.
 
@@ -312,7 +337,8 @@ The skill is complete only when all of these are true:
 * `artifacts/architecture/application-blueprint.md` exists.
 * The blueprint is framework-neutral and evidence based.
 * The blueprint covers every required area in this skill.
-* The blueprint preserves the approved delivery shape and acceptance boundary, with explicit prototype limits or required full-stack backend, API, persistence, auth, authorization, payment, and deployment boundaries as applicable.
+* The blueprint preserves the readiness target and architecture shape, with explicit prototype limits or required production-ready backend, API, persistence, staff authorization, payment, and operations boundaries as applicable.
+* A production-ready blueprint defines the substantive backend/frontend output, proportional readiness gates, and appropriate audit recommendations without prescribing a framework or gold-plated platform.
 * The blueprint states source-code maintainability expectations, module ownership, public contracts, dependency direction, cycle constraints, naming boundaries, and boundary test strategy.
 * The blueprint uses stable `MOD-NNN`, `CON-NNN`, `DEP-NNN`, and `MNT-NNN` identifiers and every maintainability source_refs entry resolves to an exact approved blueprint anchor.
 * Every approved requirement has traceability.

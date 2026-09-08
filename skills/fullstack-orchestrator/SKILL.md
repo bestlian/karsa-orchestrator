@@ -7,9 +7,9 @@ description: Mandatory bootstrap for natural-language requests to create, build,
 
 ## Role
 
-This skill is a deterministic natural-language routing and execution contract for greenfield full-stack work. It inspects visible evidence, selects the next specialist route, loads that skill contract, and executes it inline in the same agent.
+This skill is a deterministic natural-language routing and execution contract for greenfield application work. It inspects visible evidence, selects the next specialist route, loads that skill contract, and executes it inline in the same agent.
 
-The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST load and execute the selected contract inline. It MUST NOT delegate lifecycle specialist ownership, concurrent branches, or background orchestration. A host-provided `browser_subagent` is allowed only as a bounded browser-testing tool; it cannot edit features, make approvals, or advance a phase.
+The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST load and execute the selected contract inline. It MUST NOT delegate lifecycle specialist ownership, concurrent branches, or background orchestration. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance lifecycle phases, or satisfy a join.
 
 ## Mandatory Bootstrap Scope
 
@@ -40,7 +40,7 @@ Route only to these exact skill names:
 
 No other skill may substitute for one of these specialists.
 
-## Authoritative Evidence
+## Authoritative Evidence And Reconciliation
 
 Visible artifacts below `<project-root>/artifacts/` and their handoffs are authoritative. Chat memory, summaries, prior routing responses, and `next_skills` are non-authoritative.
 
@@ -54,10 +54,14 @@ Preserve the existing handoff contract:
 - `awaiting-approval` is not approval. A technical `pass`, `pass-with-findings`, `complete`, or `PASS` is not approval.
 - Human approval MUST be explicit and visible in the evidence used for downstream routing. It MUST identify the exact pending artifact `output_path` and revision. A decision for another URI, revision, active editor, or current phase MUST NOT transfer approval.
 - Before requesting approval, every specialist artifact MUST label an immutable `Artifact Revision` in its document body. The output path and that revision are the approval target; this is document evidence, not a new `fullstack-skill-handoff/v1` top-level key.
-- When the host supports `RequestFeedback` metadata, use `RequestFeedback: true` only on the exact specialist output path and revision under review. It is host-specific metadata, not a universal API, and MUST NOT be placed on `implementation_plan.md` or another proxy artifact. A host event that names a path but does not demonstrably bind the pending content revision fails closed; request the exact chat decision rather than inventing revision metadata.
-- The orchestrator first ingests a current user decision, then checks an already recorded decision. Either is valid only when exact user evidence identifies the pending `output_path` and `Artifact Revision`; a category or artifact-tree decision is not valid. `approve` updates the existing `status` to `approved` and `approval` to approved; `reject` updates them to `rejected`; `revise` updates `status` to `draft` and `approval` to `revise` awaiting owner revision, then routes only to the owning specialist. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
-- These status, approval, appended approval `decision_refs`, and Approval Record operations are permitted governance metadata, not self-approval. They retain the current Artifact Revision and valid approval. Development Start Authorization decision/evidence is also closed governance metadata only when it fills the already specified backlog revision and scope. It MUST NOT change scope, first item, expected outcome, acceptance, or other substantive content.
-- Any substantive content change creates a new Artifact Revision and resets approval. A changed backlog re-evaluates and rebinds development authorization to its current scope. A reject, revise, or remediation request never grants downstream permission.
+- A `Review Record` has a status independent from the handoff status: `pending`, `resolved`, or `superseded`. Preserve past records. A canonical artifact may have at most one pending record, and only while its handoff status is `awaiting-approval`. The record identifies the canonical path and immutable Artifact Revision, plus a host presentation reference or `none`.
+- Write and read canonical project artifacts with normal filesystem operations. Do not intentionally open or focus an IDE editor after those operations. Host evidence shows that `write_to_file` with `ArtifactMetadata` on a project artifact fails with `invalid path ... must be inside brain`; never retry that unsupported location for feedback or invent unsupported metadata fields. A native UI presentation is optional only when the host explicitly supports it, is never an authoritative duplicate, and may use `UserFacing: false` only when that active host supports the field. This plugin cannot prevent host-driven automatic file opening.
+- An `implementation_plan` UI may be a view-only review summary. Accept a host `Proceed` only when its event binds the pending path and Artifact Revision; otherwise require exact chat `approve`, `reject`, or `revise` evidence. A valid terminal decision changes the pending record to `resolved` and records the user decision and internal source-message reference. Do not require users to invent host event or decision IDs. A stale event cannot affect a resolved or superseded record.
+- The orchestrator first ingests a current user decision, then checks an already recorded decision. Either is valid only when exact user evidence identifies the pending `output_path` and Artifact Revision; a category or artifact-tree decision is not valid. `approve` updates the existing `status` to `approved` and `approval` to approved; `reject` updates them to `rejected`; `revise` updates `status` to `draft` and `approval` to `revise` awaiting owner revision, then routes only to the owning specialist. Append the path, revision, human identity, decision, and source-message reference to the existing record.
+- These status, approval, appended approval `decision_refs`, Review Record state changes, and Development Start Authorization operations are permitted closed governance metadata, not self-approval. They retain the current Artifact Revision and valid approval. They MUST NOT change scope, first item, expected outcome, acceptance, technical result, or other substantive content.
+- A substantive content change before a terminal decision changes the pending Review Record to `superseded`, creates a new Artifact Revision, and resets approval. Create a new pending record only when the revised artifact returns to `awaiting-approval`. A changed backlog re-evaluates and rebinds development authorization to its current scope. A reject, revise, or remediation request never grants downstream permission.
+
+Before every route, resume, quality gate, security review, or release plan, reconcile the canonical sources rather than trusting a chat summary, presentation, report label, or manifest alone. Re-read every required source report at its exact path and revision; verify its explicit human approval and technical result; compare those facts to the increment manifest and downstream candidate; and block on any mismatch. Tie code and test evidence to a stable revision or checksum of the tested executable, configuration, and source scope, not governance documents or Review Record state. A change in that scope invalidates the affected evidence until the required checks run again. Persist resume-required scope, source revisions, and unresolved gates only in the existing backlog and increment manifests; do not add a state database or engine. Metadata normalization may standardize known values but cannot promote labels, repair missing evidence, or approve work.
 
 The router MUST inspect only the evidence needed to determine the earliest unsatisfied prerequisite. Relevant authoritative artifacts are:
 
@@ -77,9 +81,9 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 Before applying routing rules, process the current turn's decision against the visible pending artifact:
 
 1. Resolve the exact pending `output_path` and its document-body `Artifact Revision`.
-2. Accept a host feedback event only when it demonstrably binds both values. Path-only feedback, a different URI, active editor, current phase, or old revision has no effect; fail closed to the exact chat fallback.
-3. Accept chat only when the human explicitly says `approve`, `reject`, or `revise` and names both values. A bare `approved` is insufficient.
-4. If valid, make the allowed governance metadata update above and re-evaluate visible artifacts in the same turn. For `revise`, set `draft` and run only the artifact owner; never leave the request parked at `awaiting-approval`.
+2. Accept a host `Proceed` event only when it demonstrably binds the pending canonical path and Artifact Revision. A different URI, active editor, current phase, old revision, or a content/name/target match has no effect; fail closed to the exact chat fallback.
+3. Accept chat only when the human explicitly says `approve`, `reject`, or `revise` and names the canonical path and revision. A bare `approved` is insufficient.
+4. If valid, make the allowed governance metadata update above, then close only the review tab if the host safely supports it without discarding unsaved changes; otherwise state that automatic close is unavailable. Re-evaluate visible artifacts in the same turn. For `revise`, set `draft` and run only the artifact owner; never leave the request parked at `awaiting-approval`.
 5. If no current decision is valid, use only an already recorded, exact path-and-revision decision with user evidence. Otherwise continue to the approval stop.
 
 ## Deterministic Routing Procedure
@@ -111,13 +115,36 @@ Every transition to a downstream phase requires explicit human approval of every
 8. Remediation: After blocking quality or security evidence is approved, select and execute `plan-delivery` for one traceable remediation backlog item. Stop for explicit human approval of that item. Then select and execute that one item with `implement-feature`, stop for approval of its report and updated manifest, and execute `verify-quality` then `review-security` against the remediated candidate. Repeat until both approved verifier reports satisfy the release criteria. A waiver MUST NOT convert `conditional`, `fail`, or `block` into an eligible verdict.
 9. Release planning: Select and execute `prepare-release` only when the approved quality report has technical verdict `pass`, the approved security report has technical verdict `pass` or nonblocking `pass-with-findings`, no blocker exists, and all required evidence is approved and current. It stops when the release plan reaches its human-approval boundary. This suite does not deploy.
 
-The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Execute each pair sequentially in the same agent; never delegate lifecycle branches or use concurrent/background lifecycle orchestration. A host-provided `browser_subagent` may supply bounded browser evidence only and cannot own artifacts, edit code, approve, route, or satisfy a join. Every join MUST wait for both branches and all required human approvals.
+The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Execute each pair sequentially in the same agent; never delegate lifecycle branches or use concurrent/background lifecycle orchestration. The same executing agent retains ownership of artifacts, edits, approvals, routing, and joins; a host-native `browser_subagent` may only collect bounded browser interaction evidence. Every join MUST wait for both branches and all required human approvals.
 
 Sequential execution does not bypass a stop boundary. If the first specialist asks for input or reaches `awaiting-approval`, end the turn there. After the human responds, re-evaluate visible evidence before executing the remaining specialist. Never present output for a specialist that has not run.
 
 ## Development Outcome Claims
 
 An implementation report MUST distinguish the one completed item from the release slice and the application. A completed item is not a completed slice, and a completed slice is not an application-ready claim. An exactly approved scaffold story or task may be `technical_verdict: complete` when its own concrete acceptance criteria and tests pass, but it must state `slice incomplete` and `application not ready`. A scaffold used as a substitute for a broader functional story is `partial`. For any user-facing UI claim, the report must carry the real-browser evidence required by `implement-feature` and `verify-quality`; a build or HTTP 200 result is boundary evidence only.
+
+For a `production-ready` target, the candidate must contain substantive `<project-root>/backend/` and `<project-root>/frontend/` deliverables. `backend/` has a runnable server, API contracts, and real database integration; `frontend/` has a runnable client that consumes that API. Empty folders and a `localStorage` stand-in do not satisfy this boundary. Each area documents start, environment, and applicable test commands. A managed backend remains valid only with substantive backend configuration, functions, and API contracts. Root-level `artifacts/`, shared assets, and optional shared tests are allowed; do not restructure the plugin repository itself. SQLite is valid when its file location, permissions, backups, migrations, locking/concurrency, and operating limits are documented.
+
+## Architecture And Planning MCP Preflight
+
+At the architecture preflight, and again before planning if the project changed, recommend only MCP capability justified by the approved project. Native project tools come first, and no MCP is required to run the application. Record purpose, project scope, prerequisites, install or configuration action, verification, minimum permissions, and restart or reload note. Do not install or modify configuration automatically.
+
+For browser interaction evidence, the default relevant project configuration is a merge into `<project-root>/.agents/mcp_config.json`, preserving existing `mcpServers` entries:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
+```
+
+Antigravity documents global `~/.gemini/config/mcp_config.json` and project `.agents/mcp_config.json` locations. The launcher uses `npx` when the host starts the server; it is neither native CLI registration nor an application dependency. The locally verified optional registration syntax is `agy mcp add --type stdio playwright npx @playwright/mcp@latest`, followed by `agy mcp list`; neither local help nor the cited docs exposes a project-scope flag, so never call that registration project-scoped or invent `--scope`. Prefer the project config when project scope is needed. Reload or restart only as the active host requires, then verify the server and permissions.
+
+Recommend database MCP only when it adds an approved capability, use least-privilege read-only nonproduction credentials, never expose secrets or a production database, and never auto-mutate data. Recommend GitHub or documentation MCP only when the approved work requires it and a current vendor command is verified; otherwise omit it. Sources: https://antigravity.google/docs/cli/mcp/ and https://github.com/microsoft/playwright-mcp.
 
 ## Ambiguity And Missing Evidence
 
@@ -193,7 +220,7 @@ Approval required: Approve, reject, or revise artifacts/ux/experience-spec.md@VD
 Stop condition: STOP until a decision targeting that exact artifact and revision is recorded in its approval metadata or Approval Record.
 ```
 
-If the host supports it, attach `RequestFeedback: true` only to that exact artifact revision. Otherwise the named chat decision is the fallback. Feedback for `artifacts/planning/implementation_plan.md` or any other URI does not approve this experience specification.
+If the host offers a review surface, it may present only that exact artifact revision as a view-only summary. Otherwise the named chat decision is the fallback. Feedback for `artifacts/planning/implementation_plan.md` or any other URI does not approve this experience specification.
 
 ### Development Start Authorization
 

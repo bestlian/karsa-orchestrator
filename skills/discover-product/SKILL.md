@@ -42,18 +42,24 @@ Required inputs when available:
 
 Ask early, in the first focused discovery round when the answer is not already explicit:
 
-- Is the requested delivery a frontend prototype/mock or a full-stack application with backend API and persistent data?
+- Is the requested result a `prototype` or a `production-ready` application? If the user says `MVP`, record it as a separate scope or release label and map it to one of those readiness targets.
+- Independently, must the architecture be `frontend-only` or `full-stack`? A readiness target never implies an architecture shape.
+- Is a visually minimal or restrained experience a product-direction choice? It is independent of the architecture and stack choice.
 - Will data be single-user/local or multi-user/shared, and what persistence is required?
+- Which identities, including staff roles, permissions, ownership checks, and service or anonymous access, are in scope? Do not silently defer staff authorization.
 - Are authentication, authorization, and payments simulated or real? For real payments, which provider and operational boundary are approved?
-- Does the user require a stack, backend capability (including a managed backend/BaaS that meets the real backend need), or deployment preference?
+- Is a stack required, or may the user approve a recommendation? Record the explicit stack choice or the recommendation approval separately from visual direction.
+- What run target, expected concurrency, security, persistence, backup, migration, configuration, secret handling, logging, and operations scope are proportionate to the requested readiness target?
 
-For shared booking data, recommend full-stack delivery as the default recommendation, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, or a backend substitute. Respect a technically specified stack; otherwise keep the architecture framework-neutral.
+For shared booking data, recommend a full-stack architecture when evidence supports it, but require explicit scope confirmation before selecting it. Never silently choose `localStorage`, simulated payments, or a backend substitute. A recorded approval for simulated payments is an approved simulation, not an unapproved gap, but it prevents a live-payment-ready claim. Capture only scope-relevant operations needs; do not prescribe universal Kubernetes, managed services, or other gold plating. Respect a technically specified stack; otherwise keep the architecture framework-neutral.
+
+A `production-ready` target requires the substantive backend and frontend acceptance boundary defined by this suite. If a user requests both `production-ready` and `frontend-only`, record the conflict and require a revised target or architecture decision; do not silently downgrade the target or invent a backend.
 
 ## Evidence-First Workflow
 
 1. Read every available artifact before asking questions.
 2. Separate facts, assumptions, and open questions.
-3. Ask 2 to 4 focused questions at a time, only about gaps that can change the brief. Ask the delivery-shape questions early unless their answers are already explicit.
+3. Ask 2 to 4 focused questions at a time, only about gaps that can change the brief. Ask the readiness-target and architecture-shape questions early unless their answers are already explicit.
 4. Prefer evidence over memory, opinions, or guesses.
 5. Restate what is confirmed after each round.
 6. Keep the brief product-level only, no solution design.
@@ -128,14 +134,15 @@ State:
 
 ### 4. Delivery Shape And Acceptance Boundary
 
-Record the confirmed delivery shape before product requirements:
+Record the two independent delivery decisions before product requirements:
 
-- `prototype` or `full-stack`;
-- the explicit evidence for that choice and the human who confirmed it;
-- the acceptance boundary: what demonstrates the prototype, item, slice, and application, respectively;
-- for a prototype, its demo limitations and an explicit statement that it is not production full-stack delivery;
-- for confirmed full-stack delivery, the backend owner, API and integration boundaries, persistence expectation, shared-data model, and real or simulated auth and payment decisions;
-- a confirmed stack, managed-backend/BaaS capability, and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice.
+- readiness target: `prototype` or `production-ready`, with evidence and confirming human; record `MVP`, when used, as a separate optional scope or release label mapped to that readiness target;
+- architecture shape: `frontend-only` or `full-stack`, with evidence and confirming human;
+- the acceptance boundary: what demonstrates the prototype, item, slice, application, and, where applicable, production readiness;
+- for a prototype, demo limitations and an explicit statement that it is not a production-ready claim;
+- for a production-ready full-stack target, the backend owner, API and integration boundaries, persistence expectation, shared-data model, staff roles and permissions, and real or simulated auth and payment decisions;
+- a confirmed stack or approved recommendation, managed-backend/BaaS capability, and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice;
+- a proportional operations scope covering run target, concurrency, security, persistence, backups, migrations, configuration, secrets, logging, and ownership.
 
 This is scope confirmation, not an architecture implementation. Do not select a database, provider, framework, or deployment service without confirmed evidence.
 
@@ -222,8 +229,8 @@ inputs:
 requirement_refs: []
 decision_refs:
   - product approval decision
-  - confirmed delivery shape and acceptance boundary
-  - confirmed backend owner, API, persistence, auth, payment, stack, and deployment decisions when applicable
+  - confirmed readiness target, architecture shape, and acceptance boundary
+  - confirmed backend owner, API, persistence, staff roles, auth, payment, stack, and deployment decisions when applicable
 assumptions:
   - evidence-backed assumptions that stay visible in the brief
 open_questions:
@@ -242,17 +249,19 @@ next_skills:
   - define-architecture
 ```
 
-The handoff stays product-level. It records the confirmed delivery shape and acceptance boundary without adding architecture, backlog, or implementation detail.
+The handoff stays product-level. It records the confirmed readiness target, architecture shape, and acceptance boundary without adding architecture, backlog, or implementation detail.
 
 Attribution: adapted from anti-slop v3.2.4, commit `44be687`, MIT. See `THIRD_PARTY_NOTICES.md`.
 
-## Approval Evidence Protocol
+## Review, Approval, And IDE Presentation Protocol
 
-Before requesting review, label the document body with an immutable `Artifact Revision`; its combination with `artifacts/discovery/product-brief.md` is the approval target. Bind a review request to that exact pending path and revision. If the host supports `RequestFeedback` metadata, apply `RequestFeedback: true` only to that exact artifact and revision; it is host-specific metadata, not a universal API, and must never be placed on a proxy such as `implementation_plan.md`. A path-only host event fails closed unless it demonstrably binds the pending content revision; then request the exact chat fallback.
+Before review, label the body with an immutable `Artifact Revision`. A `Review Record` is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records. The canonical product brief may have at most one pending record, and only while its handoff status is `awaiting-approval`; it identifies the canonical path, artifact revision, request identity, and host presentation reference or `none`.
 
-Ingest a valid current user decision before routing, then use an already recorded valid decision if present. It must name the pending path and revision; a category or artifact-tree decision, a different URI, active editor, phase, or old revision never transfers approval. `approve` sets existing `status` and `approval` to `approved`; `reject` sets them to `rejected`; `revise` sets `status` to `draft` and `approval` to `revise` awaiting owner revision. Append the path, revision, human identity, decision, and exact evidence to existing `decision_refs` and/or the body `Approval Record`.
+Use normal filesystem operations for canonical project artifacts. Do not intentionally open or focus an IDE editor after reading or writing. Host evidence shows that `write_to_file` with `ArtifactMetadata` for a project artifact fails with `invalid path ... must be inside brain`; do not retry that unsupported feedback path or invent unsupported metadata fields. A native presentation is optional only when the host supports it, cannot become an authoritative duplicate, and may use `UserFacing: false` only when that field is actually supported. The plugin cannot prevent host-driven file opening.
 
-These lifecycle status, approval, appended approval `decision_refs`, and Approval Record changes are closed governance metadata: they retain the Artifact Revision and valid approval. They cannot change scope, first item, expected outcome, acceptance, or other substantive content. Any substantive content change creates a new revision and resets approval. A revise or remediation request never grants downstream permission.
+An `implementation_plan` presentation is view-only. Accept `Proceed` only when its host event binds the pending canonical path and revision; otherwise ask in chat for an exact `approve`, `reject`, or `revise` decision. Any terminal decision resolves the pending record and records the human decision plus an internal source-message reference; users do not need to provide host event IDs. Metadata normalization cannot create a decision or self-approval. A substantive change before a terminal decision supersedes the pending record, creates a new revision, and resets approval; create a new pending record only when the revised brief returns to `awaiting-approval`.
+
+After a valid Proceed, re-evaluate routing. If a supported safe close action exists, close only the review tab without discarding unsaved changes; otherwise say the review is resolved but cannot be auto-closed. Reopen or update a supported review presentation once only when the next approval is needed. Never promise tab control or disable approvals.
 
 ## Approval Gate
 
@@ -266,7 +275,7 @@ The brief is approval-ready only when all of the following are true:
 - success metrics are defined;
 - risks, assumptions, and open questions are visible;
 - the approval owner is known;
-- the delivery shape and acceptance boundary are confirmed, including visible limitations for a prototype or backend/persistence/auth/payment boundaries for full-stack work;
+- the independent readiness target and architecture shape are confirmed, including visible prototype limitations or production-ready backend, persistence, staff authorization, and payment boundaries;
 - no unresolved question can materially change the product brief.
 
 If any of these are false, mark the output `blocked` or `draft`, and explain why.
@@ -279,7 +288,7 @@ Consider the skill complete when:
 
 - `artifacts/discovery/product-brief.md` exists and reflects the evidence gathered;
 - the brief contains product summary, users, jobs, outcomes, scope, non-goals, `FR-*`, `NFR-*`, success metrics, risks, assumptions, and open questions;
-- the brief records the confirmed prototype or full-stack delivery shape, acceptance boundary, and applicable backend, persistence, auth, payment, stack, deployment, and demo-limit decisions;
+- the brief records the readiness target, architecture shape, acceptance boundary, and applicable backend, persistence, staff authorization, payment, stack, deployment, operations, and demo-limit decisions;
 - the handoff block is filled in with the allowed artifact status vocabulary;
 - the approval gate status is clear;
 - no design, architecture, backlog, code, or external action has been added.
