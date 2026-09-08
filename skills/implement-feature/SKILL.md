@@ -29,6 +29,10 @@ Use this skill for one ready backlog item only. It turns approved specs into a s
 
 If any of those are missing, stop and ask for the missing input. Do not guess.
 
+## Artifact Root Contract
+
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including implementation reports, increment manifests, and evidence paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
 ## First Check
 
 Read the repository conventions, configured quality tools, approved module responsibilities, public contracts, dependency decisions, relevant manifests, nearby implementation files, and current tests before editing. Then read the selected backlog item, its approved release-slice definition, and its approved specs. Read the current increment manifest when it exists; for the first item in a slice, initialize it as `draft` from the approved release-slice definition.

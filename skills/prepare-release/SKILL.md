@@ -43,6 +43,10 @@ If either report is missing, unapproved, or contains blockers, or if the technic
 
 Write the release plan to `artifacts/release/<candidate-id>-release-plan.md`.
 
+## Artifact Root Contract
+
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including release plans and release evidence. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
 The plan must include:
 
 1. Scope and version.

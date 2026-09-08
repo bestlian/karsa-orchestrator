@@ -29,6 +29,10 @@ If any required input is missing or not approved, stop and mark the work `blocke
 
 Create a backlog that is ready for `implement-feature` to pull one story at a time.
 
+## Artifact Root Contract
+
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including expected visual proof target paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+
 The backlog must include:
 
 - Epics

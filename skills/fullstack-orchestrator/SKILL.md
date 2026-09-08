@@ -1,6 +1,6 @@
 ---
 name: fullstack-orchestrator
-description: Use for natural-language requests to build, continue, resume, or prepare a greenfield full-stack application by inferring visible artifact state, requiring explicit human approval at every phase boundary, and routing to the required enabled specialist skills without invoking them directly.
+description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, infers visible artifact state, requires explicit human approval at every phase boundary, and routes to enabled specialist skills without invoking them directly.
 ---
 
 # Full-Stack Orchestrator
@@ -10,6 +10,22 @@ description: Use for natural-language requests to build, continue, resume, or pr
 This skill is a deterministic natural-language routing and control-plane contract for greenfield full-stack work. It inspects visible evidence and names the next specialist route.
 
 It is not a worker, artifact producer, approval authority, persistent state store, direct skill invoker, deployment tool, or replacement for any specialist. It MUST NOT write specialist artifacts, invoke skills, promise Antigravity auto-execution, run work in the background, chain work automatically, or claim cross-chat persistence. A human or the hosting environment must activate each selected specialist.
+
+## Mandatory Bootstrap Scope
+
+This skill is the mandatory bootstrap before native planning, coding, or a direct specialist workflow for an in-scope request. In scope includes natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app, including equivalent requests for a new product, MVP, or blank-slate application.
+
+The bootstrap does not apply to bug fixes, changes to existing apps, libraries, CLIs, general questions, or isolated pages or prototypes unless the user explicitly requests one as a new application. Outside this scope, do not claim this lifecycle owns the request.
+
+## Project Root And Artifact Contract
+
+Resolve `<project-root>` before inspecting lifecycle evidence or selecting a specialist:
+
+1. An explicit user target path wins.
+2. Otherwise, use the active workspace only when it is clearly the target application and is not this plugin repository.
+3. If the location is ambiguous, ask exactly one question: `Which project-root path should contain this new application?` Then STOP. Do not ask a second routing or discovery question.
+
+All lifecycle artifacts and evidence paths are project-relative. Resolve every `artifacts/...` path in this contract as `<project-root>/artifacts/...`, including product, UX, architecture, planning, implementation, quality, security, release, proof, and manifest artifacts. Never write lifecycle artifacts into the plugin installation or repository, or into an unrelated current working directory. Keep `fullstack-skill-handoff/v1` `output_path` values as their existing project-relative `artifacts/...` paths; the root is execution context, not a new handoff field.
 
 Route only to these exact skill names:
 
@@ -26,7 +42,7 @@ No other skill may substitute for one of these specialists.
 
 ## Authoritative Evidence
 
-Visible artifacts and their handoffs are authoritative. Chat memory, summaries, prior routing responses, and `next_skills` are non-authoritative.
+Visible artifacts below `<project-root>/artifacts/` and their handoffs are authoritative. Chat memory, summaries, prior routing responses, and `next_skills` are non-authoritative.
 
 Preserve the existing handoff contract:
 
@@ -42,21 +58,21 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 
 | Owner | Artifact |
 | --- | --- |
-| `discover-product` | `artifacts/discovery/product-brief.md` |
-| `design-experience` | `artifacts/ux/experience-spec.md` |
-| `define-architecture` | `artifacts/architecture/application-blueprint.md` |
-| `plan-delivery` | `artifacts/planning/delivery-backlog.md` |
-| `implement-feature` | item implementation reports and the release-slice increment manifest |
-| `verify-quality` | candidate quality report |
-| `review-security` | candidate security review |
-| `prepare-release` | candidate release plan |
+| `discover-product` | `<project-root>/artifacts/discovery/product-brief.md` |
+| `design-experience` | `<project-root>/artifacts/ux/experience-spec.md` |
+| `define-architecture` | `<project-root>/artifacts/architecture/application-blueprint.md` |
+| `plan-delivery` | `<project-root>/artifacts/planning/delivery-backlog.md` |
+| `implement-feature` | `<project-root>/artifacts/implementation/<item-id>-implementation-report.md` and `<project-root>/artifacts/implementation/<release-slice-id>-increment-manifest.md` |
+| `verify-quality` | `<project-root>/artifacts/quality/<candidate-id>-quality-report.md` |
+| `review-security` | `<project-root>/artifacts/security/<candidate-id>-security-review.md` |
+| `prepare-release` | `<project-root>/artifacts/release/<candidate-id>-release-plan.md` |
 
 ## Deterministic Routing Procedure
 
-Apply these routing rules in order. The first matching rule determines the candidate route. Before emitting that route, apply the specialist availability guard below.
+After resolving `<project-root>`, apply these routing rules in order. The first matching rule determines the candidate route. Before emitting that route, apply the specialist availability guard below.
 
 1. Evidence conflict or ambiguity: If artifacts disagree about status, approval, IDs, candidate, slice, current revision, or ownership, list the conflict, ask exactly one precise question that resolves the route, and STOP. Do not guess.
-2. New-chat recovery: Reconstruct state from visible artifacts and `fullstack-skill-handoff/v1` handoffs. If prior progress is claimed but the evidence is absent, request only the latest artifact and handoff needed to prove that state, then STOP. If visible evidence shows an incomplete chain, route to the earliest missing prerequisite. If no lifecycle artifact exists, route to `discover-product`.
+2. New-chat recovery: Reconstruct state from visible artifacts below `<project-root>/artifacts/` and `fullstack-skill-handoff/v1` handoffs. If prior progress is claimed but the evidence is absent, request only the latest artifact and handoff needed to prove that state, then STOP. If visible evidence shows an incomplete chain, route to the earliest missing prerequisite. If no lifecycle artifact exists, route to `discover-product`.
 3. Approval stop: If the current artifact or either artifact at a join is `awaiting-approval`, ask the named human for one explicit `approve`, `reject`, or `revise` decision and STOP. Downstream routing MUST wait until the decision is recorded as authoritative evidence.
 4. Rejection or revision: If an artifact is `rejected`, or a human requests revision, route only to the specialist that owns that artifact and STOP at its next approval boundary.
 5. Draft or blocked work: Route a `draft` artifact to its owner. For `blocked`, route to the owner of the earliest missing or rejected prerequisite named by the evidence. If the blocker is ambiguous, apply rule 1.
@@ -98,7 +114,7 @@ Examples of precise questions include `Which candidate ID should be evaluated?` 
 Every response MUST contain only these fields, in this order, with concise values:
 
 ```text
-Observed evidence: <visible artifacts, handoffs, statuses, approvals, verdicts, and revision refs>
+Observed evidence: <resolved project-root; visible artifacts, handoffs, statuses, approvals, verdicts, and revision refs>
 Selected next skill(s): <exact allowed skill name(s), or none>
 Why: <first matching routing rule>
 Missing prerequisites: <minimum missing evidence, or none>
