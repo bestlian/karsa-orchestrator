@@ -46,6 +46,8 @@ The brief should provide, at minimum:
 8. Do not allow UI planning to proceed until the Visual Direction Contract has an explicit approval from its named human approval owner.
 9. Preserve the independent approved readiness target and architecture shape. A prototype experience must state its demo limits and cannot be presented as production-ready behavior; a full-stack experience must expose the UX implications of backend, shared data, staff authorization, and real-payment decisions without choosing their implementation. A restrained visual direction never selects a technology stack.
 
+For an authenticated production-ready full-stack experience, define separate `User` and `Staff` journeys before planning privileged screens. The public journey may contain only the approved catalog, login, and registration surfaces; registration must never offer a Staff-role choice. Define authenticated User booking, cancellation, order, and session-expiry/logout states, plus Staff stock, settlement, and revenue permission states when those obligations are in scope. The experience must show a clear unauthenticated recovery path and a non-disclosing permission or not-found outcome for another user's resource. Do not represent a rendered staff screen, a hidden menu item, or a successful public API response as authorization evidence.
+
 ## Curated UX Filter
 
 Use this compact filter while shaping the experience spec.
@@ -252,7 +254,7 @@ For a confirmed prototype, keep it to:
 - no framework choice;
 - no deployment plan.
 
-State the prototype's demo limitations and that it is not production full-stack delivery. For a confirmed full-stack application, define the journeys and states that depend on backend API results, persistent or shared data, authentication and authorization, and real payment outcomes when they are in scope. This remains an experience contract, not an implementation or vendor choice.
+State the prototype's demo limitations and that it is not production full-stack delivery. For a confirmed full-stack application, define the journeys and states that depend on backend API results, persistent or shared data, authentication and authorization, and real payment outcomes when they are in scope. For authenticated work, include login failure, expired-session recovery, logout, User ownership denial, Staff role denial, and manual-settlement confirmation and idempotent-result states where applicable. Link each state to the accepted `FR-*` obligation so later evidence can distinguish a completed slice from remaining original scope. This remains an experience contract, not an implementation or vendor choice.
 
 ### 11. Traceability
 
