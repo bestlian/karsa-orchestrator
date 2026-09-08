@@ -47,6 +47,7 @@ The report must show what was checked, what was skipped, what passed, what faile
 - Never call an absent check passed. Missing optional static checks do not automatically require installation and must be recorded as evidence gaps. Required UI browser capability is different: recover it through a supported, permitted project-bound path or fail the UI candidate for missing required evidence.
 - Local check results must be one of `pass`, `fail`, `evidence-gap`, or `not-applicable`. Keep those separate from lifecycle status and `technical_verdict`.
 - A tool gap alone is not a defect. An unresolved required property is an evidence gap, and it blocks `technical_verdict: pass`. Required real-browser UI evidence is an unresolved required property, so build success, a running process, and an HTTP 200 cannot replace it.
+- Accept a source-backed check only when its record contains command, working directory, exit code, raw-output artifact path, tested source revision or checksum, expected result, and actual result. Missing fields are an evidence gap, not a pass.
 
 ## Delivery Gate
 
@@ -107,10 +108,11 @@ For a newly scaffolded UI, record starter-screen detection and entrypoint wiring
 6. Inspect the implementation evidence you were given, then run the relevant checks.
 7. For a UI candidate, independently use the real browser rather than accepting implementation-report claims. Record the run URL, browser, viewport, actions, observed outcomes, console errors, and linked artifacts. Detect a starter screen and verify entrypoint wiring before treating a new UI as application-ready.
 8. Record the action or command, the expected result, the actual result, the artifact reference, and the environment for every check.
-9. Separate direct evidence from inference.
-10. For a UI candidate, create a visual conformance map that links every visual acceptance criterion to the current approved contract revision, canonical combined visual decision references, expected proof, observed evidence, approved deviation if any, and result.
-11. For maintainability, create a conformance map that ties each criterion to an approved reference or repository convention, the inspected scope, the verification method, the expected and actual state, direct evidence, result, evidence gap, and blocking rationale.
-12. Decide release eligibility only after all applicable checks are reviewed and, when applicable, both the visual conformance map and the maintainability conformance map are reviewed.
+9. For any process created for verification, confirm it was coupled to an imminent bounded test and record PID, port, deadline, cleanup action, and cleanup result. A live process after verification is a blocking hygiene failure unless the user explicitly requested it remain running.
+10. Separate direct evidence from inference.
+11. For a UI candidate, create a visual conformance map that links every visual acceptance criterion to the current approved contract revision, canonical combined visual decision references, expected proof, observed evidence, approved deviation if any, and result.
+12. For maintainability, create a conformance map that ties each criterion to an approved reference or repository convention, the inspected scope, the verification method, the expected and actual state, direct evidence, result, evidence gap, and blocking rationale. Run configured project-native lint; if none is configured, record a production maintainability gap instead of inventing a pass.
+13. Decide release eligibility only after all applicable checks are reviewed and, when applicable, both the visual conformance map and the maintainability conformance map are reviewed.
 
 ## Checks To Cover
 
@@ -144,7 +146,7 @@ Treat build output, process launch, and HTTP reachability as evidence only for t
 
 For UI candidates, the evidence set must include real click through and, where relevant, fill/submit behavior for every interactive element, run URL, browser and viewport, action and observed state outcome, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain. Screenshots classify visual appearance only; they are supporting evidence, never interaction, state, API, or authorization evidence. For new scaffolds it also includes starter-screen detection and entrypoint wiring before any application-ready claim.
 
-For auth and staff functions, include negative `401` or `403` cases, cross-role and ownership denials, and relevant negative business-rule tests. For durable or booking-like data, use dedicated test data, verify persistence, and test concurrency according to the approved deployed-process model. Never point tests at a project live database. `npm audit` reports dependency findings only; it is not a full application-security verdict, authorization test, or production-readiness gate.
+For auth and staff functions, include negative `401` or `403` cases, cross-role and ownership denials, and relevant negative business-rule tests. Confirm protected booking read/cancel and staff inventory, reports, and manual settlement routes against the approved auth model. Reject default shared credentials, seeded SHA-256 passwords, or unaudited manual settlements. For durable or booking-like data, use dedicated test data, verify persistence, and test same-start, staggered-intersecting, containing, contained, and boundary-adjacent interval semantics, close-hours validation, and true simultaneous conflicts through separate database connections according to the approved deployed-process model. Never point tests at a project live database. `npm audit` reports dependency findings only; it is not a full application-security verdict, authorization test, or production-readiness gate.
 
 A UI candidate cannot pass on screenshots or visual inspection alone.
 
@@ -168,6 +170,8 @@ For each check, record all of the following:
 - Environment, including OS, runtime, browser, service URL, seed data, or fixtures when relevant.
 - Result.
 - Evidence source, such as console output, screenshots, logs, test output, or a report file.
+- Working directory, exit code, raw-output artifact path, and tested source revision or checksum.
+- For created test processes, PID, port, deadline, cleanup action, and cleanup result.
 - Skip reason, if the check was not run.
 - Local check results use `pass`, `fail`, `evidence-gap`, or `not-applicable`, and they do not change lifecycle status or `technical_verdict`.
 
@@ -495,6 +499,7 @@ Finish only when all of these are true:
 - For a UI candidate, required browser evidence records the actual run URL, browser, each viewport, actions and observed outcomes, console result, and linked artifacts; new scaffold work also proves starter-screen detection and entrypoint wiring before an application-ready claim.
 - For any code-affecting candidate, including UI candidates, the design and maintainability conformance map covers every required criterion with an approved reference or repository convention, inspected scope, verification method, expected and actual state, direct evidence, result, evidence gap, and blocking rationale, and it records cycle status, any human-approved `DEP-NNN` exception, exact bounded edges, current-source match, and evidence of no expansion or new risk when a cycle exists.
 - The report verifies the approved readiness target and architecture shape: prototype evidence preserves stated demo limits, and full-stack release-slice evidence covers its relevant API, persistence, shared-data, and authentication/authorization boundaries.
+- The report verifies every application obligation in scope is either evidenced as complete or remains explicitly pending or blocked; a slice pass or release-plan approval cannot finalize an application with unresolved required obligations.
 - For a UI candidate, missing, stale, superseded, noncanonical, or mismatched visual decision refs, missing required visual evidence, or any other verified blocking visual defect results in `technical_verdict: fail`.
 - For any code-affecting candidate, including UI candidates, approved boundary or public-contract violations, any new, forbidden, expanded, changed, unapproved, or unresolved cycle, an existing cycle without a matching human-approved `DEP-NNN` exception plus exact bounded edges and current-source rationale and direct evidence of no expansion or new risk, confirmed forbidden dependencies, configured complexity or size violations, evidence-backed mixed responsibility or risky abstraction, divergent duplicated business rules, risky dead code or unused dependencies, missing material boundary coverage, or any required maintainability property that remains unverifiable results in `technical_verdict: fail`.
 - The release decision is explicit.
