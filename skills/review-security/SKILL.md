@@ -86,6 +86,8 @@ Check the candidate for:
 
 For each area, ask whether an attacker can cross a trust boundary, reach a sensitive sink, and cause measurable harm.
 
+For JWT User/Staff candidates, independently inspect and, where safe, exercise the actual verification path: a fixed configured allowed algorithm, server signature verification, required expiry, no token-header algorithm selection, and an active subject plus current server-controlled role lookup. Check that production secrets have no hard-coded fallback, test-only secrets are isolated and labeled, passwords use Argon2 or bcrypt rather than raw SHA-256, no default shared administrator credential exists, and public registration cannot create Staff. Trace Bearer handling through the frontend's storage, refresh if any, expiry, logout, logging, and XSS or CSRF assumptions. Confirm the public matrix is limited to approved catalog, login, and registration paths; test protected `/api/user/...` ownership and `/api/staff/...` role boundaries with missing, tampered, missing-expiry, expired, wrong-role, and cross-user credentials. Missing, invalid, or expired credentials should be `401`; valid but unauthorized identities must follow the approved `403` or scoped `404` policy.
+
 ## Evidence Standard
 
 Every finding must include:
@@ -126,6 +128,8 @@ Tie severity to exploitability and impact, not to code smell.
 9. Write the result with evidence, severity, remediation, and claim status.
 
 For production-ready work, review the substantive backend API/database integration and frontend API use, staff roles and authorization, secrets/configuration, logging, durable storage, migrations, backups, and process/concurrency assumptions that apply to the approved scope. Recommend an independent security or operational audit when warranted by payment, sensitive data, or privilege risk; that recommendation is not an audit result. Use isolated nonproduction fixtures and never a project live database.
+
+For booking, stock, order, payment, and settlement work, verify that interval conflict control is not a unique-start-time shortcut, that concurrent requests use separate fixture connections matching the approved deployment model, and that a Staff-only manual settlement is idempotent, audited, and transactionally consistent with stock, order, payment, and financial totals. Record an untested required property as blocked rather than inferring safety from a report.
 
 ## Report Output
 
