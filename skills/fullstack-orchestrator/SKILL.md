@@ -19,13 +19,15 @@ The bootstrap does not apply to bug fixes, changes to existing apps, libraries, 
 
 ## Project Root And Artifact Contract
 
-Resolve `<project-root>` before inspecting lifecycle evidence or selecting a specialist:
+Resolve and verify one absolute `<project-root>` before emitting a routing summary, inspecting lifecycle evidence, creating lifecycle state, or writing an artifact:
 
-1. An explicit user target path wins.
-2. Otherwise, use the active workspace only when it is clearly the target application and is not this plugin repository.
-3. If the location is ambiguous, ask exactly one question: `Which project-root path should contain this new application?` Then stop for that required input. Do not ask a second routing question. After the root is resolved, a selected specialist may ask the discovery questions required by its own contract.
+1. Accept a root only when the host exposes it as the active registered or mounted project directory. Retain the exact absolute path and host evidence used to verify it.
+2. An explicit user target is the preferred candidate, but it must match that host-visible active directory. A product name, auto-created scratch directory, conversation label, plugin installation, or inferred shell current directory is never root evidence.
+3. If the host reports conflicting or multiple roots, state the exact absolute candidates, make one root-only proposal naming the recommended mounted root, and stop for confirmation. A `Yes` confirms only that proposed root; `No`, `Revision`, or custom text does not select another root. Do not add readiness or discovery questions to this response.
+4. If the host does not expose an active registered project directory, do not claim to see the shell working directory. Ask the user to open, mount, or register the intended absolute project directory with the host, then stop. The plugin does not bind a CLI project or workspace by itself.
+5. Once the host-visible path and target agree, use that exact absolute path as `<project-root>`. The first six-field routing summary MUST begin its observed evidence with `Resolved project root: <absolute path>` and state the verification source. Do not emit a routing summary or specialist output with a guessed, relative, scratch, or product-name root.
 
-All lifecycle artifacts and evidence paths are project-relative. Resolve every `artifacts/...` path in this contract as `<project-root>/artifacts/...`, including product, UX, architecture, planning, implementation, quality, security, release, proof, and manifest artifacts. Never write lifecycle artifacts into the plugin installation or repository, or into an unrelated current working directory. Keep `fullstack-skill-handoff/v1` `output_path` values as their existing project-relative `artifacts/...` paths; the root is execution context, not a new handoff field.
+All lifecycle artifacts and evidence paths are project-relative. Resolve every `artifacts/...` path in this contract as `<project-root>/artifacts/...`, including product, UX, architecture, planning, implementation, quality, security, release, proof, and manifest artifacts. Never write lifecycle artifacts into the plugin installation or repository, an auto-created scratch or product-name directory, or an unrelated current working directory. Keep `fullstack-skill-handoff/v1` `output_path` values as their existing project-relative `artifacts/...` paths; the root is execution context, not a new handoff field.
 
 Route only to these exact skill names:
 
@@ -76,11 +78,11 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 | `review-security` | `<project-root>/artifacts/security/<candidate-id>-security-review.md` |
 | `prepare-release` | `<project-root>/artifacts/release/<candidate-id>-release-plan.md` |
 
-## Decision Ingestion
+## Decision Ingestion And Discovery Proposals
 
-Before routing, process only the single visible active request:
+Before routing, process only the single visible active request. A `Discovery Proposal` is an input request, not a Review Record or Development Start Authorization. While `discover-product` has one active proposal, a direct `Yes` may accept only that exact recommendation and must be recorded with its exact question, displayed options, literal reply, and resulting decision facts before any next proposal. A `No`, `Revision`, or custom reply affects only that proposal. Never process batched discovery answers as multiple approvals, create a lifecycle approval from a discovery answer, or ask a lifecycle review or start question while a discovery proposal is active.
 
-If no request is active, skip decision ingestion and evaluate routing from recorded artifact evidence. Distinguish content review from development-start authorization before interpreting the answer. For a development-start question, Yes or No changes only the authorization record, never the already approved backlog's content approval or handoff status; Revision follows the development-start rule below. Each new question has a fresh unique request ID, not the consumed ID of its preceding review.
+If no lifecycle request is active, skip lifecycle decision ingestion and evaluate routing from recorded artifact evidence. The selected discovery specialist owns its single current proposal and must not issue a second proposal until the first resolves. Distinguish content review from development-start authorization before interpreting an active lifecycle answer. For a development-start question, Yes or No changes only the authorization record, never the already approved backlog's content approval or handoff status; Revision follows the development-start rule below. Each new question has a fresh unique request ID, not the consumed ID of its preceding review.
 
 1. Re-read its canonical `target_path` and immutable `content_revision`, then confirm the persisted request ID, question, options, and prompt evidence still match the shown question.
 2. A direct `Yes` or `No` is valid only when it is the unambiguous reply to that unchanged current question. Exact path-and-revision replies are accepted but not required. A host event, a summary, an active editor, another artifact, an old revision, a stale reply, or a duplicate consumed reply has no effect.
@@ -167,7 +169,7 @@ Examples of precise questions include `Which candidate ID should be evaluated?` 
 Every routing decision MUST begin with this six-field routing summary, in this order, with concise values:
 
 ```text
-Observed evidence: <resolved project-root; visible artifacts, handoffs, statuses, approvals, verdicts, and revision refs>
+Observed evidence: Resolved project root: <absolute host-verified path>; <verification source; visible artifacts, handoffs, statuses, approvals, verdicts, and revision refs>
 Selected next skill(s): <exact allowed skill name(s), or none>
 Why: <first matching routing rule>
 Missing prerequisites: <minimum missing evidence, or none>
@@ -184,7 +186,7 @@ The routing summary is not specialist output. When a skill is selected, immediat
 User: `Build a new inventory app. There are no artifacts yet.`
 
 ```text
-Observed evidence: No lifecycle artifacts or handoffs are visible.
+Observed evidence: Resolved project root: C:\\Projects\\inventory; host reports this directory as the active registered workspace; no lifecycle artifacts or handoffs are visible.
 Selected next skill(s): discover-product
 Why: Discovery is the earliest missing prerequisite.
 Missing prerequisites: Product idea evidence required by discover-product.
@@ -193,6 +195,15 @@ Stop condition: Continue inline with discover-product; stop only if it needs req
 Specialist output: discover-product
 <Run the discover-product contract in this same agent. Its questions or product brief are specialist output, not routing fields.>
 ```
+
+The first discovery proposal for this example may be:
+
+```text
+I recommend a production-ready full-stack application for inventory management, with a runnable frontend, backend API, and durable data. Proceed with this target?
+Yes / No / Revision / custom requirement
+```
+
+A `Yes` accepts only this shown target. It does not accept a later access, stack, database, payment, brief-review, or development-start question.
 
 ### Resume With Approved Brief
 
