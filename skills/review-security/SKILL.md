@@ -1,6 +1,6 @@
 ---
 name: review-security
-description: Use when reviewing an implementation candidate for exploitable security risks and release blockers.
+description: Use when reviewing an implementation candidate or an existing application codebase for exploitable security risks, authorization boundaries, and release blockers.
 ---
 
 # Review Security
@@ -10,6 +10,7 @@ Use this skill after `implement-feature` and alongside `verify-quality` to revie
 ## Use When
 
 - One implementation candidate needs an exploitability-focused security review.
+- An existing application codebase needs an exploitability-focused security audit, auth/RBAC review, or sensitive sink validation.
 - You need to validate trust boundaries, attack paths, and sensitive sinks.
 - The increment manifest and the completed item reports for the slice are available under the authorized development scope.
 
@@ -114,6 +115,14 @@ Use calibrated labels such as `low`, `medium`, `high`, and `critical` only when 
 - `low`, when the weakness is narrow, indirect, or hard to abuse.
 
 Tie severity to exploitability and impact, not to code smell.
+
+## Existing Project Security Audit Mode
+
+When invoked on an existing codebase:
+1. Reconcile threat boundaries across public callers, authenticated users, staff roles, and administrative functions.
+2. Trace sensitive sinks: authentication/password hashing, JWT verification, SQL injection vectors, and role-check enforcement.
+3. Validate privilege escalation paths and unauthenticated endpoint leakage.
+4. Issue an evidence-backed security review at `artifacts/security/<project-name>-security-review.md`.
 
 ## Workflow
 

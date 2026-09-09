@@ -43,6 +43,13 @@ If automatic discovery does not work, start explicitly with `/fullstack-orchestr
 
 To resume, open the target project and ask the agent to continue from its latest artifacts. Artifacts, not chat memory, determine progress.
 
+## Slash Commands
+
+This plugin provides two built-in slash commands for quick invocation:
+
+- **`/audit`**: Performs an immediate, evidence-based code quality, architectural maintainability, UI anti-slop, and security vulnerability audit on the current workspace. Produces formal reports at `artifacts/quality/` and `artifacts/security/`.
+- **`/review`**: Audits current codebase health and executes feature discovery to recommend high-value domain capabilities and a structured expansion roadmap.
+
 ## Workflow
 
 | Phase | Skill | Result |
@@ -61,6 +68,10 @@ Design and architecture must both be approved before planning. Quality and secur
 
 ## Important Rules
 
+- **Support for both greenfield builds and existing project reviews.** The plugin dynamically routes:
+  - **New application requests** (e.g. *"create a padel booking app"*): routes through the complete phased lifecycle (`discover-product` -> `design-experience` -> `define-architecture` -> `plan-delivery` -> `implement-feature` -> `verify-quality` -> `review-security` -> `prepare-release`).
+  - **Existing project review & audit requests** (e.g. *"review this project"*, *"audit codebase security"*): routes directly to `verify-quality` and `review-security` to generate formal, evidence-backed reports.
+  - **Feature recommendation requests on existing code** (e.g. *"recommend features for this existing web app"*): routes to `discover-product` in capability-expansion mode to inspect existing domain models and propose high-value enhancements without breaking existing foundations.
 - **Approve in chat with simplified choices.** Only one Review Record may be active across the lifecycle. Review prompts present streamlined choices: `Yes` (approve), `No` (reject and pause), and `Other` (user typing for comments/feedback). When using `ask_question`, options are simplified to `["Yes", "No"]`, relying on the default write-in 'Other' box for user comments and revision feedback. Any comment or feedback entered via `Other` / user typing is treated as actionable revision feedback. Discovery proposals are earlier input decisions, not artifact approval or development authorization. No long path command is required. Rejected work stays rejected until the user explicitly asks to revise it.
 - **Confirm development separately.** Once the brief, UX, blueprint, and backlog are approved, the agent asks a separate `Start development?` question with options `Yes`, `No`, and `Other` (user typing for comments/feedback), naming the first item and expected outcome. A `Yes` authorizes only that approved backlog scope and is saved for reuse; a `No` makes no application changes and is not polled again.
 - **Complete the accepted request.** The approved backlog keeps a Full-Request Obligation Ledger mapping every original requirement and accepted proposal to thin stories, slices, and evidence. Approval of an item, manifest, verifier, or slice release plan never defers another required obligation. After a released slice, the agent automatically re-evaluates the next Ready item under the existing authorization, or routes to planning repair if required work has no Ready item. It reports delivered and remaining scope and never says application-ready while required scope remains.
