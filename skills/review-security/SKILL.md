@@ -129,7 +129,7 @@ Tie severity to exploitability and impact, not to code smell.
 
 For production-ready work, review the substantive backend API/database integration and frontend API use, staff roles and authorization, secrets/configuration, logging, durable storage, migrations, backups, and process/concurrency assumptions that apply to the approved scope. Recommend an independent security or operational audit when warranted by payment, sensitive data, or privilege risk; that recommendation is not an audit result. Use isolated nonproduction fixtures and never a project live database.
 
-For booking, stock, order, payment, and settlement work, verify that interval conflict control is not a unique-start-time shortcut, that concurrent requests use separate fixture connections matching the approved deployment model, and that a Staff-only manual settlement is idempotent, audited, and transactionally consistent with stock, order, payment, and financial totals. Record an untested required property as blocked rather than inferring safety from a report.
+For reservation, inventory, order, payment, or transactional work, verify that concurrency and conflict controls prevent race conditions, that concurrent requests use separate fixture connections matching the approved deployment model, and that Staff/Admin operations and manual settlements are idempotent, audited, and transactionally consistent with underlying records and financial totals. Record an untested required property as blocked rather than inferring safety from a report.
 
 ## Report Output
 
