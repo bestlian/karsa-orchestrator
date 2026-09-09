@@ -63,6 +63,7 @@ Discovery must gather requirements as naturally, empathetically, and conversatio
    - **Access & Roles:** Clarify who the users are (e.g. public end-users, registered customers, staff operators, administrators) and what capabilities each role possesses.
    - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer platform-appropriate defaults (for Web: FastAPI + React/Vite; for Mobile: FastAPI + React Native/Expo or Flutter; or user-preferred technologies).
    - **Persistence & Transactions:** Clarify data storage needs and how transactional or payment flows are handled (e.g. manual operational recording, mock/simulated, or live payment gateway).
+   - **Brand Personality & Anti-Sameness Aesthetic:** Uncover the intended visual archetype and emotional tone of the product (e.g. *Utilitarian & High-Density*, *Editorial & Typographic*, *Warm & Humanistic*, *Industrial & Technical*, or *Playful & Dynamic*). Strictly prevent generic "AI Slop Design" (the mathematical average of the web: default Inter font + purple/blue gradients + white cards everywhere). If the user delegates choices, assign a distinct, domain-tailored aesthetic archetype rather than generic SaaS defaults.
 
 
 ## Evidence-First Workflow
