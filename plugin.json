@@ -1,3 +1,24 @@
 {
-  "name": "antigravity-fullstack-skills"
+  "name": "antigravity-fullstack-skills",
+  "version": "1.0.0",
+  "description": "Rigorous full-stack delivery orchestrator with anti-slop visual design gates, zero-guesswork discovery, and evidence-backed TDD for web and mobile applications.",
+  "author": "bestlian",
+  "license": "MIT",
+  "homepage": "https://github.com/bestlian/antigravity-fullstack-skills",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bestlian/antigravity-fullstack-skills.git"
+  },
+  "keywords": [
+    "antigravity",
+    "plugin",
+    "fullstack",
+    "orchestrator",
+    "anti-slop",
+    "tdd",
+    "fastapi",
+    "react",
+    "mobile",
+    "security"
+  ]
 }

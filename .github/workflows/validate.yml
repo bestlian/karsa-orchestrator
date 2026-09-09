@@ -1,0 +1,51 @@
+name: Plugin Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Plugin Manifest & Directory Structure
+        run: |
+          test -f plugin.json || { echo "plugin.json missing!"; exit 1; }
+          test -f LICENSE || { echo "LICENSE missing!"; exit 1; }
+          test -f README.md || { echo "README.md missing!"; exit 1; }
+          test -f CHANGELOG.md || { echo "CHANGELOG.md missing!"; exit 1; }
+          test -d skills || { echo "skills directory missing!"; exit 1; }
+          test -d rules || { echo "rules directory missing!"; exit 1; }
+          test -d dist || { echo "dist directory missing!"; exit 1; }
+          echo "Manifest and core plugin structure verified successfully."
+
+      - name: Verify All 9 Skills Exist
+        run: |
+          skills=(
+            "discover-product"
+            "design-experience"
+            "define-architecture"
+            "plan-delivery"
+            "fullstack-orchestrator"
+            "implement-feature"
+            "verify-quality"
+            "review-security"
+            "prepare-release"
+          )
+          for skill in "${skills[@]}"; do
+            if [ ! -f "skills/$skill/SKILL.md" ]; then
+              echo "Error: skills/$skill/SKILL.md is missing!"
+              exit 1
+            fi
+            if [ ! -f "dist/$skill.zip" ]; then
+              echo "Error: dist/$skill.zip is missing!"
+              exit 1
+            fi
+          done
+          echo "All 9 skills and distribution zip archives verified."
