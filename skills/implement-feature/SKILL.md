@@ -59,9 +59,9 @@ If the item is not ready, or the specs are not approved, do not start.
 5. Make the smallest code change that passes the test.
 6. Refactor only after the behavior is green.
 7. Keep repeating red, green, refactor until the item is complete.
-8. Update the increment manifest with the item report, slice state, current approval state, source revision or checksum, tests tied to that source, and unresolved resume gates. If the tested executable, configuration, or source scope changes, invalidate dependent evidence before routing.
-9. If required slice items remain, keep the next skill as `implement-feature`.
-10. Only when every required item report is complete and explicitly approved may the manifest move to `awaiting-approval`, then human approval, then `verify-quality` and `review-security`.
+8. Update the increment manifest with the item report, slice state, source revision or checksum, tests tied to that source, and unresolved resume gates. If the tested executable, configuration, or source scope changes, invalidate dependent evidence before routing.
+9. If required slice items remain under the authorized development scope, proceed automatically to implement the next Ready item with `implement-feature`.
+10. When every required item in the release slice is complete and verified with tests, update the increment manifest to complete and advance the slice directly to automated `verify-quality` and `review-security` verification without halting for intermediate per-story micro-approvals.
 
 ## Implementation Rules
 
@@ -248,15 +248,14 @@ next_skills:
   - implement-feature
 ```
 
-Record the technical verdict in the report body. The handoff status stays on the artifact lifecycle and only moves to `approved` after explicit human approval. While required slice items remain, emit only `implement-feature` in `next_skills`. After every required item report and the increment manifest are explicitly approved, replace that route and emit only `verify-quality` and `review-security` in `next_skills`.
+Record the technical verdict in the report body. The handoff status reflects the completion state of the technical work. While required slice items remain under the authorized development scope, emit only `implement-feature` in `next_skills` to continue implementing the next Ready story. When all required items in the slice are implemented, emit `verify-quality` and `review-security` in `next_skills`.
 
-## Chat Review Protocol
+## Milestone Review Protocol And Low-Bureaucracy Execution
 
-Label each canonical report or existing increment manifest with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and permit only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and the source user reply or decision evidence.
-
-Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask `Review [canonical path]@[revision]. Approve this exact content?` with `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for the unchanged shown question and requires no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the canonical artifact and show its bound pending question once.
-
-Review the item report and increment manifest separately and sequentially: do not create a manifest request until the report request resolves, and never let a Yes for one approve the other. Yes resolves the current record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Revision without meaningful feedback asks only for that feedback; sufficient feedback sets the current artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals and evidence, and asks again only after the revised artifact returns to `awaiting-approval`. Closed metadata cannot change acceptance, technical result, scope, first item, or outcome. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
+To prevent approval fatigue and eliminate unnecessary bureaucracy, individual item implementation reports and intermediate increment manifests do not each halt the implementation workflow for separate interactive human micro-approvals. The entire delivery scope was already reviewed and explicitly authorized by the human user in the `Development Start Authorization` (`AUTH-DEV`) on the complete delivery backlog.
+The implementer implements each story end-to-end with TDD, records test and visual proof, and proceeds seamlessly across authorized items in the slice.
+Human review takes place at the **Slice Increment Milestone** (when a working, tested increment of the product is ready and verified by automated quality and security checks), or when an unrecoverable blocking defect requires human guidance.
+If the human user explicitly requests a review of an individual implementation artifact, the single bound Review Record protocol is used with `Yes`, `No`, and `Revision` options.
 
 ## Technical Verdict
 

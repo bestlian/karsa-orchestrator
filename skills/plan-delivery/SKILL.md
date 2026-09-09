@@ -36,6 +36,7 @@ Create a backlog that is ready for `implement-feature` to pull one story at a ti
 
 The backlog must include:
 
+- Complete upfront story inventory: all vertical user stories covering the entire product scope across all epics and slices must be fully articulated, broken down, and formed upfront before requesting user approval.
 - Epics
 - Vertical stories that deliver user value end to end
 - Technical tasks that support a story, not replace it
@@ -68,6 +69,8 @@ Also reject filler language that hides missing scope or proof, including vague t
 
 ## Backlog Rules
 
+- **All-Stories-Upfront Principle**: All epics, release slices, and vertical user stories required to deliver the entire discovered and approved product scope must be formed, broken down, and detailed upfront in `artifacts/planning/delivery-backlog.md`. Never generate a partial backlog or postpone later stories to an unspecified future backlog. The human user must be presented with the complete roadmap, story inventory, and acceptance criteria upfront so they can review and approve the entire delivery plan before any development begins.
+- **Pre-Development Review Boundary**: The human user reviews and approves the complete delivery backlog in its entirety. Only after this backlog review is explicitly approved may the orchestrator request `Development Start Authorization` (`AUTH-DEV`). Development must not begin while any part of the known scope remains unplanned.
 - Start with epics, then break each epic into vertical stories.
 - Keep stories thin enough to build and verify in one focused pass.
 - Add technical tasks only when they support a story, shared platform work, or a clear dependency.
