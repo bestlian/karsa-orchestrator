@@ -1,6 +1,6 @@
 ---
 name: discover-product
-description: Use when a greenfield full-stack idea needs evidence-first discovery and an approval-ready product brief before design or architecture work.
+description: Use when a greenfield full-stack idea or an existing project needs evidence-first discovery, domain capability expansion, or an approval-ready product brief/feature proposal.
 ---
 
 # Discover Product
@@ -9,7 +9,7 @@ Turn an early full-stack idea into a clear product brief that a decision maker c
 
 ## Use When
 
-Use this skill when the request is about a new product, a greenfield feature set, or a rough idea that still needs product discovery.
+Use this skill when the request is about a new product, a greenfield feature set, or when an existing project needs product feature recommendations and capability expansion.
 
 Typical triggers:
 

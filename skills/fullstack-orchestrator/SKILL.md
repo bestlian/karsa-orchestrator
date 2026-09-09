@@ -13,7 +13,7 @@ The orchestrator does not replace specialist ownership, produce a separate orche
 
 ## Mandatory Bootstrap Scope
 
-This skill is the mandatory bootstrap before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow for an in-scope request. In scope includes natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app, including equivalent requests for a new product, MVP, or blank-slate application.
+This skill is the mandatory bootstrap before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow for an in-scope request. In scope includes natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app; or natural-language requests to review, audit, inspect quality/security, or recommend/discover feature expansion for an existing web or mobile project.
 
 The bootstrap does not apply to bug fixes, changes to existing apps, libraries, CLIs, general questions, or isolated pages or prototypes unless the user explicitly requests one as a new application. Outside this scope, do not claim this lifecycle owns the request.
 

@@ -1,6 +1,6 @@
 ---
 name: verify-quality
-description: Use when an implementation candidate needs an evidence-based quality gate before handoff or release.
+description: Use when an implementation candidate or an existing full-stack/web/mobile project needs an evidence-based quality, maintainability, architectural, or visual design review.
 ---
 
 # verify-quality
@@ -12,6 +12,7 @@ The anti-slop Delivery Gate is adapted from anti-slop v3.2.4 at commit `44be6877
 ## Use When
 
 - An implementation candidate exists and needs an evidence-based quality gate.
+- An existing project or codebase needs a comprehensive code quality, maintainability, architectural, or UI design audit.
 - You need to judge release eligibility from test and check results.
 - The increment manifest and the completed item reports for the slice are available under the authorized development scope.
 
@@ -97,6 +98,15 @@ Use a native browser capability first. A browser skill being present does not es
 A host-native `browser_subagent` may collect bounded browser interaction evidence only. The executing agent retains lifecycle ownership and must make all edits, approvals, routing, and joins.
 
 For a newly scaffolded UI, record starter-screen detection and entrypoint wiring before evaluating an application-ready claim. A starter screen, even if it loads, proves only the scaffold boundary.
+
+## Existing Project Audit Mode
+
+When invoked on an existing project without a pre-existing increment manifest:
+1. Inspect active source files, configuration, and dependencies directly across backend and frontend.
+2. Run configured test suites (e.g. `pytest`, `npm test`, `npm run build`) and record real execution output and exit codes.
+3. Audit modular architecture, boundary separation, cyclomatic complexity, and anti-slop visual design (detecting card soup, monolithic page stacking, lack of typography hierarchy).
+4. Classify any defects found as Critical, Major, Minor, or Informational.
+5. Issue an evidence-backed quality audit report at `artifacts/quality/<project-name>-quality-report.md`.
 
 ## Review Process
 
