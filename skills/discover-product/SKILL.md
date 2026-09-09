@@ -57,10 +57,12 @@ Discovery must gather requirements as naturally, empathetically, and conversatio
    - When key technical decisions (delivery target, roles, stack, persistence) need alignment, formulate recommendations conversationally with clear rationale, allowing the user to confirm, adjust, or completely change them without friction.
 
 3. **Material Decisions to Clarify Naturally:**
+   - **Platform & Device Target:** Clarify the target platform: Web (responsive desktop/tablet/mobile browser, SPA, SSR), Mobile App (iOS/Android native or cross-platform via React Native/Expo, Flutter), or multi-platform.
    - **Target & Scope:** Clarify whether the goal is a quick prototype/demo or a production-ready full-stack application with real persistence.
-   - **Access & Roles:** Clarify who the users are (e.g. public customers vs. staff/admin) and what each role can do.
-   - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer a modern default (e.g. FastAPI + React/Vite) or ask what technology they prefer.
-   - **Persistence & Payments:** Clarify data storage needs and how payments or financial transactions are handled (e.g. manual cashier verification vs. online gateway).
+   - **Domain & Core Workflows:** Understand the specific domain and primary user workflows (e.g. e-commerce checkout, appointment booking, SaaS workspace management, social content, logistics tracking, finance, etc.) without pre-assuming or forcing any specific industry logic.
+   - **Access & Roles:** Clarify who the users are (e.g. public end-users, registered customers, staff operators, administrators) and what capabilities each role possesses.
+   - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer platform-appropriate defaults (for Web: FastAPI + React/Vite; for Mobile: FastAPI + React Native/Expo or Flutter; or user-preferred technologies).
+   - **Persistence & Transactions:** Clarify data storage needs and how transactional or payment flows are handled (e.g. manual operational recording, mock/simulated, or live payment gateway).
 
 
 ## Evidence-First Workflow
