@@ -2,9 +2,11 @@
 
 This project follows Keep a Changelog.
 
-## [Unreleased]
+## [1.0.0] - 2026-09-09
 
 ### Added
+- Mandatory Background Process Cleanup: enforces that all background processes (dev servers, uvicorn/node daemon tasks, background test runners, or browser subagents) started during development, feature implementation, testing, or quality verification MUST be terminated immediately when development, testing, verification, or release handoff concludes, without requiring user confirmation. Ensures ports are completely released for user convenience without socket binding errors (such as Windows Error 10013).
+- Simplified Confirmation & Review Options: streamlines all interactive confirmation and review prompts (`ask_question`, Chat Review Protocol, Development Start Authorization, and Discovery proposals) to strictly `Yes`, `No`, and `Other` (user typing for comments/feedback). When using `ask_question`, options are simplified to `["Yes", "No"]`, relying on the default write-in 'Other' box for user comments and revision feedback.
 - Strict Anti-Slop & Anti-UI Sameness hard gates: restores the true purpose of anti-slop by outlawing AI design monoculture (uniform card soup, uncritical Inter/system font fallback, unmotivated purple/cyan gradients, neon glow borders, and cookie-cutter 4-metric dashboard templates); mandates intentional type pairings, bespoke semantic color identity, content-driven layout grammar (flat divided rows, split panes, asymmetrical grids), and a signature design moment in `design-experience`, with violations enforced as release-blocking Major defects in `verify-quality`.
 - Natural conversational discovery & zero-guesswork principle: requirements gathering during discovery is natural and conversational; strictly prohibits the model from guessing or fabricating business rules, pricing, or operating policies unless the user explicitly delegates decisions.
 - All-stories-upfront backlog review: mandates that all user stories across all epics and release slices must be fully articulated and formed upfront in `delivery-backlog.md`, allowing the human user to review and approve the complete delivery roadmap before development authorization (`AUTH-DEV`) or coding begins.

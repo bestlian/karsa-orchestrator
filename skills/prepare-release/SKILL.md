@@ -140,6 +140,7 @@ Finish only when all of these are true:
 10. Preserve distributable license and notice text, including `THIRD_PARTY_NOTICES.md` attribution pointers.
 11. Never let human artifact approval override an ineligible upstream technical verdict.
 12. Keep `PASS | FAIL` as the release plan verdict and keep report verdicts separate.
+13. Ensure all background processes, dev servers, and daemon tasks from earlier phases are completely terminated before presenting the release plan, ensuring clean ports and environment for user handover without requiring user confirmation.
 
 ## Handoff
 
@@ -183,11 +184,11 @@ next_skills: []
 
 ## Chat Review Protocol
 
-Label the canonical release plan with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and permit only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, `Yes`/`No`/`Revision` options, prompt evidence, and the source user reply or decision evidence.
+Label the canonical release plan with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and permit only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
 
 Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/release/<candidate-id>-release-plan.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the plan and show the bound pending question once.
 
-Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Revision without meaningful feedback asks only for that feedback; sufficient feedback sets the plan to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected evidence and approvals, and asks again only after the revised plan returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
+Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback sets the plan to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected evidence and approvals, and asks again only after the revised plan returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
 The plan stops before deployment. If deployment is requested, hand off to the deployment flow under separate human authorization.
 

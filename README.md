@@ -61,8 +61,8 @@ Design and architecture must both be approved before planning. Quality and secur
 
 ## Important Rules
 
-- **Approve in chat.** Only one Review Record may be active across the lifecycle. It binds a displayed Yes/No/Revision question to the canonical artifact path, content revision, request ID, prompt evidence, and eventual source reply. A direct `Yes` or `No` is valid only for that unchanged current question; `Revision` collects meaningful freeform feedback. Discovery proposals are earlier input decisions, not artifact approval or development authorization. No long path command is required. Rejected work stays rejected until the user explicitly asks to revise it.
-- **Confirm development separately.** Once the brief, UX, blueprint, and backlog are approved, the agent asks a separate `Start development?` Yes/No/Revision question naming the first item and expected outcome. A `Yes` authorizes only that approved backlog scope and is saved for reuse; a `No` makes no application changes and is not polled again.
+- **Approve in chat with simplified choices.** Only one Review Record may be active across the lifecycle. Review prompts present streamlined choices: `Yes` (approve), `No` (reject and pause), and `Other` (user typing for comments/feedback). When using `ask_question`, options are simplified to `["Yes", "No"]`, relying on the default write-in 'Other' box for user comments and revision feedback. Any comment or feedback entered via `Other` / user typing is treated as actionable revision feedback. Discovery proposals are earlier input decisions, not artifact approval or development authorization. No long path command is required. Rejected work stays rejected until the user explicitly asks to revise it.
+- **Confirm development separately.** Once the brief, UX, blueprint, and backlog are approved, the agent asks a separate `Start development?` question with options `Yes`, `No`, and `Other` (user typing for comments/feedback), naming the first item and expected outcome. A `Yes` authorizes only that approved backlog scope and is saved for reuse; a `No` makes no application changes and is not polled again.
 - **Complete the accepted request.** The approved backlog keeps a Full-Request Obligation Ledger mapping every original requirement and accepted proposal to thin stories, slices, and evidence. Approval of an item, manifest, verifier, or slice release plan never defers another required obligation. After a released slice, the agent automatically re-evaluates the next Ready item under the existing authorization, or routes to planning repair if required work has no Ready item. It reports delivered and remaining scope and never says application-ready while required scope remains.
 - **Protect authenticated full-stack work.** Production-ready User/Staff applications require secure JWT verification, Argon2 or bcrypt passwords, environment-backed production secrets without fallbacks, secure first-Staff bootstrap, server-side active-role and ownership checks, and public registration that cannot assign Staff. Only approved catalog, login, and registration paths may be public; protected frontend calls use the documented Bearer/session/logout model. HTTPS is required for production deployment planning, not deployed by this suite.
 - **Build real production-ready applications.** A production-ready full-stack target has substantive `backend/` and `frontend/` deliverables: a runnable API with database integration and a client that consumes it, with start, environment, and applicable test commands. Empty folders or `localStorage` substitutes fail. Approved payment simulation remains simulation, never a live-payment-ready claim.
@@ -74,6 +74,7 @@ Design and architecture must both be approved before planning. Quality and secur
 - **Finish the authorized scope.** The backlog maintains an obligation ledger for every original requirement and accepted proposal. A slice or release-plan approval does not waive pending work; the router advances one eligible item at a time or repairs planning when no required item is Ready. Only a specific human out-of-scope decision can waive a named requirement.
 - **Require reproducible evidence.** Test records name command, working directory, exit code, raw-output path, and tested source identity. Browser claims require captured actions, console results, and screenshot artifacts. Test servers are time-bounded and cleaned up unless the user explicitly asks to leave one running.
 - **Keep the gates.** Blocking quality or security findings return through approved remediation and re-verification. The suite does not deploy or self-approve.
+- **Automatic background process cleanup.** All background processes, development servers, test runners, or daemon tasks started during development or verification are terminated immediately upon completion of the respective phase, without requiring user confirmation. This guarantees that user ports (e.g. 8000, 5173) are always freed, preventing socket binding errors and port conflicts during subsequent manual runs.
 
 ## Artifacts
 
@@ -93,6 +94,14 @@ agy plugin install .
 ```
 
 **Manual ZIPs:** extract all nine packages from [dist/](dist/) into `.agents/skills/<skill-name>/`. Each package contains only `SKILL.md` and `THIRD_PARTY_NOTICES.md`; it does not install the global rule.
+
+## Troubleshooting & Environment Notes
+
+### Port Binding Conflicts (WinError 10013 / EADDRINUSE)
+The plugin strictly terminates all background daemon tasks and test processes upon completion. If you previously ran dev servers outside the plugin, ensure earlier processes on ports `8000` or `5173` are stopped before launching new services.
+
+### Browser Testing & External Driver Dependencies
+In environments where external CDN package downloads (e.g. Playwright browser binaries) are restricted by corporate firewalls or transient network issues, `verify-quality` records the missing browser driver as an **environmental evidence gap** rather than halting execution. All backend integration, security role isolation, and frontend compilation checks continue to execute and validate the deliverable.
 
 ## Changes and Attribution
 
