@@ -165,6 +165,11 @@ Define:
 - role-based differences, if any;
 - deep links or cross-links that matter to the journey.
 
+#### Multi-View Navigation & Anti-Monolith Page Stacking Rules:
+1. **Anti-Monolith Single-Page Stacking Prohibition:** Applications must never be structured as an endless single-scroll catch-all page where unrelated user journeys and feature sections are stacked vertically. Provide distinct navigation views (tabs, dedicated routes, or drawer/modal surfaces).
+2. **Core Journey vs. Add-On Separation:** The primary customer conversion flow (e.g. core booking or purchasing) must remain streamlined and frictionless. Optional cross-sells and add-ons (such as equipment rentals or refreshments) must NEVER be placed as mandatory scroll hurdles in the path of the primary conversion. Add-ons must be accessible via dedicated tabs, non-blocking floating cart summaries, or contextual opt-in drawer/modal steps with an immediate 1-click checkout option for the core service.
+3. **Role Surface Isolation:** Privileged operational surfaces (such as staff cashier consoles, admin management panels, or inventory controls) must have dedicated, isolated views/routes/tabs separate from customer-facing discovery and booking surfaces.
+
 ### 5. Screen Inventory
 
 List every screen or view needed to cover the approved brief.

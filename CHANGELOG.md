@@ -5,6 +5,10 @@ This project follows Keep a Changelog.
 ## [Unreleased]
 
 ### Added
+- Anti-monolith page stacking rules prohibiting single-page endless scroll sprawl for disparate user journeys; applications must maintain structured navigation views (tabs, dedicated routes, or drawers).
+- Core journey vs. add-on separation requiring non-blocking quick-checkout for primary services (e.g. court bookings) and opt-in drawer/modal/tab flows for secondary add-ons (rentals and canteen).
+- Privileged staff operational surface isolation requiring dedicated views or portals separated from customer booking views.
+- Delivery Gate requirement in release preparation enforcing a user-facing README.md at project root with quickstart, credentials, and test documentation.
 - Full-request obligation ledgers that map original requirements and accepted proposals to thin stories, slices, evidence, and explicit scope-reduction decisions; slice release approval now re-evaluates remaining authorized work instead of ending the request.
 - Production-ready User/Staff JWT baseline covering fixed-algorithm signature verification, expiry, active subject and role lookup, Argon2/bcrypt, secure first-Staff bootstrap, ownership/RBAC endpoint matrix, Bearer/session threat model, and negative token tests.
 - Required interval, concurrency, transaction, settlement audit, and financial-total verification for booking, stock, order, and payment scope, using isolated repeatable fixtures.
