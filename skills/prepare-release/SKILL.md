@@ -85,7 +85,7 @@ Set the verdict to `FAIL` if any of these are missing or unresolved:
 3. Unresolved approvals, blockers, or remediation-only verdicts (`conditional`, `fail`, `block`).
 4. For a UI candidate, missing required real-browser evidence, including run URL, viewport, actions and observed outcomes, console result, and linked artifacts. Build success, a running process, or HTTP 200 cannot substitute.
 5. Archive manifest checks.
-6. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`.
+6. Required third party notice preservation, including an attribution pointer to `THIRD_PARTY_NOTICES.md`, and a comprehensive user-facing `README.md` in the project root documenting project purpose, quickstart setup, prerequisites, seed accounts, and automated test execution.
 7. For a production-ready target, substantive backend/frontend API integration, durable data, applicable staff authorization, configuration/secrets, migrations/backups, logging/operations, concurrency/process evidence, and required independent audit recommendations or explicit scope limits.
 8. A Full-Request Obligation Ledger showing every required original `FR-*` and accepted proposal as delivered in the candidate set, explicitly remaining for a later slice, blocked, or explicitly scope-reduced by the user. Any remaining required entry makes an application-complete claim `FAIL`, even when this candidate slice can be released.
 

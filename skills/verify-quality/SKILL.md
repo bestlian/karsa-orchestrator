@@ -211,6 +211,9 @@ For UI candidates, classify each of these verified conditions as a release-block
 - The implementation uses a rejected default listed in the approved contract.
 - A required signature moment is missing.
 - The implementation loses hierarchy, density, or surface treatment explicitly required by the approved contract.
+- The implementation commits a Monolith Page Stacking violation by appending multiple distinct user journeys into a single continuous scroll view instead of structured navigation views (tabs, dedicated routes, or drawers).
+- A secondary cross-sell or add-on (such as equipment rentals or canteen ordering) forms a mandatory visual or physical scroll hurdle blocking the direct checkout of a primary service (e.g. court slot booking).
+- Privileged operational/staff surfaces (such as cashier desks or inventory management) are stacked directly beneath or mixed into customer booking screens instead of isolated into dedicated views or role-gated portals.
 - A fidelity claim is unsupported by equivalent evidence.
 - A required comparison is missing or its omission is unexplained.
 - Required real-browser capability or evidence is missing, blocked, or replaced by a build, process, HTTP 200, screenshot, or static check.
