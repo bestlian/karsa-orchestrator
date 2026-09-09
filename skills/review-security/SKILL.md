@@ -11,14 +11,14 @@ Use this skill after `implement-feature` and alongside `verify-quality` to revie
 
 - One implementation candidate needs an exploitability-focused security review.
 - You need to validate trust boundaries, attack paths, and sensitive sinks.
-- The approved increment manifest and the approved item reports for the slice are available.
+- The increment manifest and the completed item reports for the slice are available under the authorized development scope.
 
 ## Do Not Use When
 
 - You need general quality verification, release planning, or deployment.
 - You need to self-approve or scan external systems.
 - You do not have a concrete candidate or threat surface.
-- The increment manifest or any required item report is unapproved.
+- The increment manifest or any required item report is missing, incomplete, or outside the authorized scope.
 
 ## Goal
 

@@ -40,23 +40,28 @@ Required inputs when available:
 - constraints, deadlines, budget limits, or compliance concerns;
 - the person who can approve the brief.
 
-## Proposal-Based Discovery
+## Natural Conversational Discovery & Zero-Guesswork Principle
 
-After the orchestrator has supplied a resolved root, ask only one active `Discovery Proposal` at a time. A proposal makes one concrete, domain-informed recommendation and ends with one binary question. Display the exact question and these response paths: `Yes` (accept this exact proposal), `No` (reject it without selecting an alternative), `Revision` (give changes), or custom freeform text (state a different requirement). Never ask an either-or question that makes a bare `Yes` ambiguous, never batch questions, and never treat one reply as approval for several choices. A reply may resolve only the currently displayed proposal; answers to earlier, later, summary, or implied questions have no effect.
+Discovery must gather requirements as naturally, empathetically, and conversationally as possible. The model must never operate like a rigid robot going through a bureaucratic checklist, and it must NEVER guess or fabricate requirements unless the user explicitly delegates decisions.
 
-Use prompt evidence to choose the recommendation, not a product-specific script. If the delivery target is missing, begin with a self-contained target proposal such as: `I recommend a production-ready full-stack application for [prompt-specific goal], with a runnable frontend, backend API, and durable data. Proceed with this target?` A `Yes` confirms only that shown target, including its separately recorded readiness target and architecture shape; it never approves a brief, architecture, backlog, or development start. If the evidence instead supports a prototype or a frontend-only result, make that single recommendation explicit. `MVP` remains a separate optional scope or release label that must map to the accepted readiness target.
+### Core Rules for Natural Discovery:
 
-After an accepted target proposal, ask the next missing material decision as a new proposal. Normally, use this sequence when the prompt has not already settled it:
+1. **Zero Guesswork / No Unfounded Assumptions:**
+   - The model must NEVER guess, assume, or invent business domain requirements, entity models, user roles, pricing logic, or operational flows.
+   - If an aspect of the application is unspecified or ambiguous (e.g. how users book, what roles exist, what services are offered, what payment methods are supported), the model MUST ask the user directly, naturally, and conversationally.
+   - **Exception (Explicit Delegation):** If and ONLY IF the user explicitly delegates choices to the model (e.g., *"terserah kamu"*, *"kamu yang tentukan yang terbaik"*, *"buatkan standar saja"*, *"saya serahkan sepenuhnya"*), THEN the model may propose sensible industry-standard conventions. When doing so, the model must explicitly document these choices in the brief as "User-Delegated Defaults".
 
-1. Access and roles: recommend one least-privileged User/Staff or service-access model supported by the prompt, name the Staff authority boundary, and ask whether to use that exact model. For an authenticated production-ready full-stack target, record JWT-protected privileged work as an early dependency, public registration that cannot assign Staff, and secure first-Staff bootstrap without world-known credentials. Never silently defer staff authorization or propose a shared default administrator password, raw SHA-256 password scheme, or hard-coded token secret.
-2. Stack: preserve an explicit or existing stack. Otherwise offer `FastAPI` for the backend and `React` with `Vite` for the frontend, then ask whether to use that exact offer once.
-3. Persistence: for an explicitly local, single-process scope, recommend SQLite with migrations, constraints, and persistence tests. For shared, scaled, or operationally concurrent use, recommend one proportionate server database, normally PostgreSQL, or MySQL only when the prompt's environment or operations evidence favors it; explain why and ask for that exact database. SQLite is not mandatory, and no database is confirmed until its own proposal receives `Yes`.
-4. Payments: for local operations without gateway credentials, recommend authenticated staff recording an actual manual or cash settlement against the payment record. Do not call that a live gateway payment, default a fake QR code, or mark a simulated gateway as paid. If a gateway is requested, ask for its provider and approved configuration boundary; report the work blocked until the required configuration is available and never request or invent secrets in chat.
-5. Only then ask any remaining material scope, visual, operations, or deployment-boundary proposal. Do not require trivia, personal facts, or open-ended questions when a reasonable recommendation can be made. If fixture people, brand values, inventory, or similar facts are absent, label them as proposed sample fixtures rather than real data.
+2. **Conversational, Human-Centric Dialogue:**
+   - Engage the user in a natural conversation: listen to their idea, reflect understanding of their vision, and ask open-ended or guiding questions about their target users, key workflows, and desired outcomes.
+   - Avoid robotic, repetitive scripted prompts. Adapt the conversational flow to the user's responses, language, and depth of detail.
+   - When key technical decisions (delivery target, roles, stack, persistence) need alignment, formulate recommendations conversationally with clear rationale, allowing the user to confirm, adjust, or completely change them without friction.
 
-Record the answer after each proposal before asking the next one. A production-ready local or single-site scope is not a blanket claim that the application is deployed or internet-ready. Capture only operations and deployment details that materially affect the accepted target; do not prescribe universal Kubernetes, managed services, or other gold plating.
+3. **Material Decisions to Clarify Naturally:**
+   - **Target & Scope:** Clarify whether the goal is a quick prototype/demo or a production-ready full-stack application with real persistence.
+   - **Access & Roles:** Clarify who the users are (e.g. public customers vs. staff/admin) and what each role can do.
+   - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer a modern default (e.g. FastAPI + React/Vite) or ask what technology they prefer.
+   - **Persistence & Payments:** Clarify data storage needs and how payments or financial transactions are handled (e.g. manual cashier verification vs. online gateway).
 
-A `production-ready` target requires the substantive backend and frontend acceptance boundary defined by this suite. If a user rejects a proposed target, do not silently downgrade it, choose its opposite, or begin another decision; ask only for the replacement target or revision needed to form the next proposal.
 
 ## Evidence-First Workflow
 

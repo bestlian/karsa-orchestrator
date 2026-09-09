@@ -5,6 +5,9 @@ This project follows Keep a Changelog.
 ## [Unreleased]
 
 ### Added
+- Natural conversational discovery & zero-guesswork principle: requirements gathering during discovery is natural and conversational; strictly prohibits the model from guessing or fabricating business rules, pricing, or operating policies unless the user explicitly delegates decisions.
+- All-stories-upfront backlog review: mandates that all user stories across all epics and release slices must be fully articulated and formed upfront in `delivery-backlog.md`, allowing the human user to review and approve the complete delivery roadmap before development authorization (`AUTH-DEV`) or coding begins.
+- Streamlined low-bureaucracy implementation: eliminates micro-approval fatigue by treating per-story implementation reports and intermediate slice manifests as automated developer execution records under the human-granted `AUTH-DEV`; consolidates human review touchpoints to meaningful milestone boundaries (working slice demo, quality/security verification, and release plan).
 - Anti-monolith page stacking rules prohibiting single-page endless scroll sprawl for disparate user journeys; applications must maintain structured navigation views (tabs, dedicated routes, or drawers).
 - Core journey vs. add-on separation requiring non-blocking quick-checkout for primary services (e.g. court bookings) and opt-in drawer/modal/tab flows for secondary add-ons (rentals and canteen).
 - Privileged staff operational surface isolation requiring dedicated views or portals separated from customer booking views.

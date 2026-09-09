@@ -13,14 +13,14 @@ The anti-slop Delivery Gate is adapted from anti-slop v3.2.4 at commit `44be6877
 
 - An implementation candidate exists and needs an evidence-based quality gate.
 - You need to judge release eligibility from test and check results.
-- The approved increment manifest and the approved item reports for the slice are available.
+- The increment manifest and the completed item reports for the slice are available under the authorized development scope.
 
 ## Do Not Use When
 
 - You are still implementing the feature.
 - You need architecture planning, release planning, or deployment instead of verification.
 - You need to self-approve the candidate.
-- The increment manifest or any required item report is unapproved.
+- The increment manifest or any required item report is missing, incomplete, or outside the authorized scope.
 
 ## Goal
 
@@ -40,7 +40,7 @@ The report must show what was checked, what was skipped, what passed, what faile
 - Do not invent evidence, environment details, or results.
 - If a check cannot run, record the reason and classify the gap clearly. A missing required UI browser check is a blocking evidence gap, not a waivable skipped check.
 - Treat implementation-report claims as leads, not proof. Independently inspect current source, config, manifests, conventions, and tests before you trust them.
-- Before QA or resume, re-read every required source report at its exact path and revision, verify its approval and technical result, and compare each fact with the increment manifest and candidate. A mismatch blocks the verdict; labels, screenshots, summaries, and metadata normalization cannot promote it. Tie the tested code to a stable revision or checksum of executable, configuration, and source scope only; governance documents and review state do not invalidate evidence. Invalidate affected evidence when that scope changes.
+- Before QA or resume, re-read every required source report at its exact path and revision, verify its technical result and scope authorization, and compare each fact with the increment manifest and candidate. A mismatch blocks the verdict; labels, screenshots, summaries, and metadata normalization cannot promote it. Tie the tested code to a stable revision or checksum of executable, configuration, and source scope only; governance documents and review state do not invalidate evidence. Invalidate affected evidence when that scope changes.
 - Require approved maintainability architecture decisions, backlog criteria, implementation evidence, repository conventions, source, manifests, configuration, and tests as relevant inputs.
 - Use configured repository checks for dependency direction, cycles, complexity, size, dead code, and unused dependencies when they exist. If they do not exist, inspect directly where feasible and record the lower assurance.
 - For cycles, block any new, forbidden, expanded, changed, unapproved, or unresolved cycle. An unchanged existing cycle may avoid that specific defect only when a human-approved `DEP-NNN` exception exists, the exact bounded edges and rationale match current source, and direct evidence shows no expansion or new risk. That exception does not waive other maintainability failures, and acyclic candidates pass this criterion.
