@@ -5,6 +5,7 @@ This project follows Keep a Changelog.
 ## [1.0.0] - 2026-09-09
 
 ### Added
+- Default System Browser Strategy: prioritizes the user's locally installed PC browser (Microsoft Edge on Windows, Google Chrome on macOS/Linux) to prevent external CDN 404 driver download failures, eliminating 200MB+ download friction and supporting offline browser automation.
 - Slash Commands `/audit` and `/review`: added native Antigravity commands for instant codebase auditing and feature recommendation workflows without writing long prompts.
 - Existing Project Review & Feature Discovery: enables the plugin to natively handle existing projects for comprehensive code quality, maintainability, architectural, and security audits (`verify-quality` + `review-security`), as well as domain feature recommendations (`discover-product`), without forcing re-scaffolding of existing code.
 - Mandatory Background Process Cleanup: enforces that all background processes (dev servers, uvicorn/node daemon tasks, background test runners, or browser subagents) started during development, feature implementation, testing, or quality verification MUST be terminated immediately when development, testing, verification, or release handoff concludes, without requiring user confirmation. Ensures ports are completely released for user convenience without socket binding errors (such as Windows Error 10013).

@@ -85,15 +85,20 @@ For UI candidates, also require all of the following:
 - The visual acceptance criteria.
 - The expected proof for each visual acceptance criterion.
 
-## Browser Capability And Recovery
+## Browser Capability, Default PC Browser Strategy & Recovery
 
-Use a native browser capability first. A browser skill being present does not establish that its runtime, browser binary, or driver works. Before a UI candidate can pass:
+Prioritize the user's default, locally installed system browser (such as Microsoft Edge on Windows or Google Chrome on macOS/Linux) to eliminate external CDN dependencies, heavy multi-hundred megabyte downloads, and CDN 404 driver failures:
 
-1. Launch a real browser against the project-bound run URL and exercise the required views, states, and interactions.
-2. If the native capability is unavailable, use only a documented, supported install or configuration path within current permission and the project boundary. Do not disable safeguards or fabricate undocumented commands.
-3. If a built-in driver download fails, record the exact failure reason and output, then try one supported alternative when it exists. Do not repeat a failed download blindly.
-4. Ask a human before any external download, global install, elevated permission, account change, or other action outside the project boundary.
-5. If a permitted working browser cannot be recovered, record a blocking evidence gap and issue `technical_verdict: fail` for the UI candidate. Do not use static checks, screenshots, build success, or HTTP 200 as substitution.
+1. **System Browser First**: Always prioritize launching the user's default installed PC browser:
+   - On Windows: Use Microsoft Edge (`channel: 'msedge'` or CLI `& 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' --headless ...`) or Google Chrome (`channel: 'chrome'`). Microsoft Edge is pre-installed on Windows 10/11 and runs completely offline with 0 MB download.
+   - On macOS: Use Google Chrome, Microsoft Edge, or Safari.
+   - On Linux: Use installed Chromium or Google Chrome.
+2. **Immediate CDN Drop Fallback**: If an internal driver or subagent attempts an external CDN download (e.g. Azure Playwright CDN) and encounters a connection timeout or 404 Not Found:
+   - Do NOT loop, hang, or block on the failed external download.
+   - Immediately fallback to the local installed PC browser (`msedge` or `chrome`).
+   - If headless UI capture is needed, invoke the local browser binary directly via headless flags (e.g. `msedge --headless --screenshot="..." <url>`).
+3. **Evidence Recording**: Exercise the required views, states, and interactions. Record the browser used (e.g. `Microsoft Edge (System)` or `Google Chrome (System)`), run URL, viewport, observed state outcomes, and console results.
+4. **Environmental Gap Recording**: If no working browser can be launched on the host machine, record the environmental evidence gap clearly while validating via automated HTTP integration test suites, component test harnesses, and frontend build verification.
 
 A host-native `browser_subagent` may collect bounded browser interaction evidence only. The executing agent retains lifecycle ownership and must make all edits, approvals, routing, and joins.
 

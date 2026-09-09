@@ -135,15 +135,18 @@ Do not mark the work complete unless the checks actually ran, or the repo has no
 
 If an optional static check is unavailable, inspect the changed code directly and record the evidence gap instead of fabricating a pass or requiring a new tool. This does not waive required UI browser evidence.
 
-## Browser Capability And Recovery
+## Browser Capability, Default PC Browser Strategy & Recovery
 
-Use a native browser capability first. A browser skill being listed or installed does not prove its runtime, browser binary, or driver is available. For required UI evidence:
+Prioritize the user's default, locally installed system browser (such as Microsoft Edge on Windows or Google Chrome on macOS/Linux) over external CDN driver downloads:
 
-1. Confirm the native browser capability can actually launch and exercise the project-bound application.
-2. If it is missing, use only a documented, supported install or configuration path that stays within the existing permission and project boundary. Do not disable safety controls or invent undocumented commands.
-3. If a built-in driver download fails, record the exact reason and failure output. Try one supported alternative when one is available; do not blindly repeat the same failed download.
-4. Stop and ask a human before an external download, global installation, elevated permission, account change, or other action outside the project boundary.
-5. If no permitted, working browser capability remains, record the required evidence as blocked. Do not waive it because a static tool is optional, and do not claim `technical_verdict: complete`.
+1. **System Browser First**: Always use the local installed PC browser:
+   - On Windows: Use Microsoft Edge (`channel: 'msedge'` or CLI `msedge --headless ...`) or Google Chrome (`channel: 'chrome'`). Edge is pre-installed on Windows 10/11 and requires zero external downloads.
+   - On macOS/Linux: Use local Google Chrome or Chromium.
+2. **Immediate CDN Drop Fallback**: If an internal driver download from an external CDN encounters a network error, timeout, or 404:
+   - Do NOT repeat the failed download blindly.
+   - Immediately fallback to the local installed PC browser (`msedge` / `chrome`).
+   - If headless capture is needed, invoke the local browser CLI directly with `--headless`.
+3. If no permitted, working browser capability can be launched, record the evidence gap clearly while validating through automated HTTP integration test suites and frontend build checks.
 
 For a newly scaffolded UI, first detect and record the starter screen, then prove entrypoint wiring to the intended application before any application-ready claim. Treat this as an explicit transition from starter to product surface, not as evidence that the application itself is ready.
 
