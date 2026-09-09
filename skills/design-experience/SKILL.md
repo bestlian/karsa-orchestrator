@@ -66,9 +66,15 @@ Use this compact filter while shaping the experience spec.
 - On small screens, reflow content instead of shrinking everything.
 - Keep contrast, keyboard access, visible focus, and reduced motion checks explicit.
 - Use restrained motion only when it clarifies feedback or transition.
-- Evaluate card soup, excessive pills, arbitrary gradients, oversized operational heroes, generic icon grids, unjustified glass, template-first composition, and decorative motion as conditional anti-template risks, not universal bans.
-- Accept or reject each notable visual choice according to product purpose, content, user tasks, and operating context; record the product-specific reason either way.
-- Treat restrained operational design as valid and potentially distinctive when deliberate density, hierarchy, typography, navigation, or wayfinding gives it a clear product-specific character.
+- **Anti-Slop Hard Gates & Anti-UI Sameness Mandate (Ban Generic AI Slop):**
+  1. **Strictly Ban "Card Soup":** Forbid wrapping every section, metric, and list item in uniform rounded white boxes (`bg-white rounded-xl shadow border border-gray-100`). Mandate content-driven compositional grammar: use divided lists with subtle borders, borderless grouped sections with varied background values, full-bleed split panes, asymmetric layouts, or editorial typographic hierarchy instead of endless nesting in floating card containers.
+  2. **Strictly Ban Uninspired Default Fonts:** Forbid uncritical fallback to default system fonts or plain Inter/Roboto as the sole typographic identity. Mandate an intentional Type Pairing: a distinctive Display/Heading font that captures the product's brand archetype (e.g. geometric sans, editorial serif, high-density mono, or grotesque sans) paired with a clean, highly readable Body font.
+  3. **Strictly Ban Cliché AI Gradients & Glassmorphism:** Forbid unmotivated purple-to-cyan, indigo-to-violet linear gradients, neon glowing borders, and blurry frosted glass containers that serve no navigational or informational purpose. Color must have functional meaning and express the product's brand personality.
+  4. **Strictly Ban Cookie-Cutter Template Clichés:** Forbid generic 3-card marketing feature grids on operational pages, centered marketing hero banners with dual pill buttons in app views, and cookie-cutter 4-metric top dashboard cards. Build compositions organically from the real task flow and user data density needs.
+  5. **Bespoke Semantic Color Palette:** Forbid copying default Tailwind/Bootstrap color presets (e.g. standard blue-600/indigo-600 buttons on gray-100). Generate a tailored semantic color system (primary, secondary, surface, canvas, border, text hierarchy, status) that aligns with the brand personality discovered in `discover-product`.
+  6. **Mandatory Signature Design Element:** Every visual contract must define at least one concrete `signature_moment` (e.g. a unique summary bar, bespoke tab switch indicator, brand-tailored status badge, or high-density ledger layout) that breaks UI monoculture and makes the application immediately recognizable.
+- Accept or reject each notable visual choice according to product purpose, content, user tasks, and operating context; record the product-specific reason either way in `rejected_defaults`.
+- Treat restrained operational design as valid and distinctive when deliberate density, hierarchy, typography, navigation, or wayfinding gives it a clear product-specific character without relying on generic template crutches.
 
 Attribution note: this filter is curated from anti-slop v3.2.4 commit 44be68777e96d53d113edad33dbc4ab380f5d054 under MIT. See `THIRD_PARTY_NOTICES.md`.
 

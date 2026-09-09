@@ -214,6 +214,7 @@ For UI candidates, classify each of these verified conditions as a release-block
 - The implementation commits a Monolith Page Stacking violation by appending multiple distinct user journeys into a single continuous scroll view instead of structured navigation views (tabs, dedicated routes, or drawers).
 - A secondary cross-sell, optional upsell, or add-on item forms a mandatory visual or physical scroll hurdle blocking the direct checkout or completion of a primary user conversion flow.
 - Privileged operational/staff surfaces (such as admin consoles, cashier desks, or management dashboards) are stacked directly beneath or mixed into public customer-facing screens instead of isolated into dedicated views, routes, or role-gated portals.
+- The implementation commits an AI Design Slop or UI Sameness violation by packaging arbitrary features into uniform rounded card containers ("card soup"), defaulting to uninspired Inter/system-ui without deliberate type pairing, using unmotivated purple/cyan gradients or neon glows, or using cookie-cutter metric cards/3-card grids that contradict or ignore the bespoke Visual Direction Contract.
 - A fidelity claim is unsupported by equivalent evidence.
 - A required comparison is missing or its omission is unexplained.
 - Required real-browser capability or evidence is missing, blocked, or replaced by a build, process, HTTP 200, screenshot, or static check.
@@ -232,7 +233,7 @@ For any code-affecting candidate, including UI candidates, classify each of thes
 - Material boundary coverage is missing.
 - Any required maintainability property remains unverifiable.
 
-Do not classify subjective taste, expressiveness, flatness, or genericness alone as a defect. Generic-template drift is blocking only when direct evidence verifies one of the approved-contract mismatches above.
+Strictly enforce Anti-Slop & Anti-UI Sameness standards. Generic AI design slop, template monoculture, card soup, unmotivated gradients, and cookie-cutter layouts are release-blocking defects whenever they violate the approved Visual Direction Contract or substitute lazy AI defaults for intentional, brand-specific design. An intentionally restrained or flat operational design is valid only when it demonstrates purposeful density, hierarchy, and distinct character.
 
 ## Release Eligibility
 
