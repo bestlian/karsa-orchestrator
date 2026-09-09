@@ -32,3 +32,6 @@ Information Architecture, UI integrity, and Anti-UI Sameness must be preserved t
 All background processes (such as dev servers, uvicorn/node daemon tasks, background test runners, or browser subagents) started during development, feature implementation, testing, or quality verification MUST be terminated immediately when development, testing, verification, or release handoff concludes, without requiring user confirmation.
 Never leave background daemons running across conversational turns or at release handover.
 All ports (such as 8000, 5173, etc.) must be released so that the user has complete, unhindered control to run their own commands without encountering port conflicts or socket binding errors (such as Windows Error 10013).
+
+## Default System Browser Strategy
+Browser automation and UI testing strictly prioritize the user's default, locally installed PC browser (e.g. Microsoft Edge on Windows, Google Chrome on macOS/Linux) rather than attempting heavy multi-hundred megabyte driver downloads from external CDNs. If an external CDN download fails or times out, the agent immediately falls back to the host machine's installed browser or headless CLI without blocking development.

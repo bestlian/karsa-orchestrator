@@ -111,8 +111,8 @@ agy plugin install .
 ### Port Binding Conflicts (WinError 10013 / EADDRINUSE)
 The plugin strictly terminates all background daemon tasks and test processes upon completion. If you previously ran dev servers outside the plugin, ensure earlier processes on ports `8000` or `5173` are stopped before launching new services.
 
-### Browser Testing & External Driver Dependencies
-In environments where external CDN package downloads (e.g. Playwright browser binaries) are restricted by corporate firewalls or transient network issues, `verify-quality` records the missing browser driver as an **environmental evidence gap** rather than halting execution. All backend integration, security role isolation, and frontend compilation checks continue to execute and validate the deliverable.
+### Default System Browser Strategy (Zero CDN Downloads)
+The plugin prioritizes the user's default, locally installed PC browser (Microsoft Edge on Windows, Google Chrome on macOS/Linux) over heavy external CDN downloads. If an internal tool encounters an Azure/Playwright CDN 404 or connection timeout, it immediately falls back to the host's installed browser (e.g. `channel: 'msedge'`), eliminating download friction and running 100% offline.
 
 ## Changes and Attribution
 
