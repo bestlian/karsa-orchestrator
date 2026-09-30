@@ -32,7 +32,7 @@ Create a backlog that is ready for `implement-feature` to pull one story at a ti
 
 ## Artifact Root Contract
 
-`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including expected visual proof target paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/docs/...`, including expected visual proof target paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `docs/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
 
 The backlog must include:
 
@@ -51,6 +51,22 @@ The backlog must include:
 - Risks and blockers that can stop the work
 - A delivery-shape trace from the approved brief and blueprint into every affected item's Ready criteria and verification
 - An application obligation ledger that maps every original requirement and accepted discovery proposal to one or more executable story or task IDs, release slice, scope status (`required`, `complete`, `blocked`, or specific human-approved `out-of-scope`), and the implementation, manifest, and verifier evidence required to mark it verified
+
+### Global Planning Documentation (docs/ directory)
+
+In addition to the backlog, KARSA MUST ensure the project contains a standard set of planning documents in the `<project-root>/docs/` directory. For any new project, invoke the three specialized planning sub-agents (`scope-mapper`, `contract-manager`, `execution-strategist`) to generate or update:
+1. `docs/INDEX.md` (via `execution-strategist`)
+2. `docs/02_scope_and_delivery.md` (via `scope-mapper`)
+3. `docs/04_functional_requirements.md` (via `execution-strategist`)
+4. `docs/05_domain_and_business_rules.md` (via `execution-strategist`)
+5. `docs/06_api_contract.md` (via `execution-strategist`)
+6. `docs/07_core_workflows.md` (via `scope-mapper`)
+7. `docs/10_security_privacy.md` (via `contract-manager`)
+8. `docs/11_quality_metrics_release.md` (via `contract-manager`)
+9. `docs/13_decisions_and_questions.md` (via `contract-manager`)
+10. `docs/15_execution_flow.md` (via `execution-strategist`)
+
+These documents serve as the permanent, domain-agnostic Contract Registry and Execution Guide for the project.
 
 ## Shared Evidence, Unknown, Filler, And Validation Filter
 
@@ -108,6 +124,30 @@ After the backlog is approved and no other review request is active, `fullstack-
 Before planning, resuming, marking Ready, or routing to QA or release, re-read each source artifact at its exact path and revision. Verify explicit approval and technical result where applicable, compare them with the delivery backlog and increment manifest, and block on mismatch rather than promoting a label. Store the required source revisions or checksums of tested executable, configuration, and source scope, unresolved gates, and resume state in the existing backlog or increment manifest only. Governance metadata and review state do not invalidate evidence. A change in that tested scope invalidates dependent test evidence until rerun. Metadata normalization cannot fill an approval, technical result, or missing evidence.
 
 At planning preflight, re-check the approved project MCP recommendations. Prefer native tools, require no MCP to run the application, and recommend only needed capability with purpose, scope, prerequisites, verification, least permissions, and restart note. For project-scoped browser evidence, merge the documented Playwright `npx` launcher into `.agents/mcp_config.json` without overwriting existing servers. Do not install or register it automatically. The optional verified command `agy mcp add --type stdio playwright npx @playwright/mcp@latest` followed by `agy mcp list` has no documented project-scope flag, so it must not be presented as project-scoped. See `define-architecture` for the exact JSON and official sources.
+## Contract Registry
+
+The backlog MUST maintain a Contract Registry section tracking all key project agreements:
+- **D-Register (Decisions):** Approved product/technical decisions. Format: `D-nn | Status | Decision | Source`.
+- **W-Register (Working Clarifications):** Technical details agreed upon to make decisions actionable. Format: `W-nn | Clarification | Implication`.
+- **Q-Register (Open Questions):** Unanswered questions that block specific gates. Format: `Q-nn | Priority (Critical/High/Medium/Low) | Question | Blocked Gate`.
+- **A-Register (Assumptions):** Unvalidated assumptions. Format: `A-nn | Assumption | Risk if wrong`.
+Q-register entries with OPEN status and Critical/High priority act as hard blockers for release planning.
+
+## Gated Execution Sequence
+
+The backlog MUST map the implementation items against a strict 7-step gated execution sequence:
+1. **Baseline & Test Sandbox**: Fresh DB/upgrade path, compatible runtime, disposable test fixtures.
+2. **Domain & Relations**: Ownership, money/state invariants, race conditions.
+3. **Mobile/Frontend Loop**: End-to-end manual user loop from the app UI.
+4. **Identity & Alignment**: Real auth sessions, OpenAPI/client alignment.
+5. **Follow-up**: Timezones, background workers, push notifications.
+6. **Release Rehearsal**: Staging migration, backup/restore, rollback plan.
+7. **Next Milestone**: Further enhancements (AI, monetization).
+Each step has explicit "Gate Before Proceeding" conditions. Implementation items must be sequenced to prove step N before claiming step N+1.
+
+## Snapshot Manifest Format
+
+When tracking progress, the agent MUST maintain a "Snapshot Manifest" section consisting of a 3-column table: `Area | Code Available | Gap Preventing Completion Claim`. This replaces simple checkbox lists. Checkboxes only track code creation; the manifest tracks functional proof.
 
 ## Item Structure
 
@@ -352,7 +392,7 @@ Keep unknowns visible in the item until they are resolved. If an unknown is stil
 schema: fullstack-skill-handoff/v1
 producing_skill: plan-delivery
 artifact_id: delivery-backlog
-output_path: artifacts/planning/delivery-backlog.md
+output_path: docs/08_delivery_backlog.md
 inputs:
   - approved product artifact
   - approved UX artifact
@@ -392,7 +432,7 @@ next_skills:
 
 Label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and permit only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
 
-Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/planning/delivery-backlog.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and requires no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the backlog and show the bound pending question once.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review docs/08_delivery_backlog.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and requires no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the backlog and show the bound pending question once.
 
 Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback sets the backlog to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals and start authorization, and asks again only after the revised backlog returns to `awaiting-approval`. Closed review and authorization metadata cannot change scope, first item, expected outcome, acceptance, or technical result. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
@@ -400,7 +440,7 @@ Yes resolves the record and updates only closed governance metadata to approved.
 
 This skill is complete when all of these are true:
 
-- `artifacts/planning/delivery-backlog.md` exists
+- `docs/08_delivery_backlog.md` exists
 - All approved product requirements are traced into the backlog
 - The application obligation ledger maps every original requirement and accepted proposal to executable items and release slices, with no inferred waivers
 - All in-scope UX and architecture decisions are reflected

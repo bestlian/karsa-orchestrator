@@ -80,7 +80,7 @@ Attribution note: this filter is curated from anti-slop v3.2.4 commit 44be68777e
 
 ## Output
 
-Write the experience specification to `artifacts/ux/experience-spec.md`.
+Write the experience specification to `docs/03_user_journeys.md`.
 
 ## Artifact Root Contract
 
@@ -282,7 +282,7 @@ Every important requirement should have at least one linked journey or screen.
 schema: fullstack-skill-handoff/v1
 producing_skill: design-experience
 artifact_id: experience-spec
-output_path: artifacts/ux/experience-spec.md
+output_path: docs/03_user_journeys.md
 inputs:
   - approved product brief
   - requirement IDs from the brief
@@ -324,7 +324,7 @@ The handoff stays experience-level. It does not add backend architecture, produc
 
 Label the canonical specification with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
 
-Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/ux/experience-spec.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the specification and show the bound pending question once.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review docs/03_user_journeys.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the specification and show the bound pending question once.
 
 Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback sets the artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals, and asks again only after the revised specification returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
