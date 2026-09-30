@@ -129,21 +129,24 @@ When invoked on an existing project without a pre-existing increment manifest:
 12. For maintainability, create a conformance map that ties each criterion to an approved reference or repository convention, the inspected scope, the verification method, the expected and actual state, direct evidence, result, evidence gap, and blocking rationale. Run configured project-native lint; if none is configured, record a production maintainability gap instead of inventing a pass.
 13. Decide release eligibility only after all applicable checks are reviewed and, when applicable, both the visual conformance map and the maintainability conformance map are reviewed.
 
-## Checks To Cover
+## Layered Verification Strategy & Checks To Cover
 
-Run the checks that apply to the candidate. If a category does not apply, record it as skipped with the reason.
+Run the checks that apply to the candidate across these 6 required layers. If a category does not apply, record it as skipped with the reason.
 
-- Acceptance checks.
-- Unit checks.
-- Integration checks.
-- E2E checks.
-- Regression checks.
-- Failure-path checks.
-- Accessibility checks.
-- Performance checks.
-- Compatibility checks.
-- Build checks.
-- Visual fidelity checks for UI candidates.
+1. **Unit Domain**: Formula calculations, state transitions, timezones, and eligibility rules.
+2. **Integration API + DB**: Authentication, ownership isolation (cross-user checks), concurrent transactions (race conditions), idempotency, and audit trails.
+3. **Adapter/Failure**: AI timeouts, invalid files, storage failures, push permission denied, quota races.
+4. **Mobile E2E / Frontend E2E**: Onboarding, manual input, payment, reminder actions, handoff, and all error/loading/empty states.
+5. **Security/Privacy**: Cross-user access, malicious input, secret/PII in logs, data export/delete mechanisms.
+6. **Operations**: Migration rehearsal (fresh bootstrap & upgrade path), backup+restore, worker restart, app rollback, smoke tests.
+
+### Contract Alignment Check
+
+In addition to technical execution, verify that the implementation aligns strictly with the approved contract (PRD/spec):
+- Enums in code MUST match enums defined in the PRD exactly.
+- API endpoints and paths MUST match the OpenAPI contract.
+- Response shapes and data types MUST match the promised specification.
+Any mismatch is a defect.
 
 For a production-ready FastAPI plus React/Vite candidate, require configured backend tests and lint, plus frontend build, lint, configuration validation, and applicable frontend tests. Inspect that routers, services, schemas, and components remain modular according to the approved architecture; a single all-business `App` component or handler is a conformance failure when it violates that boundary.
 
@@ -191,6 +194,7 @@ For each check, record all of the following:
 - For created test processes, PID, port, deadline, cleanup action, and cleanup result.
 - Skip reason, if the check was not run.
 - Local check results use `pass`, `fail`, `evidence-gap`, or `not-applicable`, and they do not change lifecycle status or `technical_verdict`.
+- **Does-NOT-Prove Disclaimer**: Every check MUST explicitly state its evidentiary limit. (e.g., "AST parse passes; does NOT prove runtime correctness." or "Sequential payments pass; does NOT prove concurrent safety.")
 
 For each UI visual fidelity check, also record all of the following:
 
@@ -210,7 +214,7 @@ For each UI visual fidelity check, also record all of the following:
 Classify every issue you find as one of these:
 
 - Critical, blocks release or causes data loss, security exposure, or a broken core flow.
-- Major, breaks a primary user path or fails an important quality gate.
+- Major, breaks a primary user path or fails an important quality gate. Unproven claims (claiming a feature is complete without accompanying technical verification evidence) are ALWAYS classified as Major defects.
 - Minor, noticeable but not release blocking.
 - Informational, does not block release.
 

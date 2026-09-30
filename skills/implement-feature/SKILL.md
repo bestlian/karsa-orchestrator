@@ -42,6 +42,14 @@ Before a scaffold, dependency or package installation, generated starter-app out
 
 If authorization is missing, create the separate bound question: `Start development for [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` Options are `Yes`, `No`, and `Revision`. Then stop before development. Persist the response in the backlog body's `Development Start Authorization` record for that revision and scope. Yes authorizes only this already approved scope without a content revision bump. No persists rejected authorization, makes no application changes, and is not asked again until the user explicitly asks to start or revise. Revision requires meaningful freeform feedback and routes to planning, or an owning prerequisite when scope changes, followed by fresh Foundation approvals as needed; it never starts coding. Do not ask again for the same authorized scope. A material scope or backlog-revision change requires renewed authorization. An epic is never an implementation unit; select one Ready story or task only.
 
+## Contract Verification Before Code
+
+Before writing any implementation code for an item, read and reconcile the project's contract registry (D-register, W-register, Q-register, A-register) if one exists. Map which decisions (D), clarifications (W), open questions (Q), and assumptions (A) are relevant to the current item. If any Q-register entry with status OPEN and priority Critical or High directly affects the item's domain, data model, or user flow, the item is `blocked` until that question is resolved by the product owner. Record the relevant registry entries in the implementation report under a "Contract References" section. If no contract registry exists yet, note this gap in the report but do not block on it for the first slice.
+
+For database schema changes, verify that the current Alembic or migration history can bootstrap a fresh empty database from zero to head without errors. If fresh bootstrap is broken, fix migrations before adding new ones. Migration safety is a prerequisite, not a follow-up task.
+
+For financial or transactional operations, verify that concurrent safety is tested with real database connections (not mocked or sequential-only). A sequential test passing does not prove concurrent safety. The implementation report must explicitly state whether concurrent testing was performed and what it does NOT prove.
+
 ## First Check
 
 Read the repository conventions, configured quality tools, approved module responsibilities, public contracts, dependency decisions, relevant manifests, nearby implementation files, and current tests before editing. Then read the selected backlog item, its approved release-slice definition, and its approved specs. Re-read every referenced source report at its exact path and revision, verify approval and technical result, and compare them with the increment manifest; mismatch blocks work. Record a stable revision or checksum of the tested executable, configuration, and source scope in the existing manifest; governance documents and review state do not invalidate evidence. For an approved database, inspect its actual driver or connection configuration and authoritative API read/write path before editing; a writable JSON store is architecture drift unless an approved architecture revision authorizes it. Read the current increment manifest when it exists; for the first item in a slice, initialize it as `draft` from the approved release-slice definition. Do not trust a compaction summary or metadata normalization as evidence.
@@ -113,6 +121,12 @@ For JWT-protected work, test valid-token success plus missing token, tampered si
 A real boundary test exercises the approved module, public contract, API, persistence, authentication, authorization, or provider boundary and observes its expected and failure behavior. A build, a process launch, or an HTTP 200 is not a substitute for that boundary test.
 
 For timed-resource reservations, test interval semantics, not only equal start values: same start, staggered intersection, containing, contained, and boundary-adjacent valid intervals; reject any duration that crosses approved operating hours. Validate real calendar date/time types, resource bounds, and quantities at the boundary. Test true simultaneous conflicting attempts through separate database connections using the approved deployed-process model, and assert the intended conflict result. For applicable inventory and payments, test reserve and release transitions, owner controls, and idempotent settlement behavior. These are reusable requirement-driven cases, never hardcoded to a product name or one implementation.
+
+## Test Sandbox Requirement
+
+All test scripts MUST use disposable database fixtures or a dedicated test database, never the primary development or production database from `.env`. Test data created during test runs MUST be cleaned up after execution (teardown). If the project uses environment-based configuration, test scripts must either: (a) use a separate `.env.test` with a disposable database URL, or (b) create and destroy test data within a transaction that is rolled back. Test scripts that write to the main database and do not clean up are classified as a Major defect. The implementation report must state which database was used for testing and confirm cleanup.
+
+For API integration tests that spin up a local server process, the test must: (1) start the server on a non-conflicting port, (2) run assertions against it, (3) terminate the server process, and (4) confirm no orphan processes remain. Never leave test servers running after test completion.
 
 ## Verification Rules
 
@@ -272,6 +286,12 @@ Record one value in the report body:
 Use `technical_verdict` for the implementation outcome only. Do not turn it into an artifact status. `technical_verdict: complete` can survive missing optional tooling only when direct evidence establishes the required properties. Otherwise, use `technical_verdict: partial` or `technical_verdict: blocked`.
 
 State the result at the correct boundary: `item complete`, `slice complete`, `slice incomplete`, `application ready`, or `application not ready`. Completing one item never completes its slice or the application. An exactly approved scaffold story or task may be `technical_verdict: complete` when its own concrete acceptance criteria and required tests pass, but it must say `slice incomplete` and `application not ready`. A scaffold used to stand in for a broader functional story is `technical_verdict: partial`.
+
+## Evidence Based Completion
+
+The implementation report MUST include a "Snapshot Manifest" table with three columns: `Area | Code Available | Gap Preventing Completion Claim`. Every area touched by the implementation must have an entry. The "Gap" column must describe what specific evidence is missing or what scenario remains untested. An empty "Gap" column for all areas is required before `technical_verdict: complete`. Example gaps: "concurrent payment test not run against PostgreSQL", "fresh DB bootstrap not verified", "navigation from Dashboard to Detail not connected", "cross-user isolation not tested".
+
+Every test result in the report must include: (1) the exact command executed, (2) the actual output (not a summary), (3) the environment (OS, runtime version, database type), and (4) a "Does NOT Prove" statement explaining the limits of the evidence. Example: "Sequential overpay rejection test passed. Does NOT prove: concurrent safety under real multi-connection PostgreSQL load."
 
 ## Completion Criteria
 

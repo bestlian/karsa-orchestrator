@@ -81,7 +81,15 @@ When the approved architecture names SQLite or another database as authoritative
 
 The blueprint must cover these areas, in plain language and with enough detail for downstream planning:
 
-### 1. System Context
+### 1. Contract Registry Alignment
+
+The blueprint MUST formally adopt and extend the project's Contract Registry (D/W/Q/A) initialized during discovery.
+- **D-Register (Decisions):** Log all major technical decisions (e.g., chosen tech stack, database type, API paradigm).
+- **W-Register (Working Clarifications):** Log technical constraints (e.g., specific framework versions, database schema paradigms).
+- **Q-Register (Open Questions):** Identify technical uncertainties. If any Critical/High Q-register item from discovery remains OPEN and blocks architectural design, the blueprint CANNOT be marked ready for approval. The orchestrator (KARSA) strictly enforces this gate.
+- **A-Register (Assumptions):** Log any architectural assumptions (e.g., expected load, availability of third-party APIs).
+
+### 2. System Context
 
 Describe the product scope, the primary user goals, the external systems it touches, and the high level system boundary.
 
@@ -291,7 +299,7 @@ End the blueprint with a structured handoff block.
 schema: fullstack-skill-handoff/v1
 producing_skill: define-architecture
 artifact_id: application-blueprint
-output_path: artifacts/architecture/application-blueprint.md
+output_path: docs/09_architecture_operations.md
 inputs:
   - approved product brief
   - confirmed readiness target, architecture shape, and acceptance boundary
@@ -329,7 +337,7 @@ next_skills:
 
 Label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
 
-Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review artifacts/architecture/application-blueprint.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the blueprint and show the bound pending question once.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review docs/09_architecture_operations.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the blueprint and show the bound pending question once.
 
 Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback sets the artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals, and asks again only after the revised blueprint returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
@@ -365,7 +373,7 @@ The skill is complete only when all of these are true:
 
 ## Output Artifact
 
-Write the final blueprint to `artifacts/architecture/application-blueprint.md`.
+Write the final blueprint to `docs/09_architecture_operations.md`.
 
 ## Artifact Root Contract
 

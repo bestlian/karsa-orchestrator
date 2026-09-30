@@ -115,6 +115,20 @@ Keep the artifact status as `awaiting-approval`. The status is not the verdict. 
 16. End the document with status `awaiting-approval`.
 17. Add the final Delivery Gate with a single overall verdict line, exactly `PASS` or `FAIL`, plus the rationale that cites the upstream technical verdicts.
 
+## Pre-Release Contract Verification
+
+Before generating a release plan, the agent MUST perform a strict verification against the project's Contract Registry and Snapshot Manifest:
+1. **Q-Register Clearance:** All Q-register entries with priority Critical or High MUST be RESOLVED. If any remain OPEN, the release is blocked.
+2. **Snapshot Manifest Zero Gap:** The current Snapshot Manifest MUST show zero gaps across all areas (the "Gap Preventing Completion Claim" column must be empty or state "None").
+3. **Release Evidence Checklist:** The following proofs MUST be explicitly confirmed in the quality reports:
+   - Runtime smoke test passed.
+   - Fresh DB bootstrap from migrations passed safely.
+   - Data isolation (e.g. 2-user test) passed.
+   - Concurrent transaction safety passed against a real DB.
+   - Mobile/Frontend flow passed end-to-end without API shortcuts.
+
+If any of these conditions are unmet, the release plan MUST be marked `FAIL` with explicit instructions on what needs to be remediated.
+
 ## Completion Criteria
 
 Finish only when all of these are true:

@@ -40,9 +40,19 @@ Required inputs when available:
 - constraints, deadlines, budget limits, or compliance concerns;
 - the person who can approve the brief.
 
-## Natural Conversational Discovery & Zero-Guesswork Principle
+## Natural Conversational Discovery & Intent Decomposition
 
-Discovery must gather requirements as naturally, empathetically, and conversationally as possible. The model must never operate like a rigid robot going through a bureaucratic checklist, and it must NEVER guess or fabricate requirements unless the user explicitly delegates decisions.
+As KARSA's primary **Planner Skill**, this module must relentlessly decompose ambiguous user intents into actionable technical and business facts before development begins. The model must never operate like a rigid robot going through a bureaucratic checklist, and it must NEVER guess or fabricate requirements.
+
+### Intent Decomposition Framework (The Planner Tool)
+
+When a user presents a vague idea or raw intent (e.g., "I want a marketplace app" or "Make a booking system"), you MUST decompose it by uncovering:
+1. **The Core Value Loop:** What is the single fundamental action the user pays for or returns for? (e.g. searching, buying, communicating).
+2. **The Actors & Entities:** Who are the specific users (e.g., Buyer, Seller, Admin) and what are the non-negotiable objects they interact with (e.g., Product, Invoice, Booking)?
+3. **The Hard Constraints:** Are there legal, financial, or device-specific limits (e.g., must be mobile-first, must handle local currency)?
+4. **The "Why":** Why is this being built? (To save time, generate revenue, internal tool?)
+
+Do not proceed to technical stack or design questions until this intent is fully unpacked and verified by the user.
 
 ### Core Rules for Natural Discovery:
 
@@ -102,7 +112,7 @@ Evidence sources to check first:
 
 ## What To Produce
 
-Create one product brief at `artifacts/discovery/product-brief.md`.
+Create one product brief at `docs/01_product_brief.md`.
 
 ## Artifact Root Contract
 
@@ -143,7 +153,17 @@ State:
 - what should stay manual for now;
 - what is deferred to later discovery.
 
-### 3.1 Full-Request Obligation Ledger
+### 3.1 Contract Registry (D/W/Q/A)
+
+Initialize the project's Contract Registry. Every product decision made during discovery MUST be explicitly logged here.
+- **D-Register (Decisions):** Approved product decisions (e.g. `D-01 | APPROVED | Target is MVP | User explicit statement`).
+- **W-Register (Working Clarifications):** Technical details agreed upon (e.g. `W-01 | Currency is IDR, stored as integer`).
+- **Q-Register (Open Questions):** Unanswered questions that MUST be answered before specific phases. Categorize priority (Critical, High, Medium, Low).
+- **A-Register (Assumptions):** Assumptions made during discovery that need validation.
+
+The orchestrator (KARSA) strictly enforces that no development begins if Critical/High Q-register items remain OPEN.
+
+### 3.2 Full-Request Obligation Ledger
 
 Preserve the original request as a ledger, not as a summary. Every accepted discovery proposal and every `FR-*` requirement must have an entry with its source evidence, requirement or decision ID, required or optional status, exact intended outcome, and initial state `unplanned`. The later blueprint and backlog extend the same entries with mapped stories, release slices, and evidence; they do not replace them.
 
@@ -239,7 +259,7 @@ Only include questions that can still change the brief in a material way.
 schema: fullstack-skill-handoff/v1
 producing_skill: discover-product
 artifact_id: product-brief
-output_path: artifacts/discovery/product-brief.md
+output_path: docs/01_product_brief.md
 inputs:
   - idea statement
   - product notes
@@ -275,7 +295,7 @@ Attribution: adapted from anti-slop v3.2.4, commit `44be687`, MIT. See `THIRD_PA
 
 Before review, label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. The active record binds its request ID, canonical product-brief path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and source user reply or decision evidence.
 
-Use native `ask_question` only when the active host exposes it with its actual schema; otherwise ask in plain chat: `Review artifacts/discovery/product-brief.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (give meaningful freeform feedback). A direct short Yes or No is valid only for this unchanged shown question; no path, revision, or host ID is required. A stale, duplicate, host, summary, or unrelated reply has no effect. On resume, re-read the canonical brief and display its bound pending question once.
+Use native `ask_question` only when the active host exposes it with its actual schema; otherwise ask in plain chat: `Review docs/01_product_brief.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (give meaningful freeform feedback). A direct short Yes or No is valid only for this unchanged shown question; no path, revision, or host ID is required. A stale, duplicate, host, summary, or unrelated reply has no effect. On resume, re-read the canonical brief and display its bound pending question once.
 
 Yes resolves the record and updates only closed governance metadata to `status: approved` and `approval: approved`. No resolves it as rejected and stops until the user explicitly asks to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback resolves the request, sets the brief to `draft`, and routes to this owner. A substantive content revision supersedes the prior record, creates a new Artifact Revision, invalidates affected approvals, and asks again only when the revised brief returns to `awaiting-approval`. Preserve a confirmed stack unless the user explicitly changes it. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata; native host presentation is not approval evidence and any host-mandated opening is outside plugin control.
 

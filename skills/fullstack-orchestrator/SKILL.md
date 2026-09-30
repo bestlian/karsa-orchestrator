@@ -70,10 +70,10 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 
 | Owner | Artifact |
 | --- | --- |
-| `discover-product` | `<project-root>/artifacts/discovery/product-brief.md` |
-| `design-experience` | `<project-root>/artifacts/ux/experience-spec.md` |
-| `define-architecture` | `<project-root>/artifacts/architecture/application-blueprint.md` |
-| `plan-delivery` | `<project-root>/artifacts/planning/delivery-backlog.md` |
+| `discover-product` | `<project-root>/docs/01_product_brief.md` |
+| `design-experience` | `<project-root>/docs/03_user_journeys.md` |
+| `define-architecture` | `<project-root>/docs/09_architecture_operations.md` |
+| `plan-delivery` | `<project-root>/docs/08_delivery_backlog.md` (and related `docs/04` to `docs/15`) |
 | `implement-feature` | `<project-root>/artifacts/implementation/<item-id>-implementation-report.md` and `<project-root>/artifacts/implementation/<release-slice-id>-increment-manifest.md` |
 | `verify-quality` | `<project-root>/artifacts/quality/<candidate-id>-quality-report.md` |
 | `review-security` | `<project-root>/artifacts/security/<candidate-id>-security-review.md` |
@@ -112,7 +112,7 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
 
 ## Lifecycle And Join Rules
 
-1. Discovery: With no approved product brief, select and execute `discover-product`. It stops only for required discovery input or the resulting brief's human-approval boundary.
+1. Discovery & Intent Decomposition: If the user provides a vague idea, ambiguous request, unstructured intent, or there is no approved product brief, you MUST select and execute `discover-product`. This is KARSA's primary **Planner Skill**. It breaks down the intent, extracts constraints, and builds the Contract Registry (D/W/Q/A) before any technical planning begins. It stops only for required discovery input or the resulting brief's human-approval boundary.
 2. Experience and architecture: Only after the product brief is explicitly approved, select `design-experience` and `define-architecture` as a paired route. Load and execute them sequentially in this order in the same agent. Each branch has the same approved brief prerequisite and retains its own output and approval boundary.
 3. Design-architecture join: `plan-delivery` MUST NOT be selected until both the experience specification and application blueprint are explicitly approved. If one branch is approved and the other is missing, draft, or blocked, select and execute only the incomplete branch. A rejected branch remains paused until the human explicitly requests revision. A change to shared approved input that invalidates either branch reopens that branch.
 4. Planning: After the product brief, current experience specification, and application blueprint are approved, select and execute `plan-delivery`. All user stories across all epics and release slices for the entire known product scope must be formed, broken down, and detailed upfront in `artifacts/planning/delivery-backlog.md`. Never generate a partial backlog. Planning stops at the delivery backlog's explicit human-approval boundary so the human user can review and approve the complete story roadmap upfront before any development starts.
