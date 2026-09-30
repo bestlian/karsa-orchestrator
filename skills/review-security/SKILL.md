@@ -140,11 +140,11 @@ For production-ready work, review the substantive backend API/database integrati
 
 For reservation, inventory, order, payment, or transactional work, verify that concurrency and conflict controls prevent race conditions, that concurrent requests use separate fixture connections matching the approved deployment model, and that Staff/Admin operations and manual settlements are idempotent, audited, and transactionally consistent with underlying records and financial totals. Record an untested required property as blocked rather than inferring safety from a report.
 
-## Report Output
+## Vulnerability Report Output
 
-Write the review to:
+Write the formal Vulnerability Report to:
 
-`artifacts/security/<candidate-id>-security-review.md`
+`artifacts/security/<candidate-id>-vulnerability-report.md`
 
 ## Artifact Root Contract
 
@@ -170,13 +170,13 @@ The report must include:
 For each finding, include:
 
 - Title
-- Severity
+- Severity (If hardcoded credentials like API keys, DB URLs, or JWT secrets are found, classify as **RED CODE: Supreme Critical Blocker**. Demand extraction to `.env` and `.gitignore`).
 - Evidence
 - Claim status
 - Preconditions
 - Impact
 - Attack path
-- Remediation
+- Remediation (For RED CODE, the only valid remediation is moving to `.env` and ignoring the file).
 
 ## Remediation Items
 - id:

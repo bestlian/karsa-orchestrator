@@ -58,20 +58,33 @@ For UI-affecting work, resolve the exact `VDC-*` revision and every referenced `
 
 If the item is not ready, or the specs are not approved, do not start.
 
-## Work Flow
+## Work Flow (Delegated Execution)
 
-1. Select one item and restate its ID, scope, acceptance criteria, and expected outcome. For UI-affecting work, also restate the exact approved `VDC-*` revision, referenced `VIS-*` IDs, `visual_acceptance_criteria`, and `expected_visual_proof`.
-2. Map the item to the smallest set of files that need to change, including the approved prototype limitation or full-stack boundary it advances.
-3. Build a simple impact map for module boundaries, public contracts, dependency edges, affected manifests, boundary tests, and checks so you know what behavior, tests, checks, and, where applicable, approved visual decisions and visual acceptance criteria are affected.
-4. Write the failing test first. For UI-affecting work, write a failing visual or behavioral check first when automation exists. When automation does not exist, interact with the pre-change UI in a real browser and record the contract mismatch as red evidence before implementation.
-5. Make the smallest code change that passes the test.
-6. Refactor only after the behavior is green.
-7. Keep repeating red, green, refactor until the item is complete.
-8. Update the increment manifest with the item report, slice state, source revision or checksum, tests tied to that source, and unresolved resume gates. If the tested executable, configuration, or source scope changes, invalidate dependent evidence before routing.
-9. If required slice items remain under the authorized development scope, proceed automatically to implement the next Ready item with `implement-feature`.
-10. When every required item in the release slice is complete and verified with tests, update the increment manifest to complete and advance the slice directly to automated `verify-quality` and `review-security` verification without halting for intermediate per-story micro-approvals.
+1. Select one item from the backlog (`docs/08_delivery_backlog.md`).
+2. Invoke the **`strict-programmer`** sub-agent to execute the actual code changes. Pass the item's requirements and execution step to it.
+3. The `strict-programmer` writes the code (using Clean Code, SRP, and DRY), runs isolated sandbox tests, and reports the exact terminal commands used.
+4. If code is UI-affecting, visual matching against `experience-spec` must be verified.
+5. Once the programmer completes the task, invoke the **`integration-tester`** (or run the tests directly) to independently verify the code does not break concurrent or edge-case rules.
+6. Invoke **`contract-reviewer`** to verify the written code satisfies the exact acceptance criteria without hallucinating extra features.
+7. Update `docs/14_increment_manifest.md` with the 3-column table (`Area | Code Available | Gap`) detailing exactly what is proven and what is NOT proven.
+8. If required slice items remain under the authorized development scope, proceed automatically to implement the next Ready item.
+9. When every required item in the release slice is complete and verified with tests, advance the slice directly to automated `verify-quality` and `review-security`.
 
 ## Implementation Rules
+
+### 1. Clean Code & Modularity (Anti-Duplication)
+You must apply strict Clean Code and DRY (Don't Repeat Yourself) principles. 
+- Never copy-paste logic across components, controllers, or services.
+- Extract shared behavior into pure utilities, reusable hooks, or isolated domain services.
+- Maintain the Single Responsibility Principle (SRP) for every file, class, and function.
+- Ensure the codebase remains modular so `verify-quality` does not flag duplication or high coupling.
+
+### 2. 4-Layer Testing Doctrine (Functional, Dummy, Live API, Browser UI)
+The `strict-programmer` MUST prove its code using a rigorous 4-layer testing strategy before claiming completion:
+- **Functional Testing:** Write and execute automated tests that explicitly verify the Acceptance Criteria from `docs/04_functional_requirements.md`.
+- **Dummy Data (Fixtures):** Never test against an empty state or mocked database. You MUST create robust dummy data (seeders/factories) injected into a real database sandbox to simulate realistic edge cases.
+- **Live API Testing:** Internal test runners (e.g., `TestClient`, `jest`) are insufficient proof for backend logic. You MUST spin up the actual application server on an isolated test port and perform live HTTP requests (e.g., `curl`, `httpx`) to prove the feature survives real network and event-loop constraints.
+- **UI Browser Testing (E2E):** For any UI-affecting changes, component tests running in Node/JSDOM are strictly prohibited as final proof. You MUST test the UI in a real, rendered browser environment (via automation like Playwright/Cypress, or explicit agent browser interaction). You must verify actual DOM rendering, click interactions, and visual layout state.
 
 1. Keep the change narrow. Implement one item, one vertical slice, one clear outcome.
 2. Use the approved architecture. If the approved design and the codebase conflict in a material way, stop and report architecture drift.
