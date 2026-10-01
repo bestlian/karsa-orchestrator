@@ -52,21 +52,44 @@ The backlog must include:
 - A delivery-shape trace from the approved brief and blueprint into every affected item's Ready criteria and verification
 - An application obligation ledger that maps every original requirement and accepted discovery proposal to one or more executable story or task IDs, release slice, scope status (`required`, `complete`, `blocked`, or specific human-approved `out-of-scope`), and the implementation, manifest, and verifier evidence required to mark it verified
 
-### Global Planning Documentation (docs/ directory)
+### Global Planning & Governance Documentation (docs/ directory)
 
-In addition to the backlog, KARSA MUST ensure the project contains a standard set of planning documents in the `<project-root>/docs/` directory. For any new project, invoke the three specialized planning sub-agents (`scope-mapper`, `contract-manager`, `execution-strategist`) to generate or update:
-1. `docs/INDEX.md` (via `execution-strategist`)
-2. `docs/02_scope_and_delivery.md` (via `scope-mapper`)
-3. `docs/04_functional_requirements.md` (via `execution-strategist`)
-4. `docs/05_domain_and_business_rules.md` (via `execution-strategist`)
-5. `docs/06_api_contract.md` (via `execution-strategist`)
-6. `docs/07_core_workflows.md` (via `scope-mapper`)
-7. `docs/10_security_privacy.md` (via `contract-manager`)
-8. `docs/11_quality_metrics_release.md` (via `contract-manager`)
-9. `docs/13_decisions_and_questions.md` (via `contract-manager`)
-10. `docs/15_execution_flow.md` (via `execution-strategist`)
+In addition to the backlog, this skill MUST physically create the delivery governance contracts in the `<project-root>/docs/` directory. **Every document is a binding engineering contract, NOT an outline or draft stub. Writing placeholder statements such as "akan diisi seiring project berjalan", "saat ini kosong", or generating fewer than 30 substantive lines is strictly prohibited.**
 
-These documents serve as the permanent, domain-agnostic Contract Registry and Execution Guide for the project.
+1. `docs/08_delivery_backlog.md`:
+   - All user stories across all epics and slices detailed upfront.
+   - For every story: Story ID, Title, User Value Statement, Definition of Ready, Definition of Done, Dependencies, Priority, and concrete Acceptance Criteria.
+
+2. `docs/11_quality_metrics_release.md`:
+   - Verification Gates & Mandatory Test Types (Unit, Integration, E2E/Browser).
+   - Numerical Coverage Thresholds: Minimum total statement/branch coverage (e.g. >=80%), and 100% test coverage for domain state machines and authorization gates.
+   - Performance Budgets: API endpoint p95 latency targets (<200ms), frontend core web vitals budgets (LCP < 1.5s, CLS < 0.1), and client bundle size caps.
+   - Anti-Mocking Rule: Mandatory isolated real-database testing policy (SQLite memory/file or containerized DB) for state and concurrency tests; prohibition of mocks for database invariants.
+
+3. `docs/12_insight_resolution_plan.md`:
+   - Architectural Trade-off Register: Explicit rationale for chosen frameworks, databases, and libraries vs rejected alternatives (e.g. SQLite vs PostgreSQL trade-offs, FastAPI vs Express, Tailwind vs CSS modules).
+   - Domain Failure Scenario Mitigations: Detailed technical analysis of known failure modes (e.g. concurrency race conditions, orphaned borrower records, network dropouts during multi-step forms) and their programmed resolutions.
+   - **Zero-Placeholder Constraint:** NEVER leave this file blank or as a placeholder. It MUST record substantive architectural rationale and risk mitigation plans.
+
+4. `docs/14_source_traceability.md`:
+   - Complete 4-column Traceability Matrix:
+     | PRD / Functional Requirement | Backlog Story ID | Target Code Unit (File/Class/Handler) | Verification Test (File & Test Method) |
+     | --- | --- | --- | --- |
+   - Covers 100% of discovered `FR-*` items without gaps.
+
+5. `docs/15_execution_flow.md`:
+   - Target End-to-End Execution Sequence Diagram (Mermaid or ASCII).
+   - Gated Execution Protocol: For every implementation phase, define:
+     - Pre-conditions (What must exist before starting).
+     - Execution Steps (What commands/code are run).
+     - Verification Criteria (Exact terminal/test output required).
+     - Rollback / Remediation Protocol (What to do if tests fail).
+
+6. `docs/INDEX.md`:
+   - Master Documentation Navigation Map indexing all 15 contract documents with their descriptions and file links.
+   - Document Status Ledger: Table recording Document Name, Revision, Status (APPROVED / WORKING), and Last Updated Timestamp.
+
+KARSA and `execution-strategist` MUST physically generate these contracts before requesting Master Planning Approval.
 
 ## Shared Evidence, Unknown, Filler, And Validation Filter
 

@@ -42,11 +42,13 @@ Required inputs when available:
 
 ## Natural Conversational Discovery & Intent Decomposition
 
-As KARSA's primary **Planner Skill**, this module must relentlessly decompose ambiguous user intents into actionable technical and business facts before development begins. The model must never operate like a rigid robot going through a bureaucratic checklist, and it must NEVER guess or fabricate requirements.
+As KARSA's primary **Planner Skill**, this module must relentlessly decompose ambiguous user intents into actionable technical and business facts before development begins. The model must never operate like a rigid robot going through a bureaucratic checklist, and it must NEVER guess or fabricate
+requirements.
 
 ### Intent Decomposition Framework (The Planner Tool)
 
 When a user presents a vague idea or raw intent (e.g., "I want a marketplace app" or "Make a booking system"), you MUST decompose it by uncovering:
+
 1. **The Core Value Loop:** What is the single fundamental action the user pays for or returns for? (e.g. searching, buying, communicating).
 2. **The Actors & Entities:** Who are the specific users (e.g., Buyer, Seller, Admin) and what are the non-negotiable objects they interact with (e.g., Product, Invoice, Booking)?
 3. **The Hard Constraints:** Are there legal, financial, or device-specific limits (e.g., must be mobile-first, must handle local currency)?
@@ -57,24 +59,25 @@ Do not proceed to technical stack or design questions until this intent is fully
 ### Core Rules for Natural Discovery:
 
 1. **Zero Guesswork / No Unfounded Assumptions:**
-   - The model must NEVER guess, assume, or invent business domain requirements, entity models, user roles, pricing logic, or operational flows.
-   - If an aspect of the application is unspecified or ambiguous (e.g. how users book, what roles exist, what services are offered, what payment methods are supported), the model MUST ask the user directly, naturally, and conversationally.
-   - **Exception (Explicit Delegation):** If and ONLY IF the user explicitly delegates choices to the model (e.g., *"terserah kamu"*, *"kamu yang tentukan yang terbaik"*, *"buatkan standar saja"*, *"saya serahkan sepenuhnya"*), THEN the model may propose sensible industry-standard conventions. When doing so, the model must explicitly document these choices in the brief as "User-Delegated Defaults".
+    - The model must NEVER guess, assume, or invent business domain requirements, entity models, user roles, pricing logic, or operational flows.
+    - If an aspect of the application is unspecified or ambiguous (e.g. how users book, what roles exist, what services are offered, what payment methods are supported), the model MUST ask the user directly, naturally, and conversationally.
+    - **Exception (Explicit Delegation):** If and ONLY IF the user explicitly delegates choices to the model (e.g., _"terserah kamu"_, _"kamu yang tentukan yang terbaik"_, _"buatkan standar saja"_, _"saya serahkan sepenuhnya"_), THEN the model may propose sensible industry-standard conventions. When
+      doing so, the model must explicitly document these choices in the brief as "User-Delegated Defaults".
 
 2. **Conversational, Human-Centric Dialogue:**
-   - Engage the user in a natural conversation: listen to their idea, reflect understanding of their vision, and ask open-ended or guiding questions about their target users, key workflows, and desired outcomes.
-   - Avoid robotic, repetitive scripted prompts. Adapt the conversational flow to the user's responses, language, and depth of detail.
-   - When key technical decisions (delivery target, roles, stack, persistence) need alignment, formulate recommendations conversationally with clear rationale, allowing the user to confirm, adjust, or completely change them without friction.
+    - Engage the user in a natural conversation: listen to their idea, reflect understanding of their vision, and ask open-ended or guiding questions about their target users, key workflows, and desired outcomes.
+    - Avoid robotic, repetitive scripted prompts. Adapt the conversational flow to the user's responses, language, and depth of detail.
+    - When key technical decisions (delivery target, roles, stack, persistence) need alignment, formulate recommendations conversationally with clear rationale, allowing the user to confirm, adjust, or completely change them without friction.
 
 3. **Material Decisions to Clarify Naturally:**
-   - **Platform & Device Target:** Clarify the target platform: Web (responsive desktop/tablet/mobile browser, SPA, SSR), Mobile App (iOS/Android native or cross-platform via React Native/Expo, Flutter), or multi-platform.
-   - **Target & Scope:** Clarify whether the goal is a quick prototype/demo or a production-ready full-stack application with real persistence.
-   - **Domain & Core Workflows:** Understand the specific domain and primary user workflows (e.g. e-commerce checkout, appointment booking, SaaS workspace management, social content, logistics tracking, finance, etc.) without pre-assuming or forcing any specific industry logic.
-   - **Access & Roles:** Clarify who the users are (e.g. public end-users, registered customers, staff operators, administrators) and what capabilities each role possesses.
-   - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer platform-appropriate defaults (for Web: FastAPI + React/Vite; for Mobile: FastAPI + React Native/Expo or Flutter; or user-preferred technologies).
-   - **Persistence & Transactions:** Clarify data storage needs and how transactional or payment flows are handled (e.g. manual operational recording, mock/simulated, or live payment gateway).
-   - **Brand Personality & Anti-Sameness Aesthetic:** Uncover the intended visual archetype and emotional tone of the product (e.g. *Utilitarian & High-Density*, *Editorial & Typographic*, *Warm & Humanistic*, *Industrial & Technical*, or *Playful & Dynamic*). Strictly prevent generic "AI Slop Design" (the mathematical average of the web: default Inter font + purple/blue gradients + white cards everywhere). If the user delegates choices, assign a distinct, domain-tailored aesthetic archetype rather than generic SaaS defaults.
-
+    - **Platform & Device Target:** Clarify the target platform: Web (responsive desktop/tablet/mobile browser, SPA, SSR), Mobile App (iOS/Android native or cross-platform via React Native/Expo, Flutter), or multi-platform.
+    - **Target & Scope:** Clarify whether the goal is a quick prototype/demo or a production-ready full-stack application with real persistence.
+    - **Domain & Core Workflows:** Understand the specific domain and primary user workflows (e.g. e-commerce checkout, appointment booking, SaaS workspace management, social content, logistics tracking, finance, etc.) without pre-assuming or forcing any specific industry logic.
+    - **Access & Roles:** Clarify who the users are (e.g. public end-users, registered customers, staff operators, administrators) and what capabilities each role possesses.
+    - **Stack & Architecture:** Preserve any stack preference stated by the user. If unspecified, offer platform-appropriate defaults (for Web: FastAPI + React/Vite; for Mobile: FastAPI + React Native/Expo or Flutter; or user-preferred technologies).
+    - **Persistence & Transactions:** Clarify data storage needs and how transactional or payment flows are handled (e.g. manual operational recording, mock/simulated, or live payment gateway).
+    - **Brand Personality & Anti-Sameness Aesthetic:** Uncover the intended visual archetype and emotional tone of the product (e.g. _Utilitarian & High-Density_, _Editorial & Typographic_, _Warm & Humanistic_, _Industrial & Technical_, or _Playful & Dynamic_). Strictly prevent generic "AI Slop
+      Design" (the mathematical average of the web: default Inter font + purple/blue gradients + white cards everywhere). If the user delegates choices, assign a distinct, domain-tailored aesthetic archetype rather than generic SaaS defaults.
 
 ## Evidence-First Workflow
 
@@ -110,13 +113,23 @@ Evidence sources to check first:
 - any uploaded screenshots or examples;
 - explicit user statements from the current conversation.
 
-## What To Produce
+## What To Produce (Product & Scope Contracts)
 
-Create one product brief at `docs/01_product_brief.md`.
+This skill MUST physically create three foundational contract documents in the `<project-root>/docs/` directory. **Every document is a binding contract, NOT an outline or draft stub. Writing placeholder statements such as "akan diisi nanti", "saat ini kosong", or generating fewer than 30 substantive lines is strictly prohibited.**
+
+1. `docs/01_product_brief.md`: Detailed Product Summary, Users, Jobs & Outcomes, complete In-Scope vs Non-Goals, Readiness Target & Acceptance Boundaries, FR/NFR definitions with acceptance signals, Success Metrics, and Handoff block.
+2. `docs/02_scope_and_delivery.md`: Concrete Release Phasing breakdown (S0 MVP, S1, S2) with exact scope boundaries, technical constraints, and anti-scope protections (Non-goals).
+3. `docs/13_decisions_and_questions.md`: The Contract Registry containing:
+   - D-Register (Decisions): Table with ID, Status, Decision Statement, Source/Evidence.
+   - W-Register (Workflows): Table of business workflows clarified with the user.
+   - Q-Register (Open Questions): Priority-ranked questions, impacted gates, and explicit resolutions.
+   - A-Register (Assumptions): Validated vs unvalidated domain assumptions.
 
 ## Artifact Root Contract
 
-`fullstack-orchestrator` resolves and verifies one absolute `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, an auto-created scratch or product-name directory, or an unrelated current working directory. If bootstrap did not supply a host-verified active root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+`fullstack-orchestrator` resolves and verifies one absolute `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the
+`fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, an auto-created scratch or product-name directory, or an unrelated current working directory. If bootstrap did not supply a host-verified active
+root, STOP for bootstrap; do not independently infer a root or ask a second location question.
 
 The brief must be plain, concrete, and short enough to review quickly. It should include only the information needed to decide whether the idea is worth building.
 
@@ -156,6 +169,7 @@ State:
 ### 3.1 Contract Registry (D/W/Q/A)
 
 Initialize the project's Contract Registry. Every product decision made during discovery MUST be explicitly logged here.
+
 - **D-Register (Decisions):** Approved product decisions (e.g. `D-01 | APPROVED | Target is MVP | User explicit statement`).
 - **W-Register (Working Clarifications):** Technical details agreed upon (e.g. `W-01 | Currency is IDR, stored as integer`).
 - **Q-Register (Open Questions):** Unanswered questions that MUST be answered before specific phases. Categorize priority (Critical, High, Medium, Low).
@@ -165,9 +179,11 @@ The orchestrator (KARSA) strictly enforces that no development begins if Critica
 
 ### 3.2 Full-Request Obligation Ledger
 
-Preserve the original request as a ledger, not as a summary. Every accepted discovery proposal and every `FR-*` requirement must have an entry with its source evidence, requirement or decision ID, required or optional status, exact intended outcome, and initial state `unplanned`. The later blueprint and backlog extend the same entries with mapped stories, release slices, and evidence; they do not replace them.
+Preserve the original request as a ledger, not as a summary. Every accepted discovery proposal and every `FR-*` requirement must have an entry with its source evidence, requirement or decision ID, required or optional status, exact intended outcome, and initial state `unplanned`. The later blueprint
+and backlog extend the same entries with mapped stories, release slices, and evidence; they do not replace them.
 
-Required entries may progress through `planned`, `in-progress`, `validated`, and `released`, but they may become `scope-reduced` only after an explicit user scope-reduction decision names the exact obligation. A bare `Yes` to a brief, backlog, item report, increment manifest, verifier report, or slice release plan never reduces, defers, or completes another obligation. Do not call the brief approval-ready while a required accepted proposal or original functional request has been silently omitted or described only as a future idea.
+Required entries may progress through `planned`, `in-progress`, `validated`, and `released`, but they may become `scope-reduced` only after an explicit user scope-reduction decision names the exact obligation. A bare `Yes` to a brief, backlog, item report, increment manifest, verifier report, or
+slice release plan never reduces, defers, or completes another obligation. Do not call the brief approval-ready while a required accepted proposal or original functional request has been silently omitted or described only as a future idea.
 
 ### 4. Delivery Shape And Acceptance Boundary
 
@@ -182,7 +198,8 @@ Record the two independent delivery decisions before product requirements:
 - managed-backend/BaaS capability and deployment preference when the user supplied one, otherwise a visible open question rather than an invented choice;
 - a proportional operations scope covering run target, concurrency, security, persistence, backups, migrations, configuration, secrets, logging, and ownership.
 
-This is scope confirmation, not an architecture implementation. Do not record a database, provider, framework, or deployment service as confirmed without the exact accepted proposal evidence. The default stack is an offer, not evidence to invent a database, vendor, TypeScript policy, or gateway configuration.
+This is scope confirmation, not an architecture implementation. Do not record a database, provider, framework, or deployment service as confirmed without the exact accepted proposal evidence. The default stack is an offer, not evidence to invent a database, vendor, TypeScript policy, or gateway
+configuration.
 
 ### 5. Functional Requirements
 
@@ -261,30 +278,30 @@ producing_skill: discover-product
 artifact_id: product-brief
 output_path: docs/01_product_brief.md
 inputs:
-  - idea statement
-  - product notes
-  - interviews, transcripts, screenshots, or other evidence
+    - idea statement
+    - product notes
+    - interviews, transcripts, screenshots, or other evidence
 requirement_refs: []
 decision_refs:
-  - product approval decision
-  - confirmed readiness target, architecture shape, and acceptance boundary
-  - confirmed backend owner, API, persistence, staff roles, auth, payment, stack, and deployment decisions when applicable
+    - product approval decision
+    - confirmed readiness target, architecture shape, and acceptance boundary
+    - confirmed backend owner, API, persistence, staff roles, auth, payment, stack, and deployment decisions when applicable
 assumptions:
-  - evidence-backed assumptions that stay visible in the brief
+    - evidence-backed assumptions that stay visible in the brief
 open_questions:
-  - unresolved product questions that can still change the brief
+    - unresolved product questions that can still change the brief
 risks:
-  - product, market, scope, or compliance risks
+    - product, market, scope, or compliance risks
 validation_evidence:
-  - source notes
-  - customer feedback
-  - transcripts
-  - screenshots
+    - source notes
+    - customer feedback
+    - transcripts
+    - screenshots
 status: awaiting-approval
 approval: pending
 next_skills:
-  - design-experience
-  - define-architecture
+    - design-experience
+    - define-architecture
 ```
 
 The handoff stays product-level. It records the confirmed readiness target, architecture shape, and acceptance boundary without adding architecture, backlog, or implementation detail.
@@ -293,11 +310,16 @@ Attribution: adapted from anti-slop v3.2.4, commit `44be687`, MIT. See `THIRD_PA
 
 ## Chat Review Protocol
 
-Before review, label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. The active record binds its request ID, canonical product-brief path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and source user reply or decision evidence.
+Before review, label the body with an immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. The active record binds its request ID,
+canonical product-brief path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and source user reply or decision evidence.
 
-Use native `ask_question` only when the active host exposes it with its actual schema; otherwise ask in plain chat: `Review docs/01_product_brief.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (give meaningful freeform feedback). A direct short Yes or No is valid only for this unchanged shown question; no path, revision, or host ID is required. A stale, duplicate, host, summary, or unrelated reply has no effect. On resume, re-read the canonical brief and display its bound pending question once.
+Use native `ask_question` only when the active host exposes it with its actual schema; otherwise ask in plain chat: `Review docs/01_product_brief.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (give meaningful freeform feedback). A
+direct short Yes or No is valid only for this unchanged shown question; no path, revision, or host ID is required. A stale, duplicate, host, summary, or unrelated reply has no effect. On resume, re-read the canonical brief and display its bound pending question once.
 
-Yes resolves the record and updates only closed governance metadata to `status: approved` and `approval: approved`. No resolves it as rejected and stops until the user explicitly asks to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback resolves the request, sets the brief to `draft`, and routes to this owner. A substantive content revision supersedes the prior record, creates a new Artifact Revision, invalidates affected approvals, and asks again only when the revised brief returns to `awaiting-approval`. Preserve a confirmed stack unless the user explicitly changes it. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata; native host presentation is not approval evidence and any host-mandated opening is outside plugin control.
+Yes resolves the record and updates only closed governance metadata to `status: approved` and `approval: approved`. No resolves it as rejected and stops until the user explicitly asks to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for
+clarifying feedback; sufficient feedback resolves the request, sets the brief to `draft`, and routes to this owner. A substantive content revision supersedes the prior record, creates a new Artifact Revision, invalidates affected approvals, and asks again only when the revised brief returns to
+`awaiting-approval`. Preserve a confirmed stack unless the user explicitly changes it. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata; native host presentation is not approval evidence and any host-mandated opening is outside plugin
+control.
 
 ## Approval Gate
 

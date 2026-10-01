@@ -23,7 +23,8 @@ Turn an approved product brief into a clear experience specification that can be
 
 ## Prerequisite
 
-Start only after an approved product brief exists. Verify that the approval evidence names the exact current brief path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it. If the brief is not approved, stop and return that gap instead of inventing experience decisions.
+Start only after an approved product brief exists. Verify that the approval evidence names the exact current brief path and revision; an active editor, another URI, a prior revision, or a current phase does not transfer it. If the brief is not approved, stop and return that gap instead of inventing
+experience decisions.
 
 The brief should provide, at minimum:
 
@@ -44,9 +45,12 @@ The brief should provide, at minimum:
 6. Keep the prototype lightweight enough to validate the experience only.
 7. Do not mark the work approved. Human approval is required.
 8. Do not allow UI planning to proceed until the Visual Direction Contract has an explicit approval from its named human approval owner.
-9. Preserve the independent approved readiness target and architecture shape. A prototype experience must state its demo limits and cannot be presented as production-ready behavior; a full-stack experience must expose the UX implications of backend, shared data, staff authorization, and real-payment decisions without choosing their implementation. A restrained visual direction never selects a technology stack.
+9. Preserve the independent approved readiness target and architecture shape. A prototype experience must state its demo limits and cannot be presented as production-ready behavior; a full-stack experience must expose the UX implications of backend, shared data, staff authorization, and real-payment
+   decisions without choosing their implementation. A restrained visual direction never selects a technology stack.
 
-For an authenticated production-ready full-stack experience, define separate `User` and `Staff` journeys before planning privileged screens. The public journey may contain only the approved catalog, login, and registration surfaces; registration must never offer a Staff-role choice. Define authenticated User core operations (such as creating/cancelling orders, bookings, or managing personal resources) and session-expiry/logout states, plus Staff/Admin operational, settlement, and revenue permission states when those obligations are in scope. The experience must show a clear unauthenticated recovery path and a non-disclosing permission or not-found outcome for another user's resource. Do not represent a rendered staff screen, a hidden menu item, or a successful public API response as authorization evidence.
+For an authenticated production-ready full-stack experience, define separate `User` and `Staff` journeys before planning privileged screens. The public journey may contain only the approved catalog, login, and registration surfaces; registration must never offer a Staff-role choice. Define
+authenticated User core operations (such as creating/cancelling orders, bookings, or managing personal resources) and session-expiry/logout states, plus Staff/Admin operational, settlement, and revenue permission states when those obligations are in scope. The experience must show a clear
+unauthenticated recovery path and a non-disclosing permission or not-found outcome for another user's resource. Do not represent a rendered staff screen, a hidden menu item, or a successful public API response as authorization evidence.
 
 ## Curated UX Filter
 
@@ -67,24 +71,41 @@ Use this compact filter while shaping the experience spec.
 - Keep contrast, keyboard access, visible focus, and reduced motion checks explicit.
 - Use restrained motion only when it clarifies feedback or transition.
 - **Anti-Slop Hard Gates & Anti-UI Sameness Mandate (Ban Generic AI Slop):**
-  1. **Strictly Ban "Card Soup":** Forbid wrapping every section, metric, and list item in uniform rounded white boxes (`bg-white rounded-xl shadow border border-gray-100`). Mandate content-driven compositional grammar: use divided lists with subtle borders, borderless grouped sections with varied background values, full-bleed split panes, asymmetric layouts, or editorial typographic hierarchy instead of endless nesting in floating card containers.
-  2. **Strictly Ban Uninspired Default Fonts:** Forbid uncritical fallback to default system fonts or plain Inter/Roboto as the sole typographic identity. Mandate an intentional Type Pairing: a distinctive Display/Heading font that captures the product's brand archetype (e.g. geometric sans, editorial serif, high-density mono, or grotesque sans) paired with a clean, highly readable Body font.
-  3. **Strictly Ban Cliché AI Gradients & Glassmorphism:** Forbid unmotivated purple-to-cyan, indigo-to-violet linear gradients, neon glowing borders, and blurry frosted glass containers that serve no navigational or informational purpose. Color must have functional meaning and express the product's brand personality.
-  4. **Strictly Ban Cookie-Cutter Template Clichés:** Forbid generic 3-card marketing feature grids on operational pages, centered marketing hero banners with dual pill buttons in app views, and cookie-cutter 4-metric top dashboard cards. Build compositions organically from the real task flow and user data density needs.
-  5. **Bespoke Semantic Color Palette:** Forbid copying default Tailwind/Bootstrap color presets (e.g. standard blue-600/indigo-600 buttons on gray-100). Generate a tailored semantic color system (primary, secondary, surface, canvas, border, text hierarchy, status) that aligns with the brand personality discovered in `discover-product`.
-  6. **Mandatory Signature Design Element:** Every visual contract must define at least one concrete `signature_moment` (e.g. a unique summary bar, bespoke tab switch indicator, brand-tailored status badge, or high-density ledger layout) that breaks UI monoculture and makes the application immediately recognizable.
+    1. **Strictly Ban "Card Soup":** Forbid wrapping every section, metric, and list item in uniform rounded white boxes (`bg-white rounded-xl shadow border border-gray-100`). Mandate content-driven compositional grammar: use divided lists with subtle borders, borderless grouped sections with varied
+       background values, full-bleed split panes, asymmetric layouts, or editorial typographic hierarchy instead of endless nesting in floating card containers.
+    2. **Strictly Ban Uninspired Default Fonts:** Forbid uncritical fallback to default system fonts or plain Inter/Roboto as the sole typographic identity. Mandate an intentional Type Pairing: a distinctive Display/Heading font that captures the product's brand archetype (e.g. geometric sans,
+       editorial serif, high-density mono, or grotesque sans) paired with a clean, highly readable Body font.
+    3. **Strictly Ban Cliché AI Gradients & Glassmorphism:** Forbid unmotivated purple-to-cyan, indigo-to-violet linear gradients, neon glowing borders, and blurry frosted glass containers that serve no navigational or informational purpose. Color must have functional meaning and express the
+       product's brand personality.
+    4. **Strictly Ban Cookie-Cutter Template Clichés:** Forbid generic 3-card marketing feature grids on operational pages, centered marketing hero banners with dual pill buttons in app views, and cookie-cutter 4-metric top dashboard cards. Build compositions organically from the real task flow and
+       user data density needs.
+    5. **Bespoke Semantic Color Palette:** Forbid copying default Tailwind/Bootstrap color presets (e.g. standard blue-600/indigo-600 buttons on gray-100). Generate a tailored semantic color system (primary, secondary, surface, canvas, border, text hierarchy, status) that aligns with the brand
+       personality discovered in `discover-product`.
+    6. **Mandatory Signature Design Element:** Every visual contract must define at least one concrete `signature_moment` (e.g. a unique summary bar, bespoke tab switch indicator, brand-tailored status badge, or high-density ledger layout) that breaks UI monoculture and makes the application
+       immediately recognizable.
 - Accept or reject each notable visual choice according to product purpose, content, user tasks, and operating context; record the product-specific reason either way in `rejected_defaults`.
 - Treat restrained operational design as valid and distinctive when deliberate density, hierarchy, typography, navigation, or wayfinding gives it a clear product-specific character without relying on generic template crutches.
 
 Attribution note: this filter is curated from anti-slop v3.2.4 commit 44be68777e96d53d113edad33dbc4ab380f5d054 under MIT. See `THIRD_PARTY_NOTICES.md`.
 
-## Output
+This skill MUST physically create two contract documents in the `<project-root>/docs/` directory. **Every document is a binding contract, NOT an outline or draft stub. Writing placeholder statements such as "akan diisi nanti", "saat ini kosong", or generating fewer than 30 substantive lines is strictly prohibited.**
 
-Write the experience specification to `docs/03_user_journeys.md`.
+1. `docs/03_user_journeys.md`:
+   - Detailed step-by-step actor flows for every user persona and staff role.
+   - Comprehensive journey coverage: Happy path, Edge cases, Failure & Recovery paths (e.g., failed payment, out-of-stock reserve, expired session).
+   - Bespoke Visual Direction Contract (VDC): Color palette with exact hex codes, typography pairing (display + body font), spacing scale, bespoke signature moment, and explicitly rejected generic AI defaults (e.g. no rounded card soup, no generic purple gradients).
+
+2. `docs/07_core_workflows.md`:
+   - Complete Screen Inventory with unique IDs (`SCR-001`, `SCR-002`, ...).
+   - Layout grammar and component hierarchy for every screen.
+   - Exhaustive State Coverage: Loading state, Empty state, Populated state, Error state, and Destructive action confirmation state for every view.
+   - Navigation architecture: Strict prevention of the "Frankenstein page" anti-pattern by splitting disparate journeys into distinct routes, tabs, or contextual drawers. Non-blocking secondary actions.
 
 ## Artifact Root Contract
 
-`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including visual proof target paths. Keep the existing `output_path` value in the `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a second location question.
+`fullstack-orchestrator` resolves `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`, including visual proof target paths. Keep the existing `output_path` value in the
+`fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, or to an unrelated current working directory. If bootstrap did not supply a root, STOP for bootstrap; do not independently infer a root or ask a
+second location question.
 
 The spec should be concise, reviewable, and ready for approval.
 
@@ -130,17 +151,21 @@ Each entry in `visual_decisions` must include:
 - `signature_moment`;
 - `rejected_defaults`, with a product-specific reason for every rejection.
 
-Make every visual decision concrete enough for planning and validation. The `signature_moment` identifies the product-specific visual or interaction expression that makes the experience recognizable; it may be quiet and operational in a restrained direction. A restrained contract can be distinctive through deliberate density, hierarchy, typography, navigation, or wayfinding and does not need gradients, glass, animation, or an expressive aesthetic.
+Make every visual decision concrete enough for planning and validation. The `signature_moment` identifies the product-specific visual or interaction expression that makes the experience recognizable; it may be quiet and operational in a restrained direction. A restrained contract can be distinctive
+through deliberate density, hierarchy, typography, navigation, or wayfinding and does not need gradients, glass, animation, or an expressive aesthetic.
 
 Use `none` or `not-applicable` only when the relevant field includes a product-specific rationale. Do not use either value to avoid a decision, state, responsive case, or accessibility obligation.
 
 Treat references only as provenance and comparison inputs. They never grant permission to clone a product, imitate a named brand, copy protected assets, or reuse material without an appropriate license or approval.
 
-Validate the contract, its visual decisions, signature moment, relevant states, responsive intent, and accessibility at every product-approved validation width. If no widths have been approved, validate at 375, 768, and 1280 CSS px. Record what was checked, the result, and any unresolved inconsistency.
+Validate the contract, its visual decisions, signature moment, relevant states, responsive intent, and accessibility at every product-approved validation width. If no widths have been approved, validate at 375, 768, and 1280 CSS px. Record what was checked, the result, and any unresolved
+inconsistency.
 
-Downstream work must cite a visual decision with the canonical reference `experience-spec@VDC-NNN#VIS-NNN`, where each `NNN` is a three-digit decimal number. For example: `experience-spec@VDC-001#VIS-001`. Plain ASCII characters are required. A revision-only reference does not substitute for a decision reference.
+Downstream work must cite a visual decision with the canonical reference `experience-spec@VDC-NNN#VIS-NNN`, where each `NNN` is a three-digit decimal number. For example: `experience-spec@VDC-001#VIS-001`. Plain ASCII characters are required. A revision-only reference does not substitute for a
+decision reference.
 
-An initial or revised contract stays at `draft` until it is complete and internally consistent, then moves to `awaiting-approval`. If any approved Visual Direction Contract decision changes, create a new `VDC-NNN` revision, return the artifact to `draft`, complete consistency and validation checks, and then return it to `awaiting-approval` for explicit human approval. All downstream references to the superseded revision are stale and block UI planning or implementation until the new revision is approved and the references are updated.
+An initial or revised contract stays at `draft` until it is complete and internally consistent, then moves to `awaiting-approval`. If any approved Visual Direction Contract decision changes, create a new `VDC-NNN` revision, return the artifact to `draft`, complete consistency and validation checks,
+and then return it to `awaiting-approval` for explicit human approval. All downstream references to the superseded revision are stale and block UI planning or implementation until the new revision is approved and the references are updated.
 
 ### 3. Journeys
 
@@ -172,10 +197,14 @@ Define:
 - deep links or cross-links that matter to the journey.
 
 #### Multi-View Navigation & Anti-Monolith Page Stacking Rules (Web & Mobile):
-1. **Anti-Monolith Page Stacking Prohibition:** Applications across both web and mobile must never be structured as an endless single-scroll catch-all page where unrelated user journeys and feature sections are stacked vertically. Provide distinct navigation views (for web: tabs, distinct routes, drawers/modals; for mobile: bottom navigation bars, screen stacks, and bottom sheets).
-2. **Core Journey vs. Add-On Separation:** The primary customer conversion flow (e.g. core product/service purchase, booking, order, or subscription) must remain streamlined and frictionless. Optional cross-sells, upsells, and add-ons (such as optional items, accessories, or complementary services) must NEVER be placed as mandatory scroll hurdles in the path of the primary conversion. Add-ons must be accessible via dedicated tabs, non-blocking summaries, or contextual opt-in drawer/modal/sheet steps with an immediate 1-click completion option for the core service.
+
+1. **Anti-Monolith Page Stacking Prohibition:** Applications across both web and mobile must never be structured as an endless single-scroll catch-all page where unrelated user journeys and feature sections are stacked vertically. Provide distinct navigation views (for web: tabs, distinct routes,
+   drawers/modals; for mobile: bottom navigation bars, screen stacks, and bottom sheets).
+2. **Core Journey vs. Add-On Separation:** The primary customer conversion flow (e.g. core product/service purchase, booking, order, or subscription) must remain streamlined and frictionless. Optional cross-sells, upsells, and add-ons (such as optional items, accessories, or complementary services)
+   must NEVER be placed as mandatory scroll hurdles in the path of the primary conversion. Add-ons must be accessible via dedicated tabs, non-blocking summaries, or contextual opt-in drawer/modal/sheet steps with an immediate 1-click completion option for the core service.
 3. **Role Surface Isolation:** Privileged operational surfaces (such as staff cashier consoles, admin management panels, or inventory controls) must have dedicated, isolated views/routes/tabs separate from customer-facing discovery and transaction surfaces.
-4. **Mobile Navigation Paradigms (When targeting mobile):** Use standard mobile interaction patterns: thumb-friendly bottom navigation, screen stack transitions with intuitive back navigation, modal bottom sheets for secondary actions, touch targets of at least 44x44 points, and safe-area compliance (notches, navigation bars).
+4. **Mobile Navigation Paradigms (When targeting mobile):** Use standard mobile interaction patterns: thumb-friendly bottom navigation, screen stack transitions with intuitive back navigation, modal bottom sheets for secondary actions, touch targets of at least 44x44 points, and safe-area compliance
+   (notches, navigation bars).
 
 ### 5. Screen Inventory
 
@@ -266,7 +295,9 @@ For a confirmed prototype, keep it to:
 - no framework choice;
 - no deployment plan.
 
-State the prototype's demo limitations and that it is not production full-stack delivery. For a confirmed full-stack application, define the journeys and states that depend on backend API results, persistent or shared data, authentication and authorization, and real payment outcomes when they are in scope. For authenticated work, include login failure, expired-session recovery, logout, User ownership denial, Staff role denial, and manual-settlement confirmation and idempotent-result states where applicable. Link each state to the accepted `FR-*` obligation so later evidence can distinguish a completed slice from remaining original scope. This remains an experience contract, not an implementation or vendor choice.
+State the prototype's demo limitations and that it is not production full-stack delivery. For a confirmed full-stack application, define the journeys and states that depend on backend API results, persistent or shared data, authentication and authorization, and real payment outcomes when they are in
+scope. For authenticated work, include login failure, expired-session recovery, logout, User ownership denial, Staff role denial, and manual-settlement confirmation and idempotent-result states where applicable. Link each state to the accepted `FR-*` obligation so later evidence can distinguish a
+completed slice from remaining original scope. This remains an experience contract, not an implementation or vendor choice.
 
 ### 11. Traceability
 
@@ -284,49 +315,53 @@ producing_skill: design-experience
 artifact_id: experience-spec
 output_path: docs/03_user_journeys.md
 inputs:
-  - approved product brief
-  - requirement IDs from the brief
-  - supporting evidence and constraints
+    - approved product brief
+    - requirement IDs from the brief
+    - supporting evidence and constraints
 requirement_refs:
-  - approved product requirement IDs
+    - approved product requirement IDs
 decision_refs:
-  - approved product brief
-  - confirmed readiness target, architecture shape, and acceptance boundary from the product brief
-  - approved Visual Direction Contract revision in VDC-NNN format
-  - "exact approved visual decision references in experience-spec@VDC-NNN#VIS-NNN format"
-  - named human visual approval decision for the current VDC-NNN revision
+    - approved product brief
+    - confirmed readiness target, architecture shape, and acceptance boundary from the product brief
+    - approved Visual Direction Contract revision in VDC-NNN format
+    - "exact approved visual decision references in experience-spec@VDC-NNN#VIS-NNN format"
+    - named human visual approval decision for the current VDC-NNN revision
 assumptions:
-  - any interaction assumptions that remain visible in the spec
+    - any interaction assumptions that remain visible in the spec
 open_questions:
-  - unresolved UX decisions that can still change the spec
+    - unresolved UX decisions that can still change the spec
 risks:
-  - usability, accessibility, or scope risks
+    - usability, accessibility, or scope risks
 validation_evidence:
-  - journeys
-  - screen inventory
-  - state coverage
-  - prototype notes
-  - visual provenance, including sources, approved assets, constraints, allowed use, and comparison inputs
-  - validation widths in CSS pixels and results at each width
-  - visual state validation results
-  - signature moment validation results
-  - responsive intent validation results
-  - accessibility evidence for the visual decisions
+    - journeys
+    - screen inventory
+    - state coverage
+    - prototype notes
+    - visual provenance, including sources, approved assets, constraints, allowed use, and comparison inputs
+    - validation widths in CSS pixels and results at each width
+    - visual state validation results
+    - signature moment validation results
+    - responsive intent validation results
+    - accessibility evidence for the visual decisions
 status: awaiting-approval
 approval: pending
 next_skills:
-  - plan-delivery
+    - plan-delivery
 ```
 
 The handoff stays experience-level. It does not add backend architecture, production implementation detail, or deployment steps, but it preserves the approved readiness target, architecture shape, and acceptance boundary for planning.
 
 ## Chat Review Protocol
 
-Label the canonical specification with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. It binds request ID, canonical path, content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
+Label the canonical specification with its immutable `Artifact Revision`. A Review Record is independent from handoff status and has status `pending`, `resolved`, or `superseded`. Preserve past records and allow only one active request across the lifecycle. It binds request ID, canonical path,
+content revision, exact question, simplified options (`Yes`, `No`, and `Other` for user typing/comments), prompt evidence, and the source user reply or decision evidence.
 
-Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review docs/03_user_journeys.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the specification and show the bound pending question once.
+Use native `ask_question` only when the host exposes it with its actual schema; otherwise ask: `Review docs/03_user_journeys.md@[revision]. Approve this exact content?` Options are `Yes` (approve), `No` (reject and pause), and `Revision` (meaningful freeform feedback). A direct Yes or No is valid
+only for this unchanged shown question and needs no path, revision, or host ID. Stale, duplicate, summary, unrelated, or host replies have no effect. On resume, re-read the specification and show the bound pending question once.
 
-Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback sets the artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals, and asks again only after the revised specification returns to `awaiting-approval`. Do not intentionally create, update, or open `implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
+Yes resolves the record and updates only closed governance metadata to approved. No resolves it as rejected and waits for an explicit user request to revise. Comments or feedback entered via `Other` (or user typing) without meaningful content ask only for clarifying feedback; sufficient feedback
+sets the artifact to `draft` and routes to this owner. A substantive revision supersedes the old record, creates a new Artifact Revision, invalidates affected approvals, and asks again only after the revised specification returns to `awaiting-approval`. Do not intentionally create, update, or open
+`implementation_plan.md`, editor tabs, or `RequestFeedback` metadata. Native host presentations are not approval evidence, and host-mandated opening cannot be controlled by this plugin.
 
 ## Completion Criteria
 
