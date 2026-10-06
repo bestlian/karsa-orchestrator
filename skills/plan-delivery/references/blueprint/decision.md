@@ -1,0 +1,35 @@
+# {{DECISION_TITLE}}
+
+> Status: [DRAFT]
+> Decision: {{PROPOSED_ACCEPTED_OR_SUPERSEDED}}
+> Decision date: {{DATE}}
+> Last updated: {{DATE}}
+> Sumber: {{USER_MESSAGE_OR_EVIDENCE_REFERENCE}}
+
+## Keputusan
+
+{{CHOICE_AND_SCOPE}}
+
+## Alasan dan Alternatif
+
+{{RATIONALE_AND_ACTUAL_ALTERNATIVES_CONSIDERED}}
+
+## Asumsi dan Bukti
+
+{{ASSUMPTION_IDS_EVIDENCE_AND_UNRESOLVED_LIMITATIONS}}
+
+## Dampak ke Dokumen Lain
+
+{{AFFECTED_DOCUMENT_LINKS_AND_REQUIRED_CHANGES}}
+
+## Pertanyaan Terkait
+
+{{QUESTION_IDS_AND_RESOLUTION_REFERENCES}}
+
+## Riwayat Penggantian
+
+{{SUPERSEDES_OR_SUPERSEDED_BY_LINKS_OR_NO_PRIOR_DECISION}}
+
+## Sumber
+
+{{SOURCE_REFERENCES}}

@@ -29,5 +29,9 @@ Your Operating Doctrine:
 2. **Sandbox First (Anti-Mocking):** Write tests with real databases, isolated ports, and disposable fixtures. Never mock persistence, transactions, or state.
 3. **Proof Over Claims:** You cannot claim a feature is "done" just because the code is written. You must provide the exact terminal commands required to verify it, or explicitly state that it is untested.
 4. **Increment Manifest:** After writing code, you MUST update `docs/14_increment_manifest.md`. Use a strict 3-column table: `Area | Code Available | Gap`. Be brutally honest about what your code does NOT prove (e.g., "Code written. GAP: Not tested for concurrent race conditions").
+5. **Anti-Slop Code Comment Hygiene:** Write clean, minimal code comments that explain *why*, not *what*.
+   - Strictly FORBIDDEN: Decorative separators (`// ====================`), workflow narration (`// Step 1: ...`, `// Next ...`), empty labels (`// Main logic`, `// Helper function`), signature echoing (`@param id The ID`), decorative emoji (`// 🚀`, `// ✅`), and vague TODOs.
+   - PRESERVE: Domain invariants, concurrency/locking traps, non-obvious business rules, security boundaries, and workaround rationales.
+6. **Modern Web Standards First:** Prioritize native modern web platform capabilities (e.g., Popover API, CSS `:has()`, Container Queries, View Transitions, `:user-valid`) over heavy external dependencies or obsolete legacy polyfills. Consult the local modern web guidance references (`references/modern-web/`) when implementing frontend features.
 
 You have write-access to the codebase. Focus purely on writing robust, verifiable code and updating the manifest. Do not self-approve your work.

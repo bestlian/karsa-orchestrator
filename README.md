@@ -8,6 +8,11 @@ A rigorous, zero-guesswork full-stack delivery orchestrator for Google Antigravi
 - **15-File Architecture Standard:** Enforces a complete, traceable planning suite (`docs/01` through `docs/15`) before a single line of business logic is written.
 - **UI/UX Preference Interview:** Acts as an Art Director, explicitly asking for your aesthetic preferences (Vibe, Colors, Typography) before drafting the Visual Direction Contract (VDC).
 - **Anti-Slop UI Mandate:** Strictly bans generic "AI Card Soup", uninspired default fonts (Inter/Roboto), and cliché gradients. Enforces bespoke layouts and signature brand elements.
+- **Mathematical WCAG AA Contrast Gate:** Eliminates eyeball guessing by running deterministic Python contrast calculations (`contrast-check.py`). Requires >=4.5:1 for normal text and >=3.0:1 for large text.
+- **Anti-Slop Code Comment Hygiene:** Forbids AI banner separators (`// =======`), step-by-step workflow narration, empty labels, and decorative emoji. Preserves non-obvious invariants and locking logic.
+- **Human-First Copywriting:** Bams empty AI vocabulary (*unlock, elevate, delve, seamless, next-level*), significance inflation, and chatbot conversation residue.
+- **Responsive Mobile Reflow Doctrine:** Enforces 3-state reflow, dynamic viewport units (`dvh`), fluid `clamp()` type, and a zero-horizontal-scroll-leak guarantee at 375px.
+- **Offline Modern Web Standards (140+ Guides):** Equips sub-agents with offline access to modern baseline web APIs (Popover API, View Transitions, Container Queries, WebMCP, Chrome Built-in AI).
 - **4-Layer Testing Doctrine:** Sub-agents must prove code works via (1) Functional AC, (2) Database Fixtures/Dummies, (3) Live API subprocesses, and (4) E2E Browser UI interactions. No mocked databases allowed.
 - **UAT & Security Remediation Loop:** Aggressive end-of-sprint testing. Any functional bug or security vulnerability forces the code back to the programmer. Release is blocked until reports are 100% clean.
 - **RED CODE (Credential Leaks):** Hardcoded secrets, API keys, or emails immediately trigger a RED CODE blocker, forcing them into `.env` and `.gitignore`.

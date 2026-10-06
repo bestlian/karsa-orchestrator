@@ -164,7 +164,24 @@ Treat build output, process launch, and HTTP reachability as evidence only for t
 - Checks run.
 - Evidence gaps.
 
-For UI candidates, the evidence set must include real click through and, where relevant, fill/submit behavior for every interactive element, run URL, browser and viewport, action and observed state outcome, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain. Screenshots classify visual appearance only; they are supporting evidence, never interaction, state, API, or authorization evidence. For new scaffolds it also includes starter-screen detection and entrypoint wiring before any application-ready claim.
+For UI candidates, the evidence set must include real click through and, where relevant, fill/submit behavior for every interactive element, run URL, browser and viewport, action and observed state outcome, console error checks, keyboard and focus checks, contrast checks, responsive and mobile reflow checks, theme checks if the product supports them, loading, empty, error, and disabled states, and proof that no dead controls remain.
+
+### Automated WCAG AA Contrast Gate (Mathematical Verification)
+- Run the deterministic contrast tool against every candidate text and background color pairing:
+  `python skills/verify-quality/scripts/contrast-check.py "<foreground_hex>" "<background_hex>"`
+- **Hard Standard:** Normal body text MUST achieve >= 4.5:1. Large text (18px+ or bold 14px+) MUST achieve >= 3.0:1.
+- Any contrast ratio below these thresholds is classified as a **Major Quality Defect** that blocks release eligibility. Eyeball claims or visual assertions without running the contrast tool are invalid.
+
+### Responsive Mobile Reflow & Horizontal Leak Check
+- Inspect or exercise the candidate at 375px viewport width (standard mobile canvas).
+- The page MUST NOT leak horizontal scroll (`scrollWidth > clientWidth`). Any horizontal scroll bar on a non-code/non-table container is an automatic **Major Defect**.
+- Sizing must respect mobile viewports: verify that mobile views use dynamic viewport units (`dvh` or `auto`) rather than `100vh`, and responsive typography (`clamp()`) rather than rigid oversized pixels.
+
+### Anti-Slop Code Hygiene & Product Copy Audit
+- **Code Comments:** Inspect source diff for AI comment noise. Any decorative banners (`// =================`), line-by-line workflow narration (`// Step 1: ...`), empty labels (`// Main logic`), signature echoes (`@param x the x`), or decorative emoji (`// 🚀`, `// ✅`) must be flagged as maintainability defects.
+- **Product Copy:** Inspect UI labels, hero text, and empty states. Flag empty AI vocabulary (*unlock, elevate, empower, delve, seamless, next-level*) or chatbot conversation artifacts (*"I hope this helps!"*) as copy defects.
+
+Screenshots classify visual appearance only; they are supporting evidence, never interaction, state, API, or authorization evidence. For new scaffolds it also includes starter-screen detection and entrypoint wiring before any application-ready claim.
 
 For auth and staff functions, include valid-token success plus missing token, tampered signature, missing expiry, expired token, wrong-role, cross-role, and cross-user ownership denials. Assert `401` for missing, malformed, invalid, or expired credentials and the approved `403` or scoped `404` behavior for valid identities without role or ownership. Confirm protected user resource operations (e.g. user order/booking/record reads and cancellations) and staff operational, reports, and manual settlement routes against the approved auth model. Reject default shared credentials, seeded SHA-256 passwords, token-header-selected algorithms, missing server-side subject or active-role lookup, or unaudited manual settlements. For durable or transactional data, use dedicated test data, verify persistence, and test interval conflict semantics where applicable, real date and operational timestamp validation, negative quantities, and true simultaneous conflicts through separate database connections according to the approved deployed-process model. Verify transactions preserve data integrity, order/payment/settlement audits, and financial totals, including idempotent Staff settlement. Never point tests at a project live database. `npm audit` reports dependency findings only; it is not a full application-security verdict, authorization test, or production-readiness gate.
 

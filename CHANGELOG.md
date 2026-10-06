@@ -2,6 +2,17 @@
 
 This project follows Keep a Changelog.
 
+## [1.1.0] - 2026-10-06
+
+### Added
+- Mathematical WCAG AA Contrast Verification Gate: integrated deterministic Python contrast calculator (`contrast-check.py` and `contrast-mcp.py`) into `verify-quality` and `design-experience`, enforcing >=4.5:1 for normal body text and >=3.0:1 for large text without subjective eyeball guessing.
+- Anti-Slop Code Comment Hygiene: enforces lean, non-obvious code comments in `strict-programmer` and `implement-feature`, strictly outlawing decorative banner separators, workflow narration checklists, empty labels, signature echoing, and decorative emoji.
+- Anti-Slop Human Copywriting & Natural Prose: integrated into `discover-product` and `design-experience`, banning empty AI buzzwords (*unlock, elevate, delve, seamless, next-level*), significance inflation, and chatbot conversational residue.
+- Responsive Mobile Reflow Mandate: enforces deliberate 3-state reflow (mobile stack, tablet 2-col, desktop grid), fluid `clamp()` typography, dynamic viewport units (`dvh`/`auto` instead of `100vh`), and zero horizontal scroll leak at 375px.
+- Offline Modern Web Standards Guidance: packaged 140+ offline modern web reference guides into `implement-feature/references/modern-web/` covering baseline platform APIs (Container Queries, View Transitions, Popover API, CSS `:has()`, WebMCP, Built-in AI).
+- Structured Blueprint Registries: infused `project-blueprint` conventions into `discover-product` and `plan-delivery`, tracking Assumptions (`A001`), Questions (`Q001`), and lifecycle evidence statuses (`[DRAFT]`, `[VALIDATED]`, `[BLOCKED]`, `[SUPERSEDED]`).
+- Global Working Preferences (`AGENTS.md`): added repository-level directives enforcing candor, smallest coherent change doctrine, and background process hygiene.
+
 ## [1.0.0] - 2026-09-09
 
 ### Added

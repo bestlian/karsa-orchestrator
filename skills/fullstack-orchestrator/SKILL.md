@@ -112,8 +112,8 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
 
 ## Lifecycle And Join Rules
 
-1. Discovery & Intent Decomposition: If the user provides a vague idea, ambiguous request, unstructured intent, or there is no approved product brief, you MUST select and execute `discover-product`. This is KARSA's primary **Planner Skill**. It breaks down the intent, extracts constraints, and MUST physically output:
-   - `docs/01_product_brief.md` (Product Summary, Problem, ICP, Boundaries)
+1. Discovery & Intent Decomposition: If the user provides a vague idea, ambiguous request, unstructured intent, or there is no approved product brief, you MUST select and execute `discover-product`. This is KARSA's primary **Planner Skill**. It conducts human-centric requirement gathering (Actors, Business Problem, Core Workflows, and Feature Inventory) BEFORE proposing technical stacks or delivery shapes. It extracts constraints and MUST physically output:
+   - `docs/01_product_brief.md` (Product Summary, Problem, ICP, Boundaries, Feature Inventory)
    - `docs/02_scope_and_delivery.md` (Scope Phasing: S0 MVP, S1, S2, In-Scope vs Out-of-Scope)
    - `docs/13_decisions_and_questions.md` (Contract Registry: D/W/Q/A Registers)
    It stops only for required discovery input or the resulting brief's human-approval boundary.

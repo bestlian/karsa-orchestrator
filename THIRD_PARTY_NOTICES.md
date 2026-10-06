@@ -1,7 +1,9 @@
 # Third-Party Notices
 
-This suite adapts selected principles from `anti-slop` v3.2.4, reviewed at
-commit `44be68777e96d53d113edad33dbc4ab380f5d054`:
+This suite adapts selected principles, tools, and guidance from:
+- `anti-slop` suite v3.2.4 & v3.2.7 (core, human contrast-check, layoutmobile, copywriting, code comments), reviewed at commit `44be68777e96d53d113edad33dbc4ab380f5d054`: https://github.com/miqdadbadjuber/anti-slop
+- `modern-web-guidance` web standards guides and patterns
+- `project-blueprint` foundation, assumption, and question tracker conventions
 
 https://github.com/miqdadbadjuber/anti-slop
 

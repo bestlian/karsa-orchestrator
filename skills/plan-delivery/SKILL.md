@@ -63,6 +63,9 @@ In addition to the backlog, this skill MUST physically create the delivery gover
 2. `docs/11_quality_metrics_release.md`:
    - Verification Gates & Mandatory Test Types (Unit, Integration, E2E/Browser).
    - Numerical Coverage Thresholds: Minimum total statement/branch coverage (e.g. >=80%), and 100% test coverage for domain state machines and authorization gates.
+   - Mathematical WCAG Contrast Gate: Mandatory >=4.5:1 for normal body text and >=3.0:1 for large text (18px+), verified deterministically with `contrast-check.py`.
+   - Mobile Reflow & Responsive Gate: Zero horizontal scroll leak at 375px viewport width, dynamic viewport unit enforcement (`dvh`/`auto` over `100vh`).
+   - Anti-Slop Code Hygiene & Copywriting Gate: Zero tolerance for AI noise comments (decorative banners, workflow narration) and empty marketing buzzwords.
    - Performance Budgets: API endpoint p95 latency targets (<200ms), frontend core web vitals budgets (LCP < 1.5s, CLS < 0.1), and client bundle size caps.
    - Anti-Mocking Rule: Mandatory isolated real-database testing policy (SQLite memory/file or containerized DB) for state and concurrency tests; prohibition of mocks for database invariants.
 

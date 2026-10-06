@@ -101,18 +101,26 @@ requirements in existing backlogs and manifests, not a new state engine or datab
 report, or slice release plan never reduces another obligation. After each approved slice or release plan, re-evaluate the ledger: continue with the next Ready item under the same authorization, or route to planning repair when required work has no Ready item. Never say the request is complete or
 application-ready while required obligations remain.
 
-Discovery uses natural, conversational requirement gathering with a strict Zero-Guesswork Principle: the model must NEVER guess or fabricate business logic, pricing, operating rules, or domain constraints unless the user explicitly delegates decisions (e.g. 'terserah kamu', 'kamu yang tentukan',
-'serahkan sepenuhnya'). When proposals are needed, it uses one active, concrete proposal at a time, with simplified options: `Yes` (accept exactly the shown recommendation), `No` (reject without selecting an alternative), or `Other` (user typing for comments/feedback). When using `ask_question`,
-provide only `["Yes", "No"]` and let the user type custom feedback in the default write-in 'Other' box. Never ask either-or questions that make `Yes` ambiguous, batch questions, or infer several approvals from one response. Persist every accepted decision with its topic, exact question, displayed
-options, literal `Yes`, prompt evidence, and resulting facts. A discovery `Yes` is neither a brief approval nor a development-start authorization.
+Discovery uses natural, conversational requirement gathering with a strict Zero-Guesswork Principle: the model must NEVER guess or fabricate business logic, pricing, operating rules, or domain constraints unless the user explicitly delegates decisions (e.g. 'terserah kamu', 'kamu yang tentukan', 'serahkan sepenuhnya').
 
-When delivery shape is absent, make one prompt-specific recommendation, for example: `I recommend a production-ready full-stack application for [goal], with a runnable frontend, backend API, and durable data. Proceed with this target?` Its `Yes` accepts only that target; record readiness and
-architecture shape separately from the same exact question. Then ask only the next missing material proposal: one least-privileged User/Staff or service-access model; an explicit/existing stack or the platform-appropriate default offer (for web apps: FastAPI backend with React and Vite frontend; for
-mobile apps: FastAPI backend with React Native/Expo or Flutter; or user-specified stack); persistence; payments; and only necessary remaining scope. An authenticated production-ready target must place JWT User/Staff access before privileged endpoints, forbid public Staff registration, use a secure
-first-Staff bootstrap with no shared default credential, and keep only approved catalog, login, and registration routes public. For an explicitly local, single-process scope, SQLite with migrations, constraints, and persistence tests is a recommendation, not a fixed default. Shared, scaled, or
-concurrent use needs one proportionate PostgreSQL proposal, or MySQL only when prompt evidence favors it. Without gateway credentials, recommend authenticated staff recording actual manual or cash settlement; never call a fake QR code or simulated gateway live-paid. A requested gateway requires
-provider and approved configuration boundary, remains blocked without them, and never asks for or invents secrets. A local production-ready scope is not a blanket internet-deployment claim. Preserve explicit or existing choices, avoid unanswerable trivia when a reasonable recommendation exists, and
-label invented fixture values as proposed samples rather than facts. `MVP` remains an optional scope or release label mapped to an explicit readiness target.
+### Mandatory Domain, User & Feature-First Requirement Gathering (Fase 1A: Brainstorming & Domain Discovery)
+Before making ANY technical architecture proposals (frameworks, databases, deployment targets, or payment gateways), KARSA MUST act as a collaborative brainstorming partner (teman diskusi & sparring partner produk). Jumping straight into technical stack or architecture questions without understanding the product requirements is strictly FORBIDDEN.
+
+During this brainstorming phase:
+- **Interactive Sparring Partner:** KARSA must NOT act like a bureaucratic survey bot or force rigid modal Yes/No popups during open ideation. Engage in a natural, intellectually curious dialogue in Indonesian. Reflect understanding of the user's vision, suggest creative ideas based on successful industry patterns, challenge weak assumptions respectfully, and help the user weigh trade-offs.
+- **Target Users & Operational Roles:** Who are the key actors? (e.g. End-users/customers, on-site staff/cashiers, venue managers/owners, superadmin). What are their distinct tasks and device contexts (e.g. mobile customer vs on-site POS tablet)?
+- **Business Problem & Core Workflow:** What specific pain point is this application solving? (e.g. double-booking via chat, unrecorded cash, no-shows). What is the primary operational loop from start to finish?
+- **Feature Inventory & MVP Slicing (Brainstorming Fitur):** KARSA MUST actively brainstorm features with the user. Ask: *"Fitur-fitur apa saja yang Anda bayangkan untuk aplikasi ini?"*, offer a curated menu of domain-specific modular features (e.g. Interactive Slot Calendar, Dynamic Night/Weekend Pricing, Walk-in Quick Booking, Financial Settlement Dashboard, Automated WhatsApp Reminders), and collaboratively discuss:
+  - *Pillar Core:* Fitur apa yang mutlak wajib ada di versi perdana (MVP / S0) agar produk bisa segera dipakai?
+  - *Pillar Next:* Fitur apa yang bagus tapi sebaiknya ditunda ke rilis berikutnya (S1/S2) agar peluncuran tidak terhambat?
+- **Domain Invariants & Business Rules:** What are the operating constraints? (e.g. slot durations, booking cancellation/reschedule policies, DP/payment terms, single-venue vs multi-tenant SaaS).
+
+### Technical Delivery Shape & Architecture (Fase 1B: Technical Alignment)
+ONLY AFTER the domain problem, actors, core workflows, and required feature inventory are clearly understood and aligned with the user, KARSA transitions to technical proposals:
+- When delivery shape is absent, make one prompt-specific recommendation: `I recommend a production-ready full-stack application for [goal], with a runnable frontend, backend API, and durable data. Proceed with this target?`
+- When proposals are needed, use one active, concrete proposal at a time with simplified options: `Yes`, `No`, or `Other` (user typing for comments/feedback). When using `ask_question`, provide only `["Yes", "No"]` and rely on the default write-in 'Other' box.
+- Recommend the platform-appropriate stack (for web: FastAPI backend with React and Vite frontend; for mobile: FastAPI with React Native/Expo or Flutter; or user-specified stack), persistence model (SQLite for single-process local or PostgreSQL for concurrent/multi-tenant), and authenticated access/payment boundaries tailored to the discovered domain.
+- `MVP` remains an optional scope or release label mapped to the agreed feature inventory and explicit readiness target.
 
 At architecture and planning preflight, recommend only MCPs justified by the approved project. Native tools come first; no MCP is required to run the app. Prefer a merge into project `.agents/mcp_config.json` for project scope, preserve existing servers, document purpose, prerequisites,
 verification, least permissions, and restart note, and never install automatically. The optional verified `agy mcp add --type stdio playwright npx @playwright/mcp@latest` registration has no documented project-scope flag, so do not call it project-scoped or invent `--scope`. See the skill contract
@@ -173,5 +181,49 @@ conflicts or socket binding errors (such as Windows Error 10013).
 
 ## Default System Browser Strategy
 
-Browser automation and UI testing strictly prioritize the user's default, locally installed PC browser (e.g. Microsoft Edge on Windows, Google Chrome on macOS/Linux) rather than attempting heavy multi-hundred megabyte driver downloads from external CDNs. If an external CDN download fails or times
-out, the agent immediately falls back to the host machine's installed browser or headless CLI without blocking development.
+Browser automation and UI testing strictly prioritize the user's default, locally installed PC browser (e.g. Microsoft Edge on Windows, Google Chrome on macOS/Linux) rather than attempting heavy multi-hundred megabyte driver downloads from external CDNs. If an external CDN download fails or times out, the agent immediately falls back to the host machine's installed browser or headless CLI without blocking development.
+
+## Mathematical WCAG AA Contrast Verification Gate
+
+Text-to-background contrast ratios must be verified deterministically via calculation, never by subjective visual estimation.
+1. Normal body text MUST achieve a minimum contrast ratio of 4.5:1 against its underlying background.
+2. Large text (18px+ or bold 14px+) and critical interactive component boundaries MUST achieve a minimum ratio of 3.0:1.
+3. Verification is performed using the deterministic Python tool:
+   `python <skill-root>/scripts/contrast-check.py "<foreground_hex>" "<background_hex>"`
+4. Any failure to meet these ratios is an automatic **Major Quality Defect** that blocks release progression until the color palette is corrected.
+
+## Anti-Slop Code Comment Hygiene
+
+Code comments must strictly explain non-obvious *why*, not narrate obvious *what*.
+1. **Forbidden Patterns:**
+   - Decorative separators (`// ====================`, box drawing headers).
+   - Step-by-step workflow narration (`// Step 1: Validate input`, `// First... Next...`).
+   - Empty labels (`// Main logic`, `// Helper function`).
+   - Signature echoing (`@param id The ID`).
+   - Decorative emoji in code (`// 🚀 Fast`, `// ✅ Done`).
+   - Vague TODO placeholders (`// TODO: Improve later`).
+2. **Mandatory Retained Comments:**
+   - Mathematical/domain invariants, transactional locking and concurrency traps, non-obvious business constraints, workarounds for platform bugs, and security boundary defenses.
+
+## Anti-Slop Copywriting & Natural Product Prose
+
+All user-facing interface copy, headlines, error messages, and empty states must be crafted for humans and strictly purged of generic AI writing patterns:
+1. **Banned AI Vocabulary:** Words used to simulate authority or sophistication without saying anything: *unlock, elevate, empower, delve, showcase, seamless, next-level, game-changer, revolutionary, robust, landscape*.
+2. **Banned AI Patterns:**
+   - Significance inflation (*"marking a pivotal moment", "the future of work", "ushering in a new era"*).
+   - Weasel attributions and ungrounded social proof (*"experts say...", "trusted by thousands of teams"* with no verifiable citations).
+   - Conversational chatbot artifacts in deliverables (*"I hope this helps!", "Let me know if you need more details"*).
+   - Theatrical fake-candid openers (*"Honestly? Here's the thing..."*).
+3. **Requirement:** Microcopy must be plain, concrete, and active-voice, directly stating what the feature does or what action the user must take.
+
+## Responsive Mobile Reflow Mandate
+
+A mobile layout is a purposefully designed reflow state, NOT a desktop layout squeezed down into a phone.
+1. **3-State Reflow:** Layouts must define clean reflow across single-column stack (mobile < 640px), 2-column intermediate grid (tablet 640-1024px), and full multi-column layout (desktop > 1024px).
+2. **Zero Horizontal Scroll Leak:** At 375px viewport width, `scrollWidth` must never exceed `clientWidth`. Any unexpected horizontal scroll is a blocking defect.
+3. **Dynamic Viewport Units:** Mobile sections must use dynamic viewport units (`dvh`) or content `auto`, strictly avoiding `100vh` slabs that overflow under mobile browser URL bars.
+4. **Fluid Typography:** Typography scales must utilize fluid CSS `clamp()` or distinct mobile breakpoint steps rather than rigid desktop fixed pixels.
+
+## Modern Web Standards & Offline Knowledge Base
+
+Frontend implementations must leverage native modern web platform capabilities (Container Queries, View Transitions API, Popover API, CSS `:has()`, `:user-valid`) rather than reflexively loading bloated npm packages or obsolete polyfills. The agent has access to an offline repository of 140+ modern web guides located in `skills/implement-feature/references/modern-web/` covering modern UI behaviors, performance, forms, and browser-native AI APIs. Always consult native baseline solutions before adding third-party dependencies.
