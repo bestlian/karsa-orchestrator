@@ -28,7 +28,7 @@ agy plugin install https://github.com/bestlian/karsa-orchestrator.git
 ```
 
 **For Developers / Local Testing:**
-If you want to modify the rules or agents yourself, clone it first:
+If you want to modify the rules, skills, or agents locally:
 
 ```bash
 git clone https://github.com/bestlian/karsa-orchestrator.git
@@ -36,11 +36,38 @@ cd karsa-orchestrator
 agy plugin install .
 ```
 
-*Note: The installation process automatically mounts all rules, skills, and sub-agents to your global `~/.gemini/config/plugins/` directory.*
+*Note: The installation process automatically mounts all rules, skills, and agents to your global `~/.gemini/config/plugins/` directory.*
 
-## 🧠 Sub-Agents Included
+## 🤖 Standalone Agent & Usage
 
-This plugin ships with a pre-configured team of specialized sub-agents:
+KARSA can run both as an ambient development doctrine and as a **Standalone Custom Agent** (`karsa`).
+
+### How to Use KARSA:
+
+1. **Antigravity IDE / Desktop App:**
+   - In the chat interface, switch the active agent to **KARSA Orchestrator** in the Agent selector dropdown.
+   - Or tag `@karsa` directly in your prompt.
+2. **Antigravity CLI (`agy`):**
+   - Launch an interactive session directly with the KARSA agent:
+     ```bash
+     agy --agent karsa
+     ```
+   - Run a headless one-shot task:
+     ```bash
+     agy --agent karsa -p "Design and scaffold an e-commerce backend with FastAPI and PostgreSQL"
+     ```
+3. **Autonomous Execution (`/goal` Mode):**
+   - Trigger KARSA with the `/goal` slash command for long-running autonomous project delivery:
+     ```text
+     /goal Scaffold and implement Sprint 0 for a logistics tracking dashboard.
+     ```
+   - Provide explicit delegation upfront (e.g., *"Saya serahkan keputusan arsitektur sepenuhnya padamu"*) to let KARSA execute end-to-end through the 7 phases without blocking on every intermediate choice.
+
+## 🧠 Agents Architecture
+
+KARSA operates as a Lead Orchestrator commanding a team of specialized sub-agents:
+
+0. **`karsa` (Lead Orchestrator - Primary Agent)**: Manages the high-level 7-phase delivery pipeline, enforces the 15-document planning suite, and routes tasks to specialized sub-agents.
 
 1. **`contract-manager`**: The Supreme Auditor. Verifies that no features are hallucinated and that every sprint ticket traces back to the approved Product Brief.
 2. **`execution-manager`**: The Sprint Cutter. Slices the global backlog into manageable daily increments (`artifacts/increment_manifest.md`).
