@@ -1,83 +1,103 @@
 # KARSA Orchestrator
 
 [![Plugin Validation](https://github.com/bestlian/karsa-orchestrator/actions/workflows/validate.yml/badge.svg)](https://github.com/bestlian/karsa-orchestrator/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version: 2.0.0](https://img.shields.io/badge/version-2.0.0-blue.svg)](plugin.json)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Antigravity](https://img.shields.io/badge/Antigravity-Plugin-orange.svg)](https://antigravity.google)
 
 **KARSA** (*Kontrak, Arsitektur, dan Realisasi Sistem Aplikasi*) is an enterprise-grade autonomous multi-agent full-stack delivery orchestrator plugin for **Google Antigravity**.
 
-Instead of a single AI model trying to do everything inside a monolithic context window, KARSA transforms Antigravity into a coordinated **autonomous engineering team**:
-- Acts as a **collaborative product sparring partner** (brainstorming features, personas, and pain points before deciding on tech stacks).
-- Generates a rigorous **15-document architecture and contract suite** (`docs/01` to `docs/15`) with zero placeholders.
-- Dispatches tasks to specialized subagents using **A2A message protocols** and **dynamic model optimization** (`pro` for architecture/verifiers, `flash` for implementation/audits).
-- Enforces **isolated Git worktree workspaces** (`Workspace: branch`) for the builder—ensuring your `main` branch is untouched until code passes strict **UAT and Security merge gates**.
+Instead of a single AI model attempting to juggle an entire software lifecycle in a monolithic context window, KARSA transforms Antigravity into a disciplined **4-agent engineering team**:
+- **Collaborative Product Sparring:** Explores requirements, personas, and edge cases through natural dialogue before fixing frameworks or databases.
+- **Strict 15-Document Contract Suite:** Authors exhaustive, traceable specifications (`docs/01` to `docs/15`) backed by an uncompromising Zero-Placeholder Contract.
+- **A2A Handoff Protocol (`karsa-a2a/v1`):** Direct peer-to-peer message passing with scope checksums, handoff files, and a bounded 3-round fix loop.
+- **Builder Workspace Isolation (`Workspace: branch`):** Builders work exclusively inside isolated Git worktrees, keeping `main` untouched until passing strict UAT and Security merge barriers.
+- **Dynamic Model Economy:** Routes heavy architectural decisions and verifications to `pro` tiers while delegating bounded execution and checklists to `flash` tiers.
+- **ADLC Evaluation Suite:** Backed by L1 static protocol tests and L2 headless behavioral model evaluations (`evals/`) to prevent regressions deterministically.
 
 ---
 
 ## 📋 Table of Contents
 
-- [📦 Cara Instalasi (Installation)](#-cara-instalasi-installation)
-- [🚀 Cara Pakai & Alur Kerja (Quickstart & Usage)](#-cara-pakai--alur-kerja-quickstart--usage)
-  - [1. Mode Percakapan Standar (Rekomendasi Pemula)](#1-mode-percakapan-standar-rekomendasi-pemula)
-  - [2. Mode Mandiri / Otonom (`/goal`)](#2-mode-mandiri--otonom-goal)
-  - [3. Mode CLI Headless / Terminal](#3-mode-cli-headless--terminal)
-  - [4. Audit & Review Proyek yang Sudah Ada](#4-audit--review-proyek-yang-sudah-ada)
-- [🧠 Arsitektur Tim Multi-Agent](#-arsitektur-tim-multi-agent)
-- [🛡️ Gerbang Kualitas & Anti-Slop (Quality Gates)](#️-gerbang-kualitas--anti-slop-quality-gates)
+- [📦 Installation](#-installation)
+  - [Prerequisites](#prerequisites)
+  - [Quick Install via Git URL](#quick-install-via-git-url-recommended)
+  - [Local Installation](#local-installation-developers)
+  - [Verification & Updates](#verification--updates)
+- [🚀 Quickstart & Workflow](#-quickstart--workflow)
+  - [1. Interactive Mode (Recommended)](#1-interactive-mode-recommended)
+  - [2. Autonomous Mode (`/goal`)](#2-autonomous-mode-goal)
+  - [3. Headless CLI Mode](#3-headless-cli-mode)
+  - [4. Auditing Existing Projects](#4-auditing-existing-projects)
+- [🧠 Multi-Agent Architecture](#-multi-agent-architecture)
+  - [Role Matrix & Model Allocation](#role-matrix--model-allocation)
+- [🛡️ Quality Gates & Anti-Slop Discipline](#-quality-gates--anti-slop-discipline)
+- [🧪 ADLC Evaluation Harness](#-adlc-evaluation-harness)
 - [🛠️ Troubleshooting & Tips](#️-troubleshooting--tips)
-- [📜 Lisensi](#-lisensi)
+- [📜 License](#-license)
 
 ---
 
-## 📦 Cara Instalasi (Installation)
+## 📦 Installation
 
-### Prasyarat (Prerequisites)
-1. **Google Antigravity CLI (`agy`)** sudah terpasang di sistem Anda.
-2. **Git** terpasang.
-3. *(Khusus Pengguna Windows)*: Aktifkan dukungan long paths di Git agar pembuatan Git worktree berjalan mulus:
+### Prerequisites
+1. **Google Antigravity CLI (`agy`)** installed and authenticated.
+2. **Git** installed.
+3. *(Windows Only)*: Enable Git long path support to allow nested worktree directory creation:
    ```bash
    git config --global core.longpaths true
    ```
 
 ---
 
-### Metode 1: Instalasi Cepat via URL Git (Rekomendasi)
+### Quick Install via Git URL (Recommended)
 
-Cukup jalankan satu perintah di terminal:
+Run a single command in your terminal:
 
 ```bash
 agy plugin install https://github.com/bestlian/karsa-orchestrator.git
 ```
 
-### Metode 2: Instalasi Lokal (Untuk Pengembang / Modifikasi)
+### Local Installation (Developers)
 
-Jika Anda ingin mengklon repositori dan memodifikasi aturan atau subagent:
+If you clone the repository to inspect, test, or modify the plugin:
 
 ```bash
-# 1. Clone repositori
+# 1. Clone repository
 git clone https://github.com/bestlian/karsa-orchestrator.git
 cd karsa-orchestrator
 
-# 2. Install plugin ke Antigravity
+# 2. Install plugin locally
 agy plugin install .
 ```
 
-### Verifikasi Instalasi
+### Verification & Updates
 
-Untuk memastikan plugin sudah aktif dan terdaftar:
+Verify that the plugin is recognized:
 
 ```bash
 agy plugin list
 ```
-Pastikan `karsa-orchestrator` muncul dengan tanda centang `[ok]` yang memproses **9 skills** dan **7 agents**.
+You should see `karsa-orchestrator` marked with `[ok]`, processing **9 skills**, **4 agents**, and **2 commands**.
 
-### Memperbarui Plugin (Update)
-
+To list the registered active agents:
 ```bash
-# Jika install via URL:
+agy agents
+```
+Expected output:
+```text
+delivery-planner
+integration-tester
+karsa
+strict-programmer
+```
+
+To update the plugin to the latest version:
+```bash
+# URL installation:
 agy plugin update karsa-orchestrator
 
-# Jika install via local clone:
+# Local clone:
 cd karsa-orchestrator
 git pull
 agy plugin install .
@@ -85,146 +105,181 @@ agy plugin install .
 
 ---
 
-## 🚀 Cara Pakai & Alur Kerja (Quickstart & Usage)
+## 🚀 Quickstart & Workflow
 
-KARSA dirancang agar mudah digunakan baik melalui GUI **Antigravity IDE** maupun **Antigravity CLI (`agy`)**.
+KARSA functions across the **Antigravity IDE GUI** and the **Antigravity CLI (`agy`)**.
 
-### 1. Mode Percakapan Standar (Rekomendasi Pemula)
+### 1. Interactive Mode (Recommended)
 
-Mulai sesi dengan agent **`karsa`**: jalankan `agy --agent karsa`, atau buka panel `/agents` dan pilih **karsa**. Memilih agent mengganti persona, tool, dan aturan sesi sekaligus. `@` di Antigravity dipakai untuk menyisipkan file atau folder ke prompt, bukan untuk memanggil agent.
+Start a session targeting the **`karsa`** agent:
+- In terminal: `agy --agent karsa`
+- In IDE: Open `/agents` and select **karsa**.
 
-#### Contoh Prompt Awal:
+> [!NOTE]
+> Selecting an agent configures the persona, allowed tools, and operational doctrines simultaneously. In Antigravity, `@` mentions are reserved for embedding files or directories into prompts, not for invoking agent personas.
+
+#### Initial Prompt Example:
 ```text
-Saya ingin membuat aplikasi SaaS reservasi lapangan olahraga full-stack. Bantu saya brainstorm dan buatkan aplikasinya.
+I want to build a full-stack sports field reservation SaaS. Help me brainstorm the domain requirements and scaffold the application.
 ```
 
-#### Apa yang Akan Terjadi (Alur Kerja KARSA):
-
-1. **Fase 1A - Teman Diskusi (Product Sparring Partner):**
-   KARSA **tidak akan langsung** membombardir Anda dengan pilihan database atau framework. KARSA akan berdialog santai dalam bahasa Indonesia untuk membedah:
-   - Siapa penggunanya? (Pemain lewat HP, kasir di meja resepsionis, pemilik venue).
-   - Masalah nyata apa yang ingin diatasi? (Anti-double-booking, uang muka/DP, no-show).
-   - Fitur utama apa yang wajib ada di versi perdana (MVP) vs rilis selanjutnya.
-2. **Fase 1B - Alignment Teknis & Wawancara Desain:**
-   Setelah kebutuhan fitur disepakati, KARSA menyepakati stack teknologi (misal: FastAPI + React/Vite) dan mewawancarai preferensi visual (vibe, palette warna, dan tipografi).
-3. **Fase 2 & 3 - Penyusunan 15 Dokumen Arsitektur & Master Approval:**
-   Tim agen otomatis menyusun spesifikasi lengkap di folder `docs/` (`docs/01` hingga `docs/15`). Setelah selesai, KARSA menyajikan ringkasan dan meminta persetujuan Anda (**Master Planning Approval**).
-4. **Fase 4 & 5 - Eksekusi TDD di Workspace Terisolasi:**
-   Setelah disetujui, agen `strict-programmer` otomatis dipanggil di **Git worktree terisolasi (`Workspace: branch`)**. Kode dibangun satu per satu dengan TDD nyata dan database terisolasi (Anti-Mocking). Branch `main` Anda tetap aman dan bersih.
-5. **Fase 6 - Audit UAT & Keamanan:**
-   Sebelum kode digabungkan, agen `verify-quality` menjalankan UAT penuh (termasuk verifikasi kontras WCAG AA dan uji reflow mobile di 375px), sementara `review-security` memindai kebocoran rahasia (Anti-RED-CODE).
-6. **Merge ke `main` & Rilis:**
-   Jika lolos UAT 100%, KARSA Lead menggabungkan branch ke `main`, menyusun `README.md`, dan menawarkan pembuatan Docker / GitHub Actions CI/CD.
+#### What Happens Next (The Delivery Lifecycle):
+1. **Phase 1A - Product Sparring Partner:**  
+   KARSA does not rush into frameworks or database selection. It clarifies business logic:
+   - Who are the primary actors? (Players on mobile, venue staff at cashier desks, venue owners).
+   - What core problems must be solved? (Preventing concurrent double-bookings, partial down-payments, no-show penalties).
+   - What belongs in MVP (Phase S0) versus later increments?
+2. **Phase 1B - Technical Alignment & Visual Direction:**  
+   Once requirements are understood, KARSA aligns on target stacks (e.g. FastAPI + React/Vite) and conducts a Visual Direction Interview (aesthetic tone, bespoke typography pairings, semantic color palettes).
+3. **Phase 2 & 3 - 15-Document Contract Suite & Master Approval:**  
+   The team generates a complete specification suite in `docs/` (`docs/01` through `docs/15`). Upon passing the **Zero-Placeholder Audit**, KARSA presents the plan for **Master Planning Approval**.
+4. **Phase 4 & 5 - Isolated TDD in Worktree (`Workspace: branch`):**  
+   The builder (`strict-programmer`) operates exclusively inside an isolated Git worktree. Features are implemented using red-green-refactor TDD against disposable database fixtures (Anti-Mocking). Sibling verifier (`integration-tester`) runs concurrent transaction tests via A2A handoffs.
+5. **Phase 6 - UAT & Security Merge Gate:**  
+   Before any merge into `main`, parallel verifiers run automated UAT (including WCAG AA contrast and 375px mobile reflow checks) and security audits (Anti-RED-CODE scan).
+6. **Phase 7 - Merge & Release Handover:**  
+   Upon achieving a 100% clean UAT and Security verdict, the Lead merges the candidate branch into `main`, produces user-facing `README.md`, and prepares deployment pipelines.
 
 ---
 
-### 2. Mode Mandiri / Otonom (`/goal`)
+### 2. Autonomous Mode (`/goal`)
 
-Jika Anda ingin KARSA memimpin pembuatan modul dari awal hingga tuntas tanpa meminta konfirmasi di setiap langkah kecil, gunakan slash command `/goal` dan berikan delegasi eksplisit:
+When you want KARSA to lead feature delivery autonomously without stopping at routine intermediate questions, invoke the `/goal` command with explicit delegation:
 
 ```text
-/goal Bangun modul reservasi lapangan lengkap dengan sistem locking slot anti double-booking. Saya serahkan keputusan arsitektur dan desain kepadamu.
+/goal Build the reservation module with distributed slot locks to prevent double bookings. I delegate architectural and technical decisions to you.
 ```
-*Dengan delegasi eksplisit, KARSA otomatis menerapkan standar industri terbaik, mencatatnya di D-Register (Decision Register), dan memimpin tim agen hingga selesai.*
+With explicit delegation, KARSA selects industry-standard practices, logs choices in the D-Register, and drives the team forward to completion.
 
 ---
 
-### 3. Mode CLI Headless / Terminal
+### 3. Headless CLI Mode
 
-Bagi Anda yang lebih suka bekerja lewat terminal:
+Run tasks directly from scripts or terminal pipelines:
 
 ```bash
-# Menjalankan sesi interaktif langsung dengan KARSA
+# Start an interactive CLI session with KARSA
 agy --agent karsa
 
-# Menjalankan tugas langsung via prompt satu baris
-agy --agent karsa -p "Buatkan scaffold awal dan API contract untuk aplikasi manajemen inventaris gudang."
+# Execute a one-shot headless command with JSON output
+agy --agent karsa -p "Create the baseline database schema and API contracts for the inventory service." --output-format json
 ```
 
 ---
 
-### 4. Audit & Review Proyek yang Sudah Ada
+### 4. Auditing Existing Projects
 
-KARSA juga dapat mengaudit aplikasi web atau mobile yang sudah ada di repositori Anda:
+KARSA can audit existing codebases without forcing re-scaffolding:
 
 ```text
-Tolong audit aplikasi ini: periksa arsitektur backend, kepatuhan kontras warna WCAG AA, dan potensi celah keamanan auth.
+Audit this project: verify backend architecture boundaries, WCAG AA color contrast compliance, and potential authentication security vulnerabilities.
 ```
 
 ---
 
-## 🧠 Arsitektur Tim Multi-Agent
+## 🧠 Multi-Agent Architecture
 
-KARSA membagi tugas rekayasa perangkat lunak ke dalam peran-peran spesialis:
+KARSA distributes software engineering responsibilities across 4 specialized roles:
 
 ```mermaid
 flowchart TD
-    User["👤 Human User"] <-->|Brainstorming & Milestone Approval| KARSA["👑 KARSA (Lead Orchestrator)\nModel: inherit | Workspace: main"]
+    User["👤 Human User"] <-->|Brainstorming & Milestone Approvals| KARSA["👑 KARSA (Lead Orchestrator)\nModel: inherit | Workspace: main"]
     
-    subgraph MultiAgentTeam ["🤖 Tim Spesialis Multi-Agent"]
+    subgraph MultiAgentTeam ["🤖 Multi-Agent Specialist Team"]
         KARSA -->|Dispatch: Docs & Governance| Planner["delivery-planner\n(Phasing S0-S3, Registries D/W/Q/A, E2E Flows)"]
         
         KARSA -->|Dispatch: Workspace: branch| Builder["strict-programmer (Builder)\nModel: flash/pro | Worktree Branch"]
         Builder <-->|A2A Fix Loop: max 3 rounds| Tester["integration-tester (QA & Contract Verifier)\nReal DB Fixture & Concurrency"]
         
-        KARSA -->|Dispatch: Audit Paralel| UATAuditor["verify-quality (UAT)\nE2E UI, Contrast, Reflow"]
-        KARSA -->|Dispatch: Audit Paralel| SecAuditor["review-security\nAuth & Anti-RED-CODE"]
+        KARSA -->|Dispatch: Parallel Audit| UATAuditor["verify-quality (UAT)\nE2E UI, Contrast, Reflow"]
+        KARSA -->|Dispatch: Parallel Audit| SecAuditor["review-security\nAuth & Anti-RED-CODE"]
     end
     
     UATAuditor -->|UAT PASS| MergeGate{"🛡️ UAT Merge Gate"}
     SecAuditor -->|Security PASS| MergeGate
-    MergeGate -->|Lolos 100%| MergeAction["Merge branch ke main"]
+    MergeGate -->|100% Clean Pass| MergeAction["Merge branch into main"]
 ```
 
-### Matriks Peran & Alokasi Model
+### Role Matrix & Model Allocation
 
-| Subagent | Tanggung Jawab Utama | Model (`invoke_subagent`) | Workspace Mode |
+| Subagent | Core Responsibility | Model (`invoke_subagent`) | Workspace Mode |
 |---|---|---|---|
-| **`karsa`** | Lead Orchestrator, PM, dialog user, routing, persetujuan milestone, dan eksekusi merge | `inherit` (mengikuti pilihan user) | `main` |
-| **`delivery-planner`** | Master blueprint: pemilahan fase (S0–S3), registri kontrak D/W/Q/A, metrik rilis, sekuens E2E di `docs/15`, dan audit Zero-Placeholder | `pro` | `inherit` |
-| **`strict-programmer`** | Builder kode berbasis TDD, anti-mocking fixture, dan zero-slop comments | `flash` *(pro untuk locking/auth kompleks)* | **`branch` (Isolated Worktree)** |
-| **`integration-tester`** | Eksekusi automated test mandiri, race condition, data isolation, dan verifikasi keselarasan OpenAPI/DDL spec | `pro` | `inherit` / `branch` |
-| **`verify-quality`** | Auditor UAT: verifikasi E2E UI, kontras WCAG AA, dan mobile reflow | `pro` | `inherit` |
-| **`review-security`** | Auditor Keamanan: verifikasi RBAC, siklus JWT, dan scan kebocoran rahasia | `pro` | `inherit` |
-| **`prepare-release`** | Peracik paket rilis, panduan README akhir, dan rekap handover | `flash` | `inherit` |
+| **`karsa`** | Lead Orchestrator, user dialogue, routing, milestone approvals, and merge execution | `inherit` (matches user choice) | `main` |
+| **`delivery-planner`** | Master blueprint: delivery phasing (S0–S3), contract registries (D/W/Q/A), quality release metrics, E2E execution sequences (`docs/15`), and Zero-Placeholder audits | `pro` | `inherit` |
+| **`strict-programmer`** | Builder: TDD implementation, anti-mocking fixtures, clean code comments, and increment manifest tracking | `flash` *(pro for complex locking/auth)* | **`branch` (Isolated Worktree)** |
+| **`integration-tester`** | Adversarial QA: automated test execution, concurrency race safety, data isolation, and OpenAPI/contract alignment audits | `pro` | `inherit` / `branch` |
+| **`verify-quality`** | UAT Auditor: verifies E2E UI, WCAG AA contrast, and mobile reflow | `pro` | `inherit` |
+| **`review-security`** | Security Auditor: verifies RBAC, JWT lifecycle, and hardcoded credential leaks | `pro` | `inherit` |
+| **`prepare-release`** | Release Assembler: compiles verified evidence, final README, and handover reports | `flash` | `inherit` |
 
 ---
 
-## 🛡️ Gerbang Kualitas & Anti-Slop (Quality Gates)
+## 🛡️ Quality Gates & Anti-Slop Discipline
 
-1. **Zero-Guesswork Principle:** KARSA tidak akan pernah menebak logika bisnis, penetapan harga, atau aturan domain tanpa berdiskusi atau mendapat delegasi tegas dari Anda.
-2. **Zero-Placeholder Contract:** Seluruh dokumen arsitektur di `docs/` wajib berisi spesifikasi substantif nyata (minimal 30 baris substantif). Frasa seperti *"akan diisi nanti"* atau *"saat ini kosong"* otomatis memblokir fase selanjutnya.
-3. **Isolasi Workspace Builder (`Workspace: branch`):** Setiap kode baru ditulis di Git worktree terpisah. Jika ada tes gagal atau kesalahan logika, branch `main` Anda tetap aman dan tidak pernah terkontaminasi.
-4. **Gerbang Merge UAT (UAT Merge Gate):** Kode dari branch builder **hanya boleh di-merge ke `main`** setelah Laporan UAT dan Laporan Keamanan bernilai `PASS` 100% tanpa celah pemblokir.
+1. **Zero-Guesswork Principle:** The agent never invents or guesses domain rules, pricing models, or operational constraints unless explicitly delegated by the user.
+2. **Zero-Placeholder Contract:** All documentation files in `docs/` must contain substantive engineering specifications (minimum 30 substantive lines). Phrases such as *"TBD"*, *"akan diisi nanti"*, or empty templates trigger an immediate blocker.
+3. **Builder Workspace Isolation (`Workspace: branch`):** Code implementation takes place exclusively inside an isolated Git worktree branch. Sibling subagents are strictly forbidden from modifying `main` directly or running `git push`.
+4. **UAT Merge Gate:** Code from the candidate feature branch is permitted to merge into `main` **if and only if** both the UAT Report and Security Vulnerability Report achieve a 100% clean `PASS` with zero blocking defects.
 5. **Anti-Slop Visual Design:**
-   - Menolak keras tampilan generik AI (*card soup*, font Inter default, gradien ungu-biru klise).
-   - Mewajibkan tipografi terkurasi dan *signature design element*.
+   - Rejects generic AI design monoculture (uniform card soup, unstyled default Inter/system fonts, unmotivated purple/cyan gradients, and cookie-cutter 4-metric cards).
+   - Enforces curated typography pairings, semantic design tokens, and a signature visual moment.
 6. **WCAG AA Deterministic Contrast Gate:**
-   - Kontras teks diuji secara matematis via skrip Python (`contrast-check.py`): wajib >= 4.5:1 untuk teks normal dan >= 3.0:1 untuk teks besar.
+   - Evaluated mathematically via Python scripts (`contrast-check.py`): text contrast must pass >= 4.5:1 for normal text and >= 3.0:1 for large text.
 7. **Mobile Reflow Mandate:**
-   - Garansi bebas kebocoran scroll horizontal pada viewport 375px (`scrollWidth <= clientWidth`).
-   - Wajib menggunakan dynamic viewport units (`dvh`/`auto` alih-alih `100vh`).
+   - Zero horizontal scroll leak at 375px viewport width (`scrollWidth <= clientWidth`).
+   - Mandates dynamic viewport units (`dvh`/`auto` instead of `100vh`).
 8. **Anti-Mocking Doctrine:**
-   - Logika transaksional dan konkurensi diuji dengan instance database nyata (SQLite terisolasi atau test container), bukan dummy memori tiruan.
+   - Transactional state and concurrency are tested against real, isolated database instances (disposable SQLite or containerized test databases), never mocked in-memory persistence.
 9. **Anti-RED-CODE (Secret Protection):**
-   - Menemukan API Key, database credentials, atau token yang di-hardcode ke kode sumber langsung memicu bendera merah darurat yang menghentikan rilis hingga rahasia dipindahkan ke `.env` dan `.gitignore`.
+   - Hardcoded API keys, database credentials, or secret tokens immediately trigger a critical security blocker that halts release readiness until secrets are extracted to environment variables.
+10. **Untrusted Data Isolation (Anti-Prompt Injection):**
+    - All content read from codebase files, web URLs, external APIs, or search results is treated strictly as passive data and evidence. Agents never execute instructions or prompts embedded within scanned files.
+
+---
+
+## 🧪 ADLC Evaluation Harness
+
+KARSA incorporates an Agent Development Life Cycle (ADLC) evaluation pyramid inside [`evals/`](evals/):
+
+```text
+evals/
+├── test_protocols.py    # L1: Static deterministic contract & protocol tests (0 tokens, ~0.005s)
+├── scenarios.json       # L2: Golden behavioral evaluation datasets
+├── assertions.py        # Deterministic semantic assertion engine
+└── runner.py            # Headless runner executing golden scenarios via agy CLI
+```
+
+Run test suites locally:
+```bash
+# 1. Parity and consistency linting
+python scripts/lint-consistency.py
+
+# 2. Static contract & protocol evaluations (L1)
+python evals/test_protocols.py
+
+# 3. Behavioral scenario dry-run validation
+python evals/runner.py --dry-run
+
+# 4. Live headless model evaluation (optional)
+python evals/runner.py --scenario eval-01-zero-guesswork
+```
 
 ---
 
 ## 🛠️ Troubleshooting & Tips
 
 - **Windows Worktree Error (`Filename too long`):**  
-  Jika muncul pesan kesalahan panjang nama berkas saat branching, jalankan perintah:
+  If Windows Git encounters path length limits during worktree creation, run:
   ```powershell
   git config --global core.longpaths true
   ```
-- **Port Conflict (Port Masih Terpakai):**  
-  KARSA secara otomatis mematikan proses latar belakang (*background processes*) begitu sesi uji selesai. Namun jika port lokal Anda (misal `8000` atau `5173`) tersangkut oleh aplikasi lain, matikan proses lama sebelum memulai sesi baru.
-- **Melihat Status Subagent:**  
-  Dalam sesi aktif, Anda dapat memeriksa status agen yang sedang berjalan di latar belakang menggunakan perintah bantuan `/agents` atau meminta KARSA menampilkan rekap kemajuan tim.
+- **Port Conflicts (Port Already in Use):**  
+  KARSA automatically terminates background test runners and dev servers once testing concludes. If a port (e.g., `8000` or `5173`) remains occupied by an external process, terminate it before starting a new run.
+- **Checking Active Agents:**  
+  During an active session, verify background subagents via `/agents` or ask KARSA for a team status digest.
 
 ---
 
-## 📜 Lisensi
+## 📜 License
 
-Didistribusikan di bawah lisensi **MIT**. Lihat berkas [LICENSE](LICENSE) untuk informasi selengkapnya.
+Distributed under the **MIT** License. See [LICENSE](LICENSE) for details.
