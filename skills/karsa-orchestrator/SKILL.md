@@ -139,7 +139,7 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
    - `docs/INDEX.md` (Master map and contract verification ledger)
    Never generate a partial backlog.
 5. **Master Planning Approval (15-File Hard Gate & Anti-Stub Audit) & Sprint Formation:** Before requesting approval, KARSA MUST verify that at least 15 documentation files physically exist on disk in `docs/` AND pass the **Zero-Placeholder Contract**:
-   - Every file MUST contain substantive engineering specifications (minimum 30 substantive lines).
+   - Every file MUST contain substantive engineering specifications (minimum 30 substantive lines). The per-document depth rubric is in `references/depth-rubric.md`; the audit uses it verbatim.
    - Any placeholder text (such as "akan diisi seiring project berjalan", "saat ini kosong", "TBD", or unelaborated stubs) is strictly FORBIDDEN.
    - Every contract file must satisfy its semantic rubric: `04` (Gherkin ACs, error matrix), `05` (Entity schemas, invariants, state machine matrix, concurrency policy), `06` (Full JSON schemas, error payload schemas), `09` (Topology, DB migrations, env dictionary), `10` (Bcrypt specs, JWT lifecycle, RBAC matrix), `11` (Coverage %, latency budgets), `12` (Architectural trade-offs & mitigations), `14` (4-column traceability matrix), `15` (Execution flow with rollback protocols).
    - If fewer than 15 files exist or if any file is an incomplete stub, the Traceability Audit by `contract-manager` is an automatic BLOCKER. Once all 15+ files exist with substantive depth and pass the Traceability Audit, KARSA MUST halt and ask the USER for Master Planning Approval. If approved, KARSA dispatches `execution-strategist` to extract the sprint scope and generate **`artifacts/increment_manifest.md`**.
@@ -238,6 +238,24 @@ To prevent broken, untested, or drifting code from corrupting the primary codeba
    - If UAT or Security verification fails, merging to `main` is STRICTLY BLOCKED.
    - The defect list is routed back to `strict-programmer` on the isolated branch for remediation.
    - If the slice is rejected or abandoned by the user, the branch is deleted, leaving `main` completely free of dead or corrupted code.
+
+## Proof, Registry, and Execution Flow Doctrine
+
+### Proof Over Claims
+
+The agent MUST NOT claim a feature, endpoint, screen, or flow is "complete" or "done" based solely on the existence of files, endpoints, or screens. Every completion claim MUST be accompanied by: the exact command or action executed, the actual output or result, the environment in which it was verified, and a clear statement of what the evidence does NOT prove. Sprint reports, checkbox lists, or endpoint existence without verified test output are classified as "historical records", not current status. Build success and HTTP 200 alone do not prove functional correctness. Sequential test passes do not prove concurrent safety. Screen existence does not prove navigation flow works. The increment manifest MUST include a "Gap preventing completion claim" column for every area, and that column must be empty before any release eligibility claim.
+
+### Contract Registry Maintenance
+
+Every product decision MUST be recorded in a D-register (Decisions) within the delivery backlog or a dedicated contract registry document. Every working clarification MUST be recorded in a W-register. Every unanswered question MUST be recorded in a Q-register with a priority (Critical, High, Medium,
+Low) and a list of gates it blocks. Every unvalidated assumption MUST be recorded in an A-register. Q-register entries with status OPEN and priority Critical or High block release planning. Resolution of a Q-register entry requires: date, reason, source or evidence, and list of impacted documents. A
+recommendation is not a resolution. The orchestrator must verify that no blocking Q-register entry remains OPEN before routing to `prepare-release`.
+
+### Execution Flow Document
+
+The agent MUST create and maintain an execution flow document that maps: (1) the target end-to-end loop as a diagram, (2) the actual code state vs target at each node, (3) prioritized issues with required evidence of completion, and (4) a gated execution sequence where each step has explicit "Gate
+Before Proceeding" conditions. This document is the source of truth for project status, not sprint reports or checkbox lists. The document must be updated whenever implementation changes. Progress is measured by one proven loop that can be completed and demonstrated, not by the count of screens,
+endpoints, or checked boxes.
 
 ## Development Outcome Claims
 

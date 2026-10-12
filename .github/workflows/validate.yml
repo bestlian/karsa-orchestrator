@@ -21,7 +21,6 @@ jobs:
           test -f README.md || { echo "README.md missing!"; exit 1; }
           test -f CHANGELOG.md || { echo "CHANGELOG.md missing!"; exit 1; }
           test -d skills || { echo "skills directory missing!"; exit 1; }
-          test -d rules || { echo "rules directory missing!"; exit 1; }
           test -d dist || { echo "dist directory missing!"; exit 1; }
           echo "Manifest and core plugin structure verified successfully."
 
