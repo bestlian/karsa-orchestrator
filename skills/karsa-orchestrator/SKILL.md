@@ -44,29 +44,18 @@ No other skill may substitute for one of these specialists.
 
 ## Authoritative Evidence And Reconciliation
 
-Visible artifacts below `<project-root>/artifacts/` and their handoffs are authoritative. Chat memory, summaries, prior routing responses, and `next_skills` are non-authoritative.
+Visible artifacts below `<project-root>/artifacts/` and `docs/` and their handoffs are authoritative. Chat memory, summaries, prior routing responses, and `next_skills` are non-authoritative.
 
-Preserve the existing handoff contract:
+1. **Handoff & Review Record Decoupling:**
+   - Artifact lifecycle status (`draft | awaiting-approval | approved | rejected | blocked`), technical verdicts (`pass | complete`), and explicit human approvals are strictly decoupled facts. One is never inferred from another.
+   - For the complete binding specification on `fullstack-skill-handoff/v1`, Review Record states (`pending`, `resolved`, `superseded`), immutable revision tagging (`@VDC-001`), and checksum invalidation rules, consult `references/evidence-reconciliation.md`.
 
-- `schema` MUST be `fullstack-skill-handoff/v1`.
-- Artifact lifecycle `status` MUST remain one of `draft | awaiting-approval | approved | rejected | blocked`.
-- `approval` MUST remain separate from artifact lifecycle status.
-- `next_skills` MUST remain advisory downstream guidance. It is not evidence that a skill was invoked, work ran, or approval was granted.
-- Artifact status, specialist technical verdict, and explicit human approval MUST remain separate facts. One MUST NOT be inferred from another.
-- `awaiting-approval` is not approval. A technical `pass`, `pass-with-findings`, `complete`, or `PASS` is not approval.
-- Human approval MUST be explicit and visible in the evidence used for downstream routing. It applies only to the exact active Review Record target. A direct `Yes` or `No` needs no path or revision only when it unambiguously answers the unchanged current displayed question; another URI, revision, active editor, current phase, summary, stale reply, or host event MUST NOT transfer approval.
-- Before requesting approval, every specialist artifact MUST label an immutable `Artifact Revision` in its document body. The output path and that revision are the approval target; this is document evidence, not a new `fullstack-skill-handoff/v1` top-level key.
-- A content `Review Record` has a status independent from the handoff status: `pending`, `resolved`, or `superseded`. Preserve past records. It is pending only while its canonical artifact has handoff status `awaiting-approval`. A `Development Start Authorization` request on an already approved backlog uses the same binding-field schema with a fresh unique `request_id` and also counts as the one active request across the lifecycle. Each persists `request_id`, canonical `target_path`, immutable `content_revision`, exact `question`, options `Yes`, `No`, and `Other` (user typing for comments/feedback), prompt evidence, human identity when known, `source_user_reply`, and decision evidence.
-- Ask the review question with native `ask_question` only when the active host exposes that tool, using its actual schema. Otherwise ask in plain chat: `Review [target_path]@[content_revision]. Approve this exact content?` When using native `ask_question`, present options `["Yes", "No"]` (relying on the default write-in 'Other' box for user typing/comments); otherwise ask in plain chat with options `Yes` (approve), `No` (reject and pause), and `Other` (user typing / freeform comments for revision). Do not require a command, an artifact path, a revision, or a host ID in the human reply; a current exact-path reply remains supported.
-- Write and read canonical project artifacts with normal filesystem operations. Do not intentionally create, update, open, or focus `implementation_plan.md`, an editor tab, or `RequestFeedback` metadata for approval. Native host review events or presentations are not approval signals. The plugin cannot suppress a host or system mandate that independently creates or opens an artifact; state that limit rather than claiming UI control.
-- `Yes` records the approval source reply, sets the target handoff status to `approved`, sets approval to approved, resolves the record, and re-evaluates. `No` records the source reply, sets the target handoff status to `rejected`, sets approval to rejected, resolves the record, and stops. Do not automatically rerun an owner after rejection, including on resume; wait for an explicit user request to revise. `Revision` accepts only explicit revision feedback tied to the current target. If its text is empty, ask only for the missing feedback and keep the same request active. Unrelated or clarification questions leave the request pending and do not modify the artifact or re-run approval automatically. When feedback is sufficient, resolve the request as `Revision`, set the artifact to `draft`, and route only to the owning specialist. A revision keeps an already confirmed stack unless the user explicitly asks for a different stack or migration.
-- These status, approval, appended approval `decision_refs`, Review Record state changes, and Development Start Authorization operations are permitted closed governance metadata, not self-approval. They retain the current Artifact Revision and valid approval. They MUST NOT change scope, first item, expected outcome, acceptance, technical result, or other substantive content.
-- A substantive content change before a terminal decision supersedes the pending Review Record, creates a new Artifact Revision, and resets approval. Create a new pending record only when the revised artifact returns to `awaiting-approval`. Only an explicit current `Revision` selection or clearly target-bound change feedback is revision feedback; unrelated or clarification questions keep the request pending until answered and do not modify the artifact or re-run approval automatically. A consumed duplicate has no effect. On resume, re-read the current canonical artifact and display its still-pending bound question once; never infer a decision from a summary or a stale reply. A changed backlog re-evaluates and rebinds development authorization to its current scope. A reject, revision, or remediation request never grants downstream permission.
-- Information Architecture, UI integrity, and Anti-UI Sameness must be preserved throughout feature implementation across all web and mobile applications. Implementations must strictly avoid generic AI design slop (the aesthetic monoculture of wrapping everything in uniform rounded card soup, defaulting blindly to unstyled Inter/system-ui fonts, applying unmotivated purple/cyan gradients or neon glows, or copying cookie-cutter 4-metric cards and 3-column grids). Every screen must honor the bespoke typography pairing, semantic color system, content-driven layout grammar, and signature design element established in the approved Visual Direction Contract. Feature stories must not accumulate disparate user journeys into a single continuous-scroll page (the "Frankenstein page" anti-pattern). Disparate journeys must be structured into dedicated navigation views (such as web tabs, distinct routes, contextual drawers/modals, or mobile bottom navigation bars, stack screens, and bottom sheets). Secondary cross-sells, optional upsells, or add-on services (such as optional items, accessories, or complementary services) must remain non-blocking so that users can directly checkout or complete the primary conversion flow without forced scrolling. Privileged operational surfaces (such as staff cashier desks, admin dashboards, or internal management consoles) must be cleanly isolated from customer-facing discovery and transaction surfaces. Every released project must include a comprehensive user-facing README.md at its project root.
+2. **Information Architecture & Anti-Slop UI Integrity:**
+   - UI integrity and anti-slop principles must be preserved across all implementations. Reject generic AI design slop (uniform card soup, unstyled Inter/Roboto, unmotivated purple/cyan gradients, or cookie-cutter 4-metric cards).
+   - Honor bespoke typography pairings, semantic color palettes, content-driven layouts, and signature design moments established in the approved Visual Direction Contract. Disparate journeys must be structured into dedicated views (tabs, drawers, modals, mobile sheets), not continuous Frankenstein scroll pages.
 
-Before every route, resume, quality gate, security review, or release plan, reconcile the canonical sources rather than trusting a chat summary, presentation, report label, or manifest alone. Re-read every required source report at its exact path and revision; verify its explicit human approval and technical result; compare those facts to the increment manifest and downstream candidate; and block on any mismatch. Tie code and test evidence to a stable revision or checksum of the tested executable, configuration, and source scope, not governance documents or Review Record state. A change in that scope invalidates the affected evidence until the required checks run again. Persist resume-required scope, source revisions, and unresolved gates only in the existing backlog and increment manifests; do not add a state database or engine. Metadata normalization may standardize known values but cannot promote labels, repair missing evidence, or approve work.
-
-The router MUST inspect only the evidence needed to determine the earliest unsatisfied prerequisite. Relevant authoritative artifacts are:
+3. **Authoritative Artifact Map:**
+   The router MUST inspect only the evidence needed to determine the earliest unsatisfied prerequisite:
 
 | Owner | Artifact |
 | --- | --- |
@@ -74,7 +63,7 @@ The router MUST inspect only the evidence needed to determine the earliest unsat
 | `design-experience` | `<project-root>/docs/03_user_journeys.md` |
 | `define-architecture` | `<project-root>/docs/09_architecture_operations.md` |
 | `plan-delivery` | `<project-root>/docs/08_delivery_backlog.md` (and related `docs/04` to `docs/15`) |
-| `implement-feature` | `<project-root>/artifacts/implementation/<item-id>-implementation-report.md` and `<project-root>/artifacts/implementation/<release-slice-id>-increment-manifest.md` |
+| `implement-feature` | `<project-root>/artifacts/implementation/<item-id>-implementation-report.md` |
 | `verify-quality` | `<project-root>/artifacts/quality/<candidate-id>-quality-report.md` |
 | `review-security` | `<project-root>/artifacts/security/<candidate-id>-security-review.md` |
 | `prepare-release` | `<project-root>/artifacts/release/<candidate-id>-release-plan.md` |
@@ -323,135 +312,7 @@ The routing summary is not specialist output. When a skill is selected, immediat
 
 ## Natural-Chat Examples
 
-### Start
-
-User: `Build a new inventory app. There are no artifacts yet.`
-
-```text
-Observed evidence: Resolved project root: C:\\Projects\\inventory; host reports this directory as the active registered workspace; no lifecycle artifacts or handoffs are visible.
-Selected next skill(s): discover-product
-Why: Discovery is the earliest missing prerequisite.
-Missing prerequisites: Product idea evidence required by discover-product.
-Approval required: Human approval of the resulting product brief before design or architecture.
-Stop condition: Continue inline with discover-product; stop only if it needs required discovery input or when its product brief reaches awaiting-approval.
-Specialist output: discover-product
-<Run the discover-product contract in this same agent. Its questions or product brief are specialist output, not routing fields.>
-```
-
-The first discovery proposal for this example may be:
-
-```text
-I recommend a production-ready full-stack application for inventory management, with a runnable frontend, backend API, and durable data. Proceed with this target?
-Yes / No / Revision / custom requirement
-```
-
-A `Yes` accepts only this shown target. It does not accept a later access, stack, database, payment, brief-review, or development-start question.
-
-### Resume With Approved Brief
-
-User: `Resume. The product brief handoff is visible and approved.`
-
-```text
-Observed evidence: Approved product brief with fullstack-skill-handoff/v1; no experience specification or blueprint.
-Selected next skill(s): design-experience and define-architecture, paired sequential execution, join required
-Why: The approved brief opens both branches.
-Missing prerequisites: Approved experience specification and approved application blueprint before planning.
-Approval required: Separate explicit human approval for both branch artifacts.
-Stop condition: Dispatch design-experience and define-architecture in parallel; stop at each required human-approval boundary, and plan-delivery waits for both approvals.
-Specialist output: design-experience
-<Dispatch the design-experience contract to a subagent and verify its artifact on disk.>
-Specialist output: define-architecture
-<On a later turn after the preceding approval stop is resolved, re-evaluate evidence and run define-architecture if eligible. Do not emit this section before it runs.>
-```
-
-### Awaiting Approval
-
-User: `Continue from an experience specification marked awaiting-approval.`
-
-```text
-Observed evidence: Experience specification status awaiting-approval; approval pending for artifacts/ux/experience-spec.md@VDC-002.
-Selected next skill(s): none
-Why: Awaiting-approval is a mandatory approval stop, not approval.
-Missing prerequisites: Explicit human decision on the experience specification.
-Approval required: Review artifacts/ux/experience-spec.md@VDC-002. Approve this exact content? Yes / No / Other (type comments directly).
-Stop condition: STOP until the bound current Review Record receives a direct Yes, No, or user typing/comments response via Other.
-```
-
-Use native `ask_question` only when the host exposes it with a known schema; otherwise ask this plain-chat question. Host review surfaces are not approval evidence. Do not create or update `implementation_plan.md` for this review.
-
-### Development Start Authorization
-
-User: `Continue.`
-
-```text
-Observed evidence: Foundation is approved through delivery-backlog@BL-004; no development-start authorization is recorded for its scope.
-Selected next skill(s): none
-Why: Development-start stop applies before scaffolding, installing dependencies, or application edits.
-Missing prerequisites: Explicit authorization against delivery-backlog@BL-004 and its first Ready item.
-Approval required: Start development for delivery-backlog@BL-004? First item: STORY-001. Expected runnable outcome: a local UI that completes the approved inventory-create flow. Yes / No / Other (type comments directly).
-Stop condition: STOP until the separate bound development-start request is answered and persisted with the revision, scope, identity, and exact user evidence.
-```
-
-The backlog's approval, a native Process result, or an unrelated plan does not satisfy this stop. `Yes` authorizes only this already approved backlog scope. `No` starts nothing and is not re-asked until the user explicitly asks to start or revise. Comments or feedback entered via `Other` return to planning or the owning prerequisite and do not start coding.
-
-### Remediation
-
-User: `Quality is approved with fail and security is approved with block. Continue.`
-
-```text
-Observed evidence: Approved quality report verdict fail; approved security review verdict block.
-Selected next skill(s): plan-delivery
-Why: Blocking verifier verdicts require a traceable remediation backlog item.
-Missing prerequisites: One human-approved remediation backlog item.
-Approval required: Human approval of the remediation item before implementation.
-Stop condition: Dispatch plan-delivery; stop when the remediation item reaches awaiting-approval. After approval use implement-feature, then dispatch both verifiers in parallel.
-Specialist output: plan-delivery
-<Dispatch the plan-delivery contract to a subagent and verify its artifacts on disk.>
-```
-
-### Stale VDC/VIS
-
-User: `Implement the UI item using experience-spec@VDC-001#VIS-004, but the current approved spec is VDC-002.`
-
-```text
-Observed evidence: Backlog reference experience-spec@VDC-001#VIS-004 conflicts with current approved VDC-002.
-Selected next skill(s): design-experience
-Why: The UI reference is stale and blocks implementation.
-Missing prerequisites: Approved current VIS reference, replanned backlog mapping, and regenerated affected evidence.
-Approval required: Human approval after each design, planning, and affected implementation boundary.
-Stop condition: Dispatch design-experience; stop at the revised experience specification approval, then execute plan-delivery and affected implement-feature work in order.
-Specialist output: design-experience
-<Dispatch the design-experience contract to a subagent and verify its artifact on disk.>
-```
-
-### Missing Skill
-
-User: `The brief is approved, but define-architecture is not enabled.`
-
-```text
-Observed evidence: Approved product brief; define-architecture unavailable.
-Selected next skill(s): none
-Why: A required specialist is unavailable and no substitution is allowed.
-Missing prerequisites: Enabled define-architecture contract and its required input artifacts.
-Approval required: none
-Stop condition: STOP; enable define-architecture or upload its SKILL.md contract, then retry.
-```
-
-### Release Route
-
-User: `Quality is approved with pass. Security is approved with pass-with-findings, all nonblocking, and there is no blocker.`
-
-```text
-Observed evidence: Approved current quality report verdict pass; approved current security report verdict pass-with-findings; findings nonblocking; no blocker.
-Selected next skill(s): prepare-release
-Why: Both verifier branches satisfy the release-planning join.
-Missing prerequisites: Release candidate ID, version or build ID, and scope summary required by prepare-release.
-Approval required: Human approval of the resulting release plan; separate authorization is required outside this suite for any deployment.
-Stop condition: Dispatch prepare-release; stop when the release plan reaches awaiting-approval. Do not deploy.
-Specialist output: prepare-release
-<Dispatch the prepare-release contract to a subagent and verify its artifacts on disk.>
-```
-
+Detailed turn-by-turn conversational interaction examples across initial discovery, brief approvals, development authorization, UAT remediation, and release handover are documented in `references/chat-examples.md`.
 
 ## Mandatory Background Process Cleanup
 All background processes (such as dev servers, uvicorn/node daemon tasks, background test runners, or browser subagents) started during development, feature implementation, testing, or quality verification MUST be terminated immediately when development, testing, verification, or release handoff concludes, without requiring user confirmation.
