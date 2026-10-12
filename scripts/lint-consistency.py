@@ -163,11 +163,41 @@ def check_agent_least_privilege():
                 errors.append(f"agents/{name}/agent.md has forbidden tool under least-privilege: '{forbidden}'")
 
 
+def check_version_parity():
+    print("Checking version parity between plugin.json and CHANGELOG.md...")
+    plugin_path = os.path.join(ROOT, "plugin.json")
+    changelog_path = os.path.join(ROOT, "CHANGELOG.md")
+
+    if not os.path.isfile(plugin_path):
+        errors.append("plugin.json missing")
+        return
+    if not os.path.isfile(changelog_path):
+        errors.append("CHANGELOG.md missing")
+        return
+
+    import json
+    with open(plugin_path, "r", encoding="utf-8") as fh:
+        plugin_data = json.load(fh)
+    plugin_ver = plugin_data.get("version")
+
+    with open(changelog_path, "r", encoding="utf-8") as fh:
+        changelog_content = fh.read()
+
+    match = re.search(r"^##\s*\[([0-9]+\.[0-9]+\.[0-9]+)\]", changelog_content, re.MULTILINE)
+    if not match:
+        errors.append("Failed to find latest version in CHANGELOG.md (expected format: ## [X.Y.Z])")
+    else:
+        changelog_ver = match.group(1)
+        if plugin_ver != changelog_ver:
+            errors.append(f"Version mismatch: plugin.json ({plugin_ver}) != CHANGELOG.md ({changelog_ver})")
+
+
 def main():
     print(f"Running consistency lint in: {ROOT}")
     check_skill_parity()
     check_stale_names()
     check_agent_least_privilege()
+    check_version_parity()
 
     if errors:
         print(f"\n[FAIL] Consistency Lint failed with {len(errors)} error(s):")

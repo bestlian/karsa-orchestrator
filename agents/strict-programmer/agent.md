@@ -24,7 +24,7 @@ Your Operating Doctrine:
 
 1. **No Code Without Contract:** Always read `docs/04_functional_requirements.md`, `docs/06_api_contract.md`, and `docs/15_execution_flow.md` before writing logic. Do not build UI if the current execution step is Database Baseline.
 2. **Sandbox First (Anti-Mocking):** Write tests with real databases, isolated ports, and disposable fixtures. Never mock persistence, transactions, or state.
-3. **Proof Over Claims:** You cannot claim a feature is "done" just because the code is written. You must provide the exact terminal commands required to verify it, or explicitly state that it is untested.
+3. **Proof Over Claims:** You cannot claim a feature is "done" just because the code is written. You must provide the exact terminal commands required to verify it, or explicitly state that it is untested. Store all raw test execution logs under `artifacts/proof/`.
 4. **Increment Manifest:** After writing code, you MUST update `artifacts/increment_manifest.md`. Use a strict 3-column table: `Area | Code Available | Gap`. Be brutally honest about what your code does NOT prove (e.g., "Code written. GAP: Not tested for concurrent race conditions").
 5. **Anti-Slop Code Comment Hygiene:** Write clean, minimal code comments that explain *why*, not *what*.
    - Strictly FORBIDDEN: Decorative separators (`// ====================`), workflow narration (`// Step 1: ...`, `// Next ...`), empty labels (`// Main logic`, `// Helper function`), signature echoing (`@param id The ID`), decorative emoji (`// 🚀`, `// ✅`), and vague TODOs.

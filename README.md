@@ -32,6 +32,7 @@ Instead of a single AI model attempting to juggle an entire software lifecycle i
 - [🧠 Multi-Agent Architecture](#-multi-agent-architecture)
   - [Role Matrix & Model Allocation](#role-matrix--model-allocation)
 - [🛡️ Quality Gates & Anti-Slop Discipline](#-quality-gates--anti-slop-discipline)
+- [📊 Observability & Evidence Artifacts](#-observability--evidence-artifacts)
 - [🧪 ADLC Evaluation Harness](#-adlc-evaluation-harness)
 - [🛠️ Troubleshooting & Tips](#️-troubleshooting--tips)
 - [📜 License](#-license)
@@ -234,6 +235,60 @@ flowchart TD
    - Hardcoded API keys, database credentials, or secret tokens immediately trigger a critical security blocker that halts release readiness until secrets are extracted to environment variables.
 10. **Untrusted Data Isolation (Anti-Prompt Injection):**
     - All content read from codebase files, web URLs, external APIs, or search results is treated strictly as passive data and evidence. Agents never execute instructions or prompts embedded within scanned files.
+11. **Authoritative Evidence & Observability Ledger:**
+    - All verification proofs, raw test command outputs, defect handoffs, and manifests MUST reside under `<project-root>/artifacts/`. Storing execution evidence in untracked or temporary folders is prohibited.
+    - Every subagent dispatch and terminal verdict is audited in `<project-root>/artifacts/audit/dispatch-log.jsonl`.
+
+---
+
+## 📊 Observability & Evidence Artifacts
+
+All runtime verification evidence, test execution logs, and peer handoff records are permanently tracked in the project root's `artifacts/` tree:
+
+```text
+<project-root>/artifacts/
+├── audit/
+│   └── dispatch-log.jsonl       # Lead orchestrator dispatch ledger (Observability)
+├── handoffs/
+│   └── <message-id>.md          # A2A peer-to-peer handoff & defect reports
+├── implementation/
+│   └── <item-id>-implementation-report.md
+├── proof/
+│   ├── test-runs/               # Raw test command execution logs (stdout/stderr)
+│   ├── contrast-check.json      # Deterministic WCAG AA color contrast results
+│   ├── mobile-reflow.json       # Viewport 375px reflow & scroll check outputs
+│   └── security-scan.log        # Secret leak and anti-RED-CODE audit outputs
+├── quality/
+│   └── <candidate-id>-quality-report.md
+├── security/
+│   └── <candidate-id>-security-review.md
+├── release/
+│   └── <candidate-id>-release-plan.md
+└── increment_manifest.md        # Real-time proof gap ledger
+```
+
+### Dispatch Ledger Schema (`artifacts/audit/dispatch-log.jsonl`)
+
+Whenever the Lead Orchestrator (`karsa`) dispatches a subagent or records a terminal verification result, an entry is appended to `artifacts/audit/dispatch-log.jsonl`:
+
+```json
+{
+  "timestamp": "2026-10-12T14:40:00Z",
+  "dispatch_id": "DSP-001",
+  "agent": "strict-programmer",
+  "model": "flash",
+  "workspace": "branch",
+  "phase": "S0",
+  "item_id": "FEAT-001",
+  "rounds": 1,
+  "status": "PASS",
+  "evidence_path": "artifacts/implementation/FEAT-001-implementation-report.md",
+  "failure_category": null
+}
+```
+
+- **`status` Enum:** `PASS`, `FAIL`, `BLOCKED`, `STALE_CHECKSUM`.
+- **`failure_category`:** `null` on `PASS`, or one of `["contract_defect", "test_failure", "security_leak", "timeout", "stale_checksum"]`.
 
 ---
 

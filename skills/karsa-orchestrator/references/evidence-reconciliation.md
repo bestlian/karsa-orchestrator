@@ -48,3 +48,70 @@ Before every route, resume, quality gate, security review, or release plan, KARS
 - Tie code and test evidence to a stable revision or checksum of the tested executable, configuration, and source scope.
 - Any change in that tested scope invalidates dependent evidence until the required verification checks run again.
 - Persist resume-required scope, source revisions, and unresolved gates only in the existing backlog and increment manifests; never introduce an external database engine for governance state.
+
+---
+
+## 4. Authoritative Artifacts Storage & Observability Ledger
+
+All verification proof, logs, manifests, and audit records MUST reside under `<project-root>/artifacts/`. Storing execution evidence in ad-hoc, untracked, or temporary folders outside this tree is strictly prohibited.
+
+### Directory Layout
+
+```text
+<project-root>/artifacts/
+├── audit/
+│   └── dispatch-log.jsonl       # Lead orchestrator dispatch ledger (Observability)
+├── handoffs/
+│   └── <message-id>.md          # A2A peer-to-peer handoff & defect reports
+├── implementation/
+│   └── <item-id>-implementation-report.md
+├── proof/
+│   ├── test-runs/               # Raw test command execution logs (stdout/stderr)
+│   ├── contrast-check.json      # Deterministic WCAG AA color contrast results
+│   ├── mobile-reflow.json       # Viewport 375px reflow & scroll check outputs
+│   └── security-scan.log        # Secret leak and anti-RED-CODE audit outputs
+├── quality/
+│   └── <candidate-id>-quality-report.md
+├── security/
+│   └── <candidate-id>-security-review.md
+├── release/
+│   └── <candidate-id>-release-plan.md
+└── increment_manifest.md        # Real-time proof gap ledger
+```
+
+### Key Directories and Artifact Paths
+- `artifacts/audit/dispatch-log.jsonl`: Lead orchestrator dispatch ledger
+- `artifacts/handoffs/`: A2A peer-to-peer handoffs and defect reports
+- `artifacts/proof/`: Raw test command execution logs, contrast check results, mobile reflow outputs, and security scans
+- `artifacts/implementation/`: Specialist implementation reports
+- `artifacts/quality/`: UAT quality reports
+- `artifacts/security/`: Security review reports
+- `artifacts/release/`: Release plan and handover reports
+- `artifacts/increment_manifest.md`: Real-time proof gap ledger
+
+### Observability Dispatch Ledger (`artifacts/audit/dispatch-log.jsonl`)
+
+Whenever the Lead Orchestrator (`karsa`) dispatches a subagent or processes a terminal verification result, it appends a single JSON line to `<project-root>/artifacts/audit/dispatch-log.jsonl`.
+
+Each entry MUST adhere to this JSON schema:
+
+```json
+{
+  "timestamp": "ISO-8601 UTC timestamp",
+  "dispatch_id": "DSP-NNN",
+  "agent": "target-agent-name",
+  "model": "flash | pro | inherit",
+  "workspace": "main | branch",
+  "phase": "Discovery | Master Planning | S0 | S1 | UAT | Release",
+  "item_id": "backlog-or-milestone-id",
+  "rounds": 1,
+  "status": "PASS | FAIL | BLOCKED | STALE_CHECKSUM",
+  "evidence_path": "project-relative path under artifacts/...",
+  "failure_category": null
+}
+```
+
+- **`status` Enum:** `PASS`, `FAIL`, `BLOCKED`, `STALE_CHECKSUM`.
+- **`failure_category` Enum:** `null` when status is `PASS`; otherwise one of `contract_defect`, `test_failure`, `security_leak`, `timeout`, `stale_checksum`.
+- **`evidence_path`:** MUST point to a valid, persistent path below `artifacts/`.
+

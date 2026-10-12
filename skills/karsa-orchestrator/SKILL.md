@@ -68,6 +68,9 @@ Visible artifacts below `<project-root>/artifacts/` and `docs/` and their handof
 | `review-security` | `<project-root>/artifacts/security/<candidate-id>-security-review.md` |
 | `prepare-release` | `<project-root>/artifacts/release/<candidate-id>-release-plan.md` |
 
+4. **Authoritative Artifacts Storage & Observability Ledger:**
+   All lifecycle evidence, test outputs, handoff messages, and audit trails MUST reside under `<project-root>/artifacts/`. Storing execution evidence in untracked or temporary folders outside this tree is strictly prohibited. The lead orchestrator maintains `<project-root>/artifacts/audit/dispatch-log.jsonl` recording each subagent dispatch, model tier, workspace mode, cycle rounds, and verification verdict according to the schema in `references/evidence-reconciliation.md`.
+
 ## Decision Ingestion And Discovery Proposals
 
 Requirement Gathering & Zero-Guesswork Principle: Discovery conversations must be natural, collaborative, and evidence-first. The agent must NEVER invent, guess, or assume domain rules, pricing, operational policies, or business constraints. If the user's initial prompt leaves requirements open, ask natural, targeted clarification questions. The agent only defaults or chooses specifics on the user's behalf if the user explicitly delegates decisions (e.g., 'terserah kamu', 'kamu yang tentukan', 'serahkan sepenuhnya').

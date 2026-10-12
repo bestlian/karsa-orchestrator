@@ -86,6 +86,65 @@ class TestKarsaProtocols(unittest.TestCase):
                 f"Agent {name} must declare Untrusted Data Isolation / Anti-Prompt Injection guardrail",
             )
 
+    def test_artifacts_evidence_directory_contract(self):
+        recon_path = os.path.join(ROOT, "skills", "karsa-orchestrator", "references", "evidence-reconciliation.md")
+        self.assertTrue(os.path.isfile(recon_path), "evidence-reconciliation.md must exist")
+        with open(recon_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        mandated_artifact_dirs = [
+            "artifacts/audit/dispatch-log.jsonl",
+            "artifacts/handoffs/",
+            "artifacts/proof/",
+            "artifacts/implementation/",
+            "artifacts/quality/",
+            "artifacts/security/",
+            "artifacts/release/",
+            "artifacts/increment_manifest.md",
+        ]
+        for adir in mandated_artifact_dirs:
+            self.assertIn(adir, content, f"evidence-reconciliation.md must mandate: {adir}")
+
+        skill_path = os.path.join(ROOT, "skills", "karsa-orchestrator", "SKILL.md")
+        with open(skill_path, "r", encoding="utf-8") as f:
+            skill_content = f.read()
+        self.assertIn("artifacts/audit/dispatch-log.jsonl", skill_content)
+
+    def test_dispatch_ledger_schema(self):
+        # Validate sample valid entry
+        sample_entry = {
+            "timestamp": "2026-10-12T14:40:00Z",
+            "dispatch_id": "DSP-001",
+            "agent": "strict-programmer",
+            "model": "flash",
+            "workspace": "branch",
+            "phase": "S0",
+            "item_id": "FEAT-001",
+            "rounds": 1,
+            "status": "PASS",
+            "evidence_path": "artifacts/implementation/FEAT-001-implementation-report.md",
+            "failure_category": None,
+        }
+
+        required_keys = {
+            "timestamp", "dispatch_id", "agent", "model", "workspace",
+            "phase", "item_id", "rounds", "status", "evidence_path", "failure_category"
+        }
+        self.assertEqual(set(sample_entry.keys()), required_keys)
+        self.assertIn(sample_entry["status"], ["PASS", "FAIL", "BLOCKED", "STALE_CHECKSUM"])
+        self.assertTrue(sample_entry["evidence_path"].startswith("artifacts/"))
+        self.assertIsInstance(sample_entry["rounds"], int)
+
+    def test_version_parity(self):
+        import json
+        with open(os.path.join(ROOT, "plugin.json"), "r", encoding="utf-8") as f:
+            plugin_ver = json.load(f).get("version")
+        with open(os.path.join(ROOT, "CHANGELOG.md"), "r", encoding="utf-8") as f:
+            match = re.search(r"^##\s*\[([0-9]+\.[0-9]+\.[0-9]+)\]", f.read(), re.MULTILINE)
+        self.assertIsNotNone(match, "CHANGELOG.md must define a version header")
+        self.assertEqual(plugin_ver, match.group(1), "plugin.json version must match CHANGELOG.md")
+
 
 if __name__ == "__main__":
     unittest.main()
+

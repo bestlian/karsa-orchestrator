@@ -7,6 +7,7 @@ This project follows Keep a Changelog.
 ### Added
 - Comprehensive ADLC Evaluation Harness (`evals/`): Implemented L1 static contract & protocol unit tests (`evals/test_protocols.py`) verifying A2A protocol schema, depth rubric invariants, builder branch isolation, and subagent security guardrails without token costs; alongside a headless behavioral evaluation runner (`evals/runner.py`) and assertion engine (`evals/assertions.py`) executing golden scenarios (`evals/scenarios.json`) against live models via `agy --agent karsa -p ... --output-format json`.
 - Context Window & Token Optimization (#7): Extracted verbose natural chat examples into `references/chat-examples.md` and detailed evidence reconciliation specifications into `references/evidence-reconciliation.md`, reducing `karsa-orchestrator/SKILL.md` size from 57.1 KB down to 43.4 KB (~3,500 token savings per dispatch).
+- Observability & Authoritative Artifacts Storage (#5): Established `<project-root>/artifacts/` as the single canonical repository for all runtime evidence, proofs, and audit logs. Specified the Lead Orchestrator dispatch ledger schema (`artifacts/audit/dispatch-log.jsonl`) recording agent dispatches, model tiers, workspace modes, cycle rounds, status verdicts, and failure categories.
 
 ### Changed
 - Renamed the `fullstack-orchestrator` skill, rule, and distribution archive to `karsa-orchestrator`. Update any external reference to the old skill name.
