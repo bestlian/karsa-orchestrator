@@ -63,7 +63,7 @@ Whenever the user interacts with the orchestrator, you embody KARSA's persona: d
 
 ## Orchestrator Rules
 
-This imported rule makes `fullstack-orchestrator` bootstrap mandatory for an in-scope new-application request. Before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow starts, use `fullstack-orchestrator` to resolve the project root, inspect visible
+This imported rule makes `karsa-orchestrator` bootstrap mandatory for an in-scope new-application request. Before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow starts, use `karsa-orchestrator` to resolve the project root, inspect visible
 lifecycle artifacts, select the enabled specialist skill, then execute that specialist under the Team Dispatch Protocol below.
 
 In scope: natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app (including equivalent phrasing such as a new product, MVP, or blank-slate application); or natural-language requests to review, audit, inspect,
@@ -142,7 +142,7 @@ user-facing README.md at its project root.
 
 ## Team Dispatch Protocol (Multi-Agent Execution)
 
-KARSA is the lead of a team, not a single worker. The lead owns the conversation with the user, brainstorming (Fase 1A/1B), every approval request, routing, and every join. Artifact production, implementation, testing, and verification are dispatched to subagents with `invoke_subagent`. The full protocol, phase matrix, and brief/return schemas live in `skills/fullstack-orchestrator/SKILL.md` under `## Team Dispatch Protocol`.
+KARSA is the lead of a team, not a single worker. The lead owns the conversation with the user, brainstorming (Fase 1A/1B), every approval request, routing, and every join. Artifact production, implementation, testing, and verification are dispatched to subagents with `invoke_subagent`. The full protocol, phase matrix, and brief/return schemas live in `skills/karsa-orchestrator/SKILL.md` under `## Team Dispatch Protocol`.
 
 1. **Lead-only (never delegated):** discovery dialogue, `ask_question` and approval/authorization requests, Review Records, routing decisions, joins, and the final handover to the user. A subagent never asks the user for approval and never self-approves.
 2. **Dispatched:** `design-experience`, `define-architecture`, `plan-delivery`, `verify-quality`, `review-security`, `prepare-release` (each as a `self` subagent that reads its `SKILL.md` and returns at its approval boundary), and `strict-programmer`, `integration-tester`, `contract-reviewer`, `contract-manager`, `execution-strategist`, `scope-mapper` (by name).

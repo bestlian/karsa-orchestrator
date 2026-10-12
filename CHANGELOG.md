@@ -2,6 +2,15 @@
 
 This project follows Keep a Changelog.
 
+## [Unreleased]
+
+### Changed
+- Renamed the `fullstack-orchestrator` skill, rule, and distribution archive to `karsa-orchestrator`. Update any external reference to the old skill name.
+- The orchestrator now dispatches specialist work to subagents under a Team Dispatch Protocol. The lead keeps user dialogue, approvals, routing, and joins; subagents never approve. `design-experience` with `define-architecture`, and `verify-quality` with `review-security`, run as parallel branches. Previous rules that forbade delegation were removed.
+
+### Fixed
+- Replaced the non-existent `execution-manager` agent name with `execution-strategist`.
+
 ## [1.1.0] - 2026-10-06
 
 ### Added

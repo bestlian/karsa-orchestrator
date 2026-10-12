@@ -1,5 +1,5 @@
 ---
-name: fullstack-orchestrator
+name: karsa-orchestrator
 description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, requires artifact-bound approval and development-start authorization, and routes then dispatches enabled specialist skills to a subagent team while the lead keeps dialogue, approvals, and joins.
 ---
 

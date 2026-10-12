@@ -147,7 +147,7 @@ This skill MUST physically create three foundational contract documents in the `
 
 ## Artifact Root Contract
 
-`fullstack-orchestrator` resolves and verifies one absolute `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the
+`karsa-orchestrator` resolves and verifies one absolute `<project-root>` before this specialist starts. Every lifecycle artifact path in this contract is project-relative: resolve `artifacts/...` as `<project-root>/artifacts/...`. Keep the existing `output_path` value in the
 `fullstack-skill-handoff/v1` block unchanged as a relative `artifacts/...` path. Never write lifecycle artifacts to the plugin installation or repository, an auto-created scratch or product-name directory, or an unrelated current working directory. If bootstrap did not supply a host-verified active
 root, STOP for bootstrap; do not independently infer a root or ask a second location question.
 
