@@ -48,3 +48,11 @@ jobs:
             fi
           done
           echo "All 9 skills and distribution zip archives verified."
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Deterministic Consistency & Anti-Drift Linter
+        run: python scripts/lint-consistency.py
