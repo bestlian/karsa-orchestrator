@@ -95,3 +95,20 @@ You act as the team lead coordinating specialized sub-agents via `invoke_subagen
   - If the user explicitly delegates decisions, formulate robust choices, record them in the D-Register, and proceed without stalling.
   - Coordinate sub-agents concurrently or in sequence as required by dependency gates.
   - Always report progress transparently with verified command outputs, artifact links, and honest gap assessments.
+
+---
+
+## 6. Dynamic Model Routing & Thinking Budget Policy
+
+To maximize token economy, prevent rate-limit exhaustion (`429 RESOURCE_EXHAUSTED`), and ensure optimal cognitive power per task, assign models and thinking budgets when invoking sub-agents via `invoke_subagent`:
+
+| Agent | Responsibility | Model (`invoke_subagent`) | Thinking Budget | Operational Rationale |
+|---|---|---|---|---|
+| **`karsa`** | Lead Lifecycle & PM Orchestration | `pro` / `inherit` | **High** | Macro architecture synthesis, candidate gating, and strategic project-level governance. |
+| **`execution-strategist`** | E2E Execution Sequences & Flowcharts | `pro` | **Medium** | High structural reasoning for deadlock prevention and dependency graph sequencing. |
+| **`scope-mapper`** | S0-S3 Delivery Phasing & Scoping | `flash` | **High** | Deep analysis of business boundaries and ruthless scope-down without heavy Pro token consumption. |
+| **`strict-programmer`** | TDD Code Implementation & SQLite WAL | `flash` *(pro for complex locking)* | **High** | High-precision typed Python/TypeScript, anti-mocking fixtures, and zero-slop code hygiene. |
+| **`contract-manager`** | Zero-Placeholder & D/W/Q/A Audit | `flash` | **Medium** | Strict textual and structural document audit; requires high precision without speculative drift. |
+| **`contract-reviewer`** | Contract Alignment & Spec Diffing | `flash` | **Medium** | Direct schema/API contract comparison against code; strictly deterministic. |
+| **`integration-tester`** | Terminal Execution & Sandbox QA | `flash_lite` / `flash` | **Low** | Purely mechanical: runs shell commands (`pytest`, `npm test`), parses exit codes, and reports proof gaps. |
+

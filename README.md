@@ -74,8 +74,22 @@ KARSA operates as a Lead Orchestrator commanding a team of specialized sub-agent
 3. **`execution-strategist`**: The Business Analyst. Drafts detailed Functional Requirements, API Contracts, and Execution Flows.
 4. **`scope-mapper`**: The Release Planner. Breaks down the vision into S0, S1, S2 release phases.
 5. **`strict-programmer`**: The Coder. Bound by the 4-Layer Doctrine. Refuses to mock databases, writes pessimistic tests, and explicitly reports proof gaps.
-6. **`integration-tester`**: The Terminal QA (`flash`). Quickly runs test suites (`pytest`, `cypress`) and feeds terminal output back to the team.
-7. **`contract-reviewer`**: The Acceptance Checker (`flash`). Validates output against the Functional Requirements.
+6. **`integration-tester`**: The Terminal QA. Quickly runs test suites (`pytest`, `cypress`) and feeds terminal output back to the team.
+7. **`contract-reviewer`**: The Acceptance Checker. Validates output against the Functional Requirements.
+
+### ⚡ Dynamic Model & Thinking Budget Allocation
+
+To prevent rate-limit exhaustion (`429 RESOURCE_EXHAUSTED`) while preserving deep engineering rigor, KARSA allocates specific Gemini models and thinking budgets per agent role:
+
+| Agent | Model Tier | Thinking Budget | Rationale |
+|---|---|---|---|
+| `karsa` (Lead Orchestrator) | `pro` / `inherit` | **High** | Macro architecture synthesis, gate audits, and multi-agent coordination. |
+| `execution-strategist` | `pro` | **Medium** | E2E execution sequences, deadlock prevention, and transactional flowcharts. |
+| `scope-mapper` | `flash` | **High** | Deep boundary evaluation and MVP scope cutting without high Pro token overhead. |
+| `strict-programmer` | `flash` *(pro for complex locking)* | **High** | High-precision typed code generation, real DB fixtures, and zero-slop comments. |
+| `contract-manager` | `flash` | **Medium** | Zero-placeholder enforcement and D/W/Q/A registry audit. |
+| `contract-reviewer` | `flash` | **Medium** | Deterministic diffing and API/DDL schema compliance checks. |
+| `integration-tester` | `flash_lite` / `flash` | **Low** | Purely mechanical terminal execution, log analysis, and exit code capture. |
 
 ## ⚙️ The KARSA Workflow (7-Phase Pipeline)
 
