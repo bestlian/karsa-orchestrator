@@ -174,7 +174,7 @@ KARSA is the team lead. Specialist work runs in subagents started with `invoke_s
 | Traceability audit | Presents the audit to the user | `contract-manager` | single |
 | Sprint formation and integrity check | Requests Master Planning Approval | `execution-strategist`, then `contract-manager` | sequential |
 | Scaffold | Checks Development Start Authorization | `strict-programmer` | single |
-| Implementation loop | Selects the next Ready item, audits each `VERDICT` | `strict-programmer` and `integration-tester` as peers in a bounded fix loop (direct A2A messages); `contract-reviewer` per slice reports to the lead | sequential per item |
+| Implementation loop | Selects the next Ready item, audits each `VERDICT`, enforces UAT merge gate | `strict-programmer` (Workspace: branch) and `integration-tester` as peers in a bounded fix loop; `contract-reviewer` per slice reports to lead; merges to main ONLY after UAT passes | sequential per item |
 | UAT and security | Joins both reports, presents the Slice Increment Review | `self` x2: one executes `verify-quality`, one executes `review-security` | parallel |
 | Remediation | Routes defect list | `strict-programmer`, then re-run verifiers | sequential |
 | Release | Asks the DevOps question and hands over | `self` executes `prepare-release` | single |
@@ -192,7 +192,8 @@ Every `invoke_subagent` prompt MUST contain these fields, and nothing the subage
 - `peers`: map of role name to conversation ID for every agent it may message directly, plus `lead`. Empty when the phase has no direct edges. Message format and allowed edges are defined in `references/a2a-protocol.md`.
 - `cleanup`: terminate every background process it started and release its ports.
 
-Set `Model` and follow the token economy rules in `agents/karsa.md` section 6. Use `Workspace: inherit`; isolated branch workspaces are not part of this protocol yet.
+Set `Model` and follow the token economy rules in `agents/karsa.md` section 6.
+Set `Workspace: branch` for `strict-programmer` (Builder) to guarantee complete git worktree isolation from `main`. Use `Workspace: inherit` for documentation, architecture, design, and governance subagents.
 
 ### Return Report (subagent to lead)
 
@@ -207,9 +208,36 @@ The subagent's final message lists: paths written, artifact revision, status (`a
 5. If a subagent is silent, list subagents with `manage_subagents`, send one `send_message` nudge, and only then fall back. If `invoke_subagent` fails or a named agent is unavailable, dispatch `self` with the agent's `agent.md` as its contract. If dispatch is impossible, execute the contract inline and state in the next user-facing message that the team path was not used and why.
 6. After the phase, confirm no dispatched process is left running and stop leftover subagents.
 
-### Not Covered Yet
+### Builder Workspace Isolation & UAT Merge Gate
 
-Isolated git branch or worktree workspaces for `strict-programmer` are a deliberate follow-up. Direct subagent messaging is limited to the whitelisted edges in `references/a2a-protocol.md` (the programmer-tester fix loop); every other handoff passes through the lead and is verified on disk.
+To prevent broken, untested, or drifting code from corrupting the primary codebase, all code implementation MUST adhere to strict branch isolation and gated merging:
+
+1. **Isolated Builder Workspace (`Workspace: branch`):**
+   - Whenever `strict-programmer` is dispatched to build, scaffold, or remediate features, KARSA MUST set `Workspace: branch` in `invoke_subagent`.
+   - The builder operates in a segregated Git worktree on an isolated branch (e.g. `subagent-strict-programmer-...` or designated feature branch).
+   - *Pre-flight Windows Safeguard:* KARSA verifies that `git config core.longpaths` is set to `true` to prevent MAX_PATH failures during worktree creation.
+   - The `main` branch remains 100% pristine and untouched throughout implementation.
+
+2. **A2A Testing Within The Candidate Branch:**
+   - `strict-programmer` and `integration-tester` execute the bounded fix loop (max 3 rounds) entirely within the candidate branch scope.
+   - Real database fixtures and sandbox processes are started and torn down without polluting the main branch environment.
+   - Once the candidate increment or slice is implemented and passing internal tests, `strict-programmer` commits changes atomically and reports the branch name and commit SHA to KARSA.
+
+3. **UAT & Security Verification Gate (The Merge Barrier):**
+   - Before ANY merge into `main` can occur, KARSA dispatches `verify-quality` (UAT Auditor) and `review-security` (Security Auditor) against the candidate branch.
+   - **STRICT MERGE CONDITION:** A feature branch is PERMITTED to merge into `main` IF AND ONLY IF:
+     a. The **UAT Report** produces a clean `PASS` with ZERO blocking defects, verified responsive reflow at 375px viewport (zero horizontal scroll leak), and WCAG AA contrast (>=4.5:1 normal, >=3.0:1 large).
+     b. The **Vulnerability Report** produces a clean `PASS` with ZERO RED CODE hardcoded credential leaks and zero critical/high security vulnerabilities.
+     c. All 4-layer proof evidence (AC, real isolated DB fixture, live API subprocess, E2E browser UI) is verified on disk.
+
+4. **Merge Execution & Cleanup:**
+   - Upon meeting all UAT and Security conditions, KARSA (Lead) merges the candidate branch into `main` via fast-forward or clean atomic merge commit (`git merge <branch>`).
+   - After successful merge and verification, the temporary branch worktree is pruned and cleaned up.
+
+5. **Remediation & Anti-Contamination (On UAT Failure):**
+   - If UAT or Security verification fails, merging to `main` is STRICTLY BLOCKED.
+   - The defect list is routed back to `strict-programmer` on the isolated branch for remediation.
+   - If the slice is rejected or abandoned by the user, the branch is deleted, leaving `main` completely free of dead or corrupted code.
 
 ## Development Outcome Claims
 

@@ -41,6 +41,8 @@ in_reply_to: <message_id | none>
 item: <backlog id>
 round: <1..3>
 scope_checksum: <sha256 of the listed source/config/test files, sorted by path>
+branch: <git branch name in worktree>
+commit_sha: <git commit sha on branch>
 handoff_file: artifacts/handoffs/<message_id>.md
 action_requested: <one sentence>
 ```
@@ -116,3 +118,12 @@ integration-tester --BLOCKER--> lead                  (still failing at round 3)
 ## Cleanup
 
 When an item reaches a passing verdict, both agents return their final reports to the lead, terminate every background process they started, and release their ports. The lead verifies and stops leftovers.
+
+## Builder Worktree Isolation & UAT Merge Barrier
+
+- `strict-programmer` runs in `Workspace: branch`. All code edits occur in an isolated git worktree.
+- When `strict-programmer` sends `HANDOFF`, it provides the current `branch` name and `commit_sha`.
+- `integration-tester` tests the candidate branch commit.
+- When all sprint items are implemented and tested, the candidate branch undergoes full UAT (`verify-quality`) and Security Review (`review-security`).
+- **UAT Merge Gate:** Merging into `main` is permitted ONLY when both UAT Report and Security Report pass with zero blocking defects.
+- The KARSA Lead executes the merge. Subagents never merge to `main`.

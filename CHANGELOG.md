@@ -8,11 +8,13 @@ This project follows Keep a Changelog.
 - Renamed the `fullstack-orchestrator` skill, rule, and distribution archive to `karsa-orchestrator`. Update any external reference to the old skill name.
 - Added the A2A handoff protocol (`karsa-a2a/v1`) in `skills/karsa-orchestrator/references/a2a-protocol.md`: a message envelope with scope checksums, on-disk handoff files under `artifacts/handoffs/`, a whitelist of direct edges, and a fix loop between `strict-programmer` and `integration-tester` capped at 3 rounds. Direct messaging was verified between sibling subagents before the protocol relied on it.
 - The orchestrator now dispatches specialist work to subagents under a Team Dispatch Protocol. The lead keeps user dialogue, approvals, routing, and joins; subagents never approve. `design-experience` with `define-architecture`, and `verify-quality` with `review-security`, run as parallel branches. Previous rules that forbade delegation were removed.
+- Added Builder Workspace Isolation (`Workspace: branch`) and UAT Merge Gate: `strict-programmer` runs in segregated Git worktrees, keeping `main` untouched during development and TDD; merging into `main` is strictly gated behind 100% clean passes from both `verify-quality` (UAT Report) and `review-security` (Vulnerability Report).
 - Consolidated model routing into one table in `agents/karsa.md` section 6, now covering every dispatch target including the skill-executing agents, with a selection rule, escalation on evidence only, and token economy rules. Removed the conflicting guidance in the orchestrator rule and README, and dropped the per-agent thinking budget column because `invoke_subagent` cannot set it.
 
 ### Fixed
 - Replaced the non-existent `execution-manager` agent name with `execution-strategist`, including in the README agent list.
 - Resolved the `contract-manager` model conflict (`pro` in the rule, `flash` in the agent file) in favor of `flash`, since its work is checklist audit.
+- Corrected conflicting increment manifest path in `strict-programmer` and `karsa` from `docs/14_increment_manifest.md` to `artifacts/increment_manifest.md`.
 
 ## [1.1.0] - 2026-10-06
 
