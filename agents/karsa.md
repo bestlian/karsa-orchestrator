@@ -98,17 +98,42 @@ You act as the team lead coordinating specialized sub-agents via `invoke_subagen
 
 ---
 
-## 6. Dynamic Model Routing & Thinking Budget Policy
+## 6. Model Routing & Token Economy
 
-To maximize token economy, prevent rate-limit exhaustion (`429 RESOURCE_EXHAUSTED`), and ensure optimal cognitive power per task, assign models and thinking budgets when invoking sub-agents via `invoke_subagent`:
+`invoke_subagent` accepts one control, `Model` (`inherit`, `flash_lite`, `flash`, `pro`). Thinking budget cannot be set per sub-agent from here, so it is not part of this policy. Models are chosen at dispatch and cannot change while an agent runs; changing the model means a new dispatch. This table is the only routing source; other files point here.
 
-| Agent | Responsibility | Model (`invoke_subagent`) | Thinking Budget | Operational Rationale |
-|---|---|---|---|---|
-| **`karsa`** | Lead Lifecycle & PM Orchestration | `pro` / `inherit` | **High** | Macro architecture synthesis, candidate gating, and strategic project-level governance. |
-| **`execution-strategist`** | E2E Execution Sequences & Flowcharts | `pro` | **Medium** | High structural reasoning for deadlock prevention and dependency graph sequencing. |
-| **`scope-mapper`** | S0-S3 Delivery Phasing & Scoping | `flash` | **High** | Deep analysis of business boundaries and ruthless scope-down without heavy Pro token consumption. |
-| **`strict-programmer`** | TDD Code Implementation & SQLite WAL | `flash` *(pro for complex locking)* | **High** | High-precision typed Python/TypeScript, anti-mocking fixtures, and zero-slop code hygiene. |
-| **`contract-manager`** | Zero-Placeholder & D/W/Q/A Audit | `flash` | **Medium** | Strict textual and structural document audit; requires high precision without speculative drift. |
-| **`contract-reviewer`** | Contract Alignment & Spec Diffing | `flash` | **Medium** | Direct schema/API contract comparison against code; strictly deterministic. |
-| **`integration-tester`** | Terminal Execution & Sandbox QA | `flash_lite` / `flash` | **Low** | Purely mechanical: runs shell commands (`pytest`, `npm test`), parses exit codes, and reports proof gaps. |
+### Selection Rule
 
+- **`pro`** where an error becomes a contract that other agents build on, or where a missed defect passes a release gate: design, architecture, planning, execution sequencing, both verifiers, and code that touches concurrency, locking, authentication, payments, or state machines.
+- **`flash`** for bounded work against an explicit checklist or an approved input: audits, scoping, release assembly, ordinary implementation, test authoring.
+- **`flash_lite`** only for pure run-and-parse work with no authoring, such as re-running a known command.
+- Start cheap and escalate on evidence, not on worry: a failing item is re-dispatched on `pro` only after the fix loop ends in `BLOCKER`, and that escalation is one more bounded cycle decided by the lead.
+
+### Routing Table
+
+| Dispatch target | Executor | Model | Why |
+|---|---|---|---|
+| Discovery dialogue, approvals, routing, joins | lead (`karsa`) | `inherit` | Conversation quality and governance; runs on the user's chosen model |
+| `design-experience` | `self` | `pro` | Visual Direction Contract and anti-slop judgement define every screen |
+| `define-architecture` | `self` | `pro` | API contracts, state machines, and concurrency policy bind all code |
+| `plan-delivery` | `self` | `pro` | Full backlog and 4-column traceability across the 15-document suite |
+| `execution-strategist` | named / `self` | `pro` | Gated sequencing; a deadlock or missing dependency stalls the whole build |
+| `scope-mapper` | named / `self` | `flash` | Phasing from an approved brief; bounded |
+| `contract-manager` | named / `self` | `flash` | Checklist audit (placeholders, depth rubric, sprint scope match) |
+| `strict-programmer` | named / `self` | `flash` | Ordinary items. `pro` for items touching concurrency, locking, auth, payments, or state machines |
+| `integration-tester` | named / `self` | `flash` | Authors isolation and race fixtures, not only runs commands |
+| `contract-reviewer` | named / `self` | `flash` | Deterministic diff of code against contracts |
+| `verify-quality` | `self` | `pro` | Release gate; a false pass is costly |
+| `review-security` | `self` | `pro` | Release gate; a missed vulnerability is costly |
+| `prepare-release` | `self` | `flash` | Assembles already-verified evidence into README and plan |
+| Codebase survey or lookup | `research` | `flash` | Read-only, bounded |
+
+### Token Economy Rules
+
+1. **Scoped reads.** A dispatched agent reads only the paths in its brief's `inputs`. It does not load the whole `docs/` suite unless the brief lists it.
+2. **Pointers in prompts.** The lead passes paths and revisions, never pasted artifact content.
+3. **Short returns.** A final report is at most 40 lines; evidence is referenced by path, not echoed.
+4. **No dispatch for trivial work.** The lead does a single-file read or a one-line fix itself. Dispatch when the work needs a contract that is expensive to load or a separate context.
+5. **Reuse before respawn.** Re-verifying the same slice after remediation wakes the idle verifier with `send_message` instead of spawning a new one. A new slice gets a fresh agent so context does not accumulate.
+6. **Parallel is not free.** Paired branches double the token spend for the same phase. Use them only for the two sanctioned pairs.
+7. **Stop what is idle.** At the end of each phase the lead stops finished subagents.

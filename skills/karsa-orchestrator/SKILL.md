@@ -192,7 +192,7 @@ Every `invoke_subagent` prompt MUST contain these fields, and nothing the subage
 - `peers`: map of role name to conversation ID for every agent it may message directly, plus `lead`. Empty when the phase has no direct edges. Message format and allowed edges are defined in `references/a2a-protocol.md`.
 - `cleanup`: terminate every background process it started and release its ports.
 
-Set `Model` per the routing table in `agents/karsa.md`. Use `Workspace: inherit`; isolated branch workspaces are not part of this protocol yet.
+Set `Model` and follow the token economy rules in `agents/karsa.md` section 6. Use `Workspace: inherit`; isolated branch workspaces are not part of this protocol yet.
 
 ### Return Report (subagent to lead)
 

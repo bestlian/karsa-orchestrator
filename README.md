@@ -70,26 +70,17 @@ KARSA operates as a Lead Orchestrator commanding a team of specialized sub-agent
 0. **`karsa` (Lead Orchestrator - Primary Agent)**: Manages the high-level 7-phase delivery pipeline, enforces the 15-document planning suite, and routes tasks to specialized sub-agents.
 
 1. **`contract-manager`**: The Supreme Auditor. Verifies that no features are hallucinated and that every sprint ticket traces back to the approved Product Brief.
-2. **`execution-manager`**: The Sprint Cutter. Slices the global backlog into manageable daily increments (`artifacts/increment_manifest.md`).
-3. **`execution-strategist`**: The Business Analyst. Drafts detailed Functional Requirements, API Contracts, and Execution Flows.
-4. **`scope-mapper`**: The Release Planner. Breaks down the vision into S0, S1, S2 release phases.
-5. **`strict-programmer`**: The Coder. Bound by the 4-Layer Doctrine. Refuses to mock databases, writes pessimistic tests, and explicitly reports proof gaps.
-6. **`integration-tester`**: The Terminal QA. Quickly runs test suites (`pytest`, `cypress`) and feeds terminal output back to the team.
-7. **`contract-reviewer`**: The Acceptance Checker. Validates output against the Functional Requirements.
+2. **`execution-strategist`**: The Sequencer. Writes the gated execution flow (`docs/15`) and cuts the approved backlog into the sprint manifest (`artifacts/increment_manifest.md`).
+3. **`scope-mapper`**: The Release Planner. Breaks down the vision into S0, S1, S2 release phases.
+4. **`strict-programmer`**: The Coder. Bound by the 4-Layer Doctrine. Refuses to mock databases, writes pessimistic tests, and explicitly reports proof gaps.
+5. **`integration-tester`**: The Terminal QA. Quickly runs test suites (`pytest`, `cypress`) and feeds terminal output back to the team.
+6. **`contract-reviewer`**: The Acceptance Checker. Validates output against the Functional Requirements.
 
-### ⚡ Dynamic Model & Thinking Budget Allocation
+### ⚡ Model Routing & Token Economy
 
-To prevent rate-limit exhaustion (`429 RESOURCE_EXHAUSTED`) while preserving deep engineering rigor, KARSA allocates specific Gemini models and thinking budgets per agent role:
+Each dispatch sets one `Model` (`pro`, `flash`, `flash_lite`, or `inherit`). `pro` goes where an error becomes a contract other agents build on, or where a missed defect passes a release gate: design, architecture, planning, execution sequencing, both verifiers, and code touching concurrency, locking, auth, payments, or state machines. `flash` handles audits, scoping, ordinary implementation, test authoring, and release assembly. A failing item is escalated to `pro` only after the fix loop ends in a blocker.
 
-| Agent | Model Tier | Thinking Budget | Rationale |
-|---|---|---|---|
-| `karsa` (Lead Orchestrator) | `pro` / `inherit` | **High** | Macro architecture synthesis, gate audits, and multi-agent coordination. |
-| `execution-strategist` | `pro` | **Medium** | E2E execution sequences, deadlock prevention, and transactional flowcharts. |
-| `scope-mapper` | `flash` | **High** | Deep boundary evaluation and MVP scope cutting without high Pro token overhead. |
-| `strict-programmer` | `flash` *(pro for complex locking)* | **High** | High-precision typed code generation, real DB fixtures, and zero-slop comments. |
-| `contract-manager` | `flash` | **Medium** | Zero-placeholder enforcement and D/W/Q/A registry audit. |
-| `contract-reviewer` | `flash` | **Medium** | Deterministic diffing and API/DDL schema compliance checks. |
-| `integration-tester` | `flash_lite` / `flash` | **Low** | Purely mechanical terminal execution, log analysis, and exit code capture. |
+Token savings come from scoped reads, path-only briefs, short returns, reusing an idle verifier for re-checks, and stopping finished agents. The full routing table is in `agents/karsa.md`, section 6. Thinking budget cannot be set per sub-agent, so it is not part of the policy.
 
 ## ⚙️ The KARSA Workflow (7-Phase Pipeline)
 

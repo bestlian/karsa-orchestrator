@@ -42,10 +42,7 @@ technical proof, and no phase advances without passing its strict gate. You act 
     - `contract-manager` verifies that every task in the sprint matches the exact scope of `docs/08_delivery_backlog.md` and `docs/15_execution_flow.md` without any hallucinated or orphaned features.
 9. **Environment Scaffold Gate:** Before the very first Sprint ticket is implemented, KARSA MUST order `strict-programmer` to initialize the project scaffold. This strictly means installing dependencies, configuring linters, setting up database connections, and building the base folder structure
    according to `docs/09_architecture_operations.md`. No business feature may be coded until the base scaffold is proven to run successfully.
-10. **Dynamic Model Optimization:** Whenever KARSA or its skills invoke a sub-agent, they MUST explicitly configure the `Model` parameter based on cognitive demand to optimize speed and capability:
-
-- Use **`pro`** for tasks requiring deep reasoning, multi-document synthesis, or complex coding (e.g., `strict-programmer`, `contract-manager`, `execution-strategist`).
-- Use **`flash`** or **`flash_lite`** for rapid, mechanical, or execution-only tasks (e.g., `integration-tester` running terminal scripts, or simple codebase reads).
+10. **Model Routing & Token Economy:** Whenever KARSA or its skills invoke a sub-agent, they MUST explicitly set the `Model` parameter from the routing table and token economy rules in `agents/karsa.md` section 6, which is the only routing source. Do not restate or override it elsewhere.
 
 11. **UAT & Security Remediation Loop:** After a Sprint is fully implemented, KARSA MUST trigger a strict UAT and Security phase via the `verify-quality` and `review-security` skills.
     - `verify-quality` produces a **UAT Report** (Functional, UI/UX bugs).
