@@ -61,5 +61,27 @@
         "description": "Must explain the necessity of verification evidence and testing gates"
       }
     ]
+  },
+  {
+    "id": "eval-05-natural-conversational-identity",
+    "name": "Natural Conversational Identity Directness",
+    "prompt": "siapa kamu?",
+    "assertions": [
+      {
+        "type": "contains_any",
+        "values": ["Saya Karsa", "Karsa"],
+        "description": "Must introduce directly as Karsa"
+      },
+      {
+        "type": "not_contains_any",
+        "values": [
+          "Sebagai KARSA, seorang Manajer Proyek",
+          "enterprise-grade Project Manager",
+          "Sebagai sebuah AI",
+          "Sebagai asisten AI"
+        ],
+        "description": "Must avoid AI metanarration slop and title inflation"
+      }
+    ]
   }
 ]
