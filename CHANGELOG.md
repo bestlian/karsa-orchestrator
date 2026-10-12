@@ -6,6 +6,7 @@ This project follows Keep a Changelog.
 
 ### Changed
 - Renamed the `fullstack-orchestrator` skill, rule, and distribution archive to `karsa-orchestrator`. Update any external reference to the old skill name.
+- Added the A2A handoff protocol (`karsa-a2a/v1`) in `skills/karsa-orchestrator/references/a2a-protocol.md`: a message envelope with scope checksums, on-disk handoff files under `artifacts/handoffs/`, a whitelist of direct edges, and a fix loop between `strict-programmer` and `integration-tester` capped at 3 rounds. Direct messaging was verified between sibling subagents before the protocol relied on it.
 - The orchestrator now dispatches specialist work to subagents under a Team Dispatch Protocol. The lead keeps user dialogue, approvals, routing, and joins; subagents never approve. `design-experience` with `define-architecture`, and `verify-quality` with `review-security`, run as parallel branches. Previous rules that forbade delegation were removed.
 
 ### Fixed

@@ -174,7 +174,7 @@ KARSA is the team lead. Specialist work runs in subagents started with `invoke_s
 | Traceability audit | Presents the audit to the user | `contract-manager` | single |
 | Sprint formation and integrity check | Requests Master Planning Approval | `execution-strategist`, then `contract-manager` | sequential |
 | Scaffold | Checks Development Start Authorization | `strict-programmer` | single |
-| Implementation loop | Selects the next Ready item | `strict-programmer`, then `integration-tester` per item; `contract-reviewer` per slice | sequential per item |
+| Implementation loop | Selects the next Ready item, audits each `VERDICT` | `strict-programmer` and `integration-tester` as peers in a bounded fix loop (direct A2A messages); `contract-reviewer` per slice reports to the lead | sequential per item |
 | UAT and security | Joins both reports, presents the Slice Increment Review | `self` x2: one executes `verify-quality`, one executes `review-security` | parallel |
 | Remediation | Routes defect list | `strict-programmer`, then re-run verifiers | sequential |
 | Release | Asks the DevOps question and hands over | `self` executes `prepare-release` | single |
@@ -189,6 +189,7 @@ Every `invoke_subagent` prompt MUST contain these fields, and nothing the subage
 - `inputs`: artifact paths with the exact revisions to read.
 - `outputs`: the exact paths the subagent may write. It must not write anywhere else.
 - `stop_boundary`: return at `awaiting-approval` or on a blocker. Never ask the user, never self-approve, never start the next phase.
+- `peers`: map of role name to conversation ID for every agent it may message directly, plus `lead`. Empty when the phase has no direct edges. Message format and allowed edges are defined in `references/a2a-protocol.md`.
 - `cleanup`: terminate every background process it started and release its ports.
 
 Set `Model` per the routing table in `agents/karsa.md`. Use `Workspace: inherit`; isolated branch workspaces are not part of this protocol yet.
@@ -208,7 +209,7 @@ The subagent's final message lists: paths written, artifact revision, status (`a
 
 ### Not Covered Yet
 
-Isolated git branch or worktree workspaces for `strict-programmer`, and direct subagent-to-subagent handoff messages (builder to tester without the lead), are deliberate follow-ups. Until then every handoff passes through the lead and is verified on disk.
+Isolated git branch or worktree workspaces for `strict-programmer` are a deliberate follow-up. Direct subagent messaging is limited to the whitelisted edges in `references/a2a-protocol.md` (the programmer-tester fix loop); every other handoff passes through the lead and is verified on disk.
 
 ## Development Outcome Claims
 

@@ -34,3 +34,5 @@ Rules:
 - MUST output the exact command run, the raw output, and a "Does NOT Prove" statement outlining the limits of the test.
 
 If a test fails, you report the failure; do not attempt to fix the application code yourself unless explicitly asked.
+
+A2A Handoff: when your Dispatch Brief lists `strict-programmer` in `peers`, follow `skills/karsa-orchestrator/references/a2a-protocol.md`. If you have no incoming message yet, end your turn and wait; the `HANDOFF` wakes you. On each `HANDOFF` recompute `scope_checksum` from disk and reply `STALE` on mismatch. On test failure send a `DEFECT` to the programmer (round n of 3) with the raw output in your handoff file. On success send `VERDICT pass` to the lead. If still failing at round 3, send `BLOCKER` to the lead listing every handoff file. Always send a `DIGEST` to the lead after a direct message. Never edit application code and never message the user.
