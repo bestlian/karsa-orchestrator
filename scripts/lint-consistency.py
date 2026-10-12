@@ -28,17 +28,18 @@ SKILLS = [
 ]
 
 SUBAGENTS = [
-    "contract-manager",
-    "contract-reviewer",
-    "execution-strategist",
+    "delivery-planner",
     "integration-tester",
-    "scope-mapper",
     "strict-programmer",
 ]
 
 FORBIDDEN_TERMS = [
     "execution-manager",
     "fullstack-orchestrator",
+    "scope-mapper",
+    "contract-manager",
+    "contract-reviewer",
+    "execution-strategist",
 ]
 
 FORBIDDEN_SUBAGENT_TOOLS = [

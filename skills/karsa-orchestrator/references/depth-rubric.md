@@ -1,6 +1,6 @@
 # Contractual Depth & Anti-Stub Rubric (Zero-Placeholder Rule)
 
-Used by `contract-manager` and the lead when auditing `docs/01` to `docs/15`, and by any agent writing those documents. Load this file when auditing or when a dispatch brief lists it in `inputs`.
+Used by `delivery-planner` and the lead when auditing `docs/01` to `docs/15`, and by any agent writing those documents. Load this file when auditing or when a dispatch brief lists it in `inputs`.
 
 Every documentation file created in `docs/` is a binding engineering contract, NOT an outline, summary, or draft stub. 
 1. **Zero-Placeholder Constraint:**

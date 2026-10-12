@@ -64,9 +64,8 @@ If the item is not ready, or the specs are not approved, do not start.
 2. Invoke the **`strict-programmer`** sub-agent to execute the actual code changes. Pass the item's requirements and execution step to it.
 3. The `strict-programmer` writes the code (using Clean Code, SRP, and DRY), runs isolated sandbox tests, and reports the exact terminal commands used.
 4. If code is UI-affecting, visual matching against `experience-spec` must be verified.
-5. Once the programmer completes the task, invoke the **`integration-tester`** (or run the tests directly) to independently verify the code does not break concurrent or edge-case rules.
-6. Invoke **`contract-reviewer`** to verify the written code satisfies the exact acceptance criteria without hallucinating extra features.
-7. Update `docs/14_increment_manifest.md` with the 3-column table (`Area | Code Available | Gap`) detailing exactly what is proven and what is NOT proven.
+5. Once the programmer completes the task, invoke the **`integration-tester`** to independently verify the code against concurrency, regression, and contractual acceptance criteria.
+6. Update `artifacts/increment_manifest.md` with the 3-column table (`Area | Code Available | Gap`) detailing exactly what is proven and what is NOT proven.
 8. If required slice items remain under the authorized development scope, proceed automatically to implement the next Ready item.
 9. When every required item in the release slice is complete and verified with tests, advance the slice directly to automated `verify-quality` and `review-security`.
 

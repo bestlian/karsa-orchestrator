@@ -92,7 +92,7 @@ In addition to the backlog, this skill MUST physically create the delivery gover
    - Master Documentation Navigation Map indexing all 15 contract documents with their descriptions and file links.
    - Document Status Ledger: Table recording Document Name, Revision, Status (APPROVED / WORKING), and Last Updated Timestamp.
 
-KARSA and `execution-strategist` MUST physically generate these contracts before requesting Master Planning Approval.
+KARSA and `delivery-planner` MUST physically generate these contracts before requesting Master Planning Approval.
 
 ## Shared Evidence, Unknown, Filler, And Validation Filter
 

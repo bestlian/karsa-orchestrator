@@ -162,12 +162,10 @@ flowchart TD
     User["👤 Human User"] <-->|Brainstorming & Milestone Approval| KARSA["👑 KARSA (Lead Orchestrator)\nModel: inherit | Workspace: main"]
     
     subgraph MultiAgentTeam ["🤖 Tim Spesialis Multi-Agent"]
-        KARSA -->|Dispatch: Docs & Governance| ScopeMapper["scope-mapper\n(Phasing S0-S3)"]
-        KARSA -->|Dispatch: Docs & Governance| Strategist["execution-strategist\n(E2E Flows & Sprint Manifest)"]
-        KARSA -->|Dispatch: Docs & Governance| ContractMgr["contract-manager\n(Auditor D/W/Q/A)"]
+        KARSA -->|Dispatch: Docs & Governance| Planner["delivery-planner\n(Phasing S0-S3, Registries D/W/Q/A, E2E Flows)"]
         
         KARSA -->|Dispatch: Workspace: branch| Builder["strict-programmer (Builder)\nModel: flash/pro | Worktree Branch"]
-        Builder <-->|A2A Fix Loop: max 3 rounds| Tester["integration-tester (QA)\nReal DB Fixture & Concurrency"]
+        Builder <-->|A2A Fix Loop: max 3 rounds| Tester["integration-tester (QA & Contract Verifier)\nReal DB Fixture & Concurrency"]
         
         KARSA -->|Dispatch: Audit Paralel| UATAuditor["verify-quality (UAT)\nE2E UI, Contrast, Reflow"]
         KARSA -->|Dispatch: Audit Paralel| SecAuditor["review-security\nAuth & Anti-RED-CODE"]
@@ -183,12 +181,9 @@ flowchart TD
 | Subagent | Tanggung Jawab Utama | Model (`invoke_subagent`) | Workspace Mode |
 |---|---|---|---|
 | **`karsa`** | Lead Orchestrator, PM, dialog user, routing, persetujuan milestone, dan eksekusi merge | `inherit` (mengikuti pilihan user) | `main` |
-| **`execution-strategist`** | Pemetaan sekuens E2E di `docs/15` dan pemotongan backlog sprint di `artifacts/increment_manifest.md` | `pro` | `inherit` |
-| **`scope-mapper`** | Pemilahan fase rilis (S0 Core MVP, S1, S2) di `docs/02` | `flash` | `inherit` |
-| **`contract-manager`** | Audit kelengkapan 15 dokumen dan kepatuhan registri D/W/Q/A di `docs/13` | `flash` | `inherit` |
+| **`delivery-planner`** | Master blueprint: pemilahan fase (S0–S3), registri kontrak D/W/Q/A, metrik rilis, sekuens E2E di `docs/15`, dan audit Zero-Placeholder | `pro` | `inherit` |
 | **`strict-programmer`** | Builder kode berbasis TDD, anti-mocking fixture, dan zero-slop comments | `flash` *(pro untuk locking/auth kompleks)* | **`branch` (Isolated Worktree)** |
-| **`integration-tester`** | Eksekusi automated test mandiri, race condition, dan isolasi multi-user | `flash` | `inherit` / `branch` |
-| **`contract-reviewer`** | Verifikasi kepatuhan kode terhadap OpenAPI/DDL spec | `flash` | `inherit` |
+| **`integration-tester`** | Eksekusi automated test mandiri, race condition, data isolation, dan verifikasi keselarasan OpenAPI/DDL spec | `pro` | `inherit` / `branch` |
 | **`verify-quality`** | Auditor UAT: verifikasi E2E UI, kontras WCAG AA, dan mobile reflow | `pro` | `inherit` |
 | **`review-security`** | Auditor Keamanan: verifikasi RBAC, siklus JWT, dan scan kebocoran rahasia | `pro` | `inherit` |
 | **`prepare-release`** | Peracik paket rilis, panduan README akhir, dan rekap handover | `flash` | `inherit` |

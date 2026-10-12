@@ -72,11 +72,8 @@ class TestKarsaProtocols(unittest.TestCase):
 
     def test_subagent_anti_prompt_injection_guardrail(self):
         subagents = [
-            "contract-manager",
-            "contract-reviewer",
-            "execution-strategist",
+            "delivery-planner",
             "integration-tester",
-            "scope-mapper",
             "strict-programmer",
         ]
         for name in subagents:

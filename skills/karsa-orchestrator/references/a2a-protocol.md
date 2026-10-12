@@ -73,7 +73,7 @@ These files are the recovery record. After a host restart the lead resumes from 
 | any dispatched agent | lead | `BLOCKER`, `QUESTION`, `VERDICT`, `DIGEST` | Escalation and reporting |
 | lead | any dispatched agent | instruction | Dispatch, redirect, or stop |
 
-Not direct: `contract-reviewer`, `contract-manager`, `execution-strategist`, `scope-mapper`, and every skill-executing `self` agent report to the lead only. Parallel branches never message each other.
+Not direct: `delivery-planner` and every skill-executing `self` agent report to the lead only. Parallel branches never message each other.
 
 Forbidden for every agent: messaging the user, requesting or granting approval, writing outside the brief's `outputs`, and messaging a peer not listed in `peers`.
 
@@ -103,7 +103,7 @@ integration-tester --BLOCKER--> lead                  (still failing at round 3)
 - Read the tester's handoff file for every `VERDICT`: the command, the raw output, and the `Does NOT prove` section. A verdict without raw output is rejected.
 - Recompute the checksum; reject a verdict for a stale scope.
 - May re-run the tester's command to confirm. Required for any item the lead reports to the user as passing.
-- Merge proposed registry entries into `docs/13` (or hand that single write to `contract-manager`).
+- Merge proposed registry entries into `docs/13` (or hand that single write to `delivery-planner`).
 
 ## Failure Handling
 
