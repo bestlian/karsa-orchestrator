@@ -1,15 +1,15 @@
 ---
 name: fullstack-orchestrator
-description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, requires artifact-bound approval and development-start authorization, and routes then executes enabled specialist skills inline in the same agent.
+description: Mandatory bootstrap for natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, frontend-and-backend, or full-stack application; resolves the project root, requires artifact-bound approval and development-start authorization, and routes then dispatches enabled specialist skills to a subagent team while the lead keeps dialogue, approvals, and joins.
 ---
 
 # Full-Stack Orchestrator
 
 ## Role
 
-This skill is a deterministic natural-language routing and execution contract for greenfield application work. It inspects visible evidence, selects the next specialist route, loads that skill contract, and executes it inline in the same agent.
+This skill is a deterministic natural-language routing and execution contract for greenfield application work. It inspects visible evidence, selects the next specialist route, loads that skill contract, and executes it under the Team Dispatch Protocol: the lead keeps dialogue, approvals, and joins, and dispatches specialist work to subagents.
 
-The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST load and execute the selected contract inline. It MUST NOT delegate lifecycle specialist ownership, concurrent branches, or background orchestration. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance lifecycle phases, or satisfy a join.
+The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST execute the selected contract under the Team Dispatch Protocol. Subagents never approve, never ask the user for approval, and never advance a phase; the lead owns approvals, routing, and joins. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance lifecycle phases, or satisfy a join.
 
 ## Mandatory Bootstrap Scope
 
@@ -95,7 +95,7 @@ If no lifecycle request is active, skip lifecycle decision ingestion and evaluat
 
 ## Deterministic Routing Procedure
 
-After resolving `<project-root>`, apply these routing rules in order. The first matching rule determines the candidate route and its inline execution. Before emitting that route, apply the specialist availability guard below. A selected route is not a stop condition.
+After resolving `<project-root>`, apply these routing rules in order. The first matching rule determines the candidate route and its dispatch. Before emitting that route, apply the specialist availability guard below. A selected route is not a stop condition.
 
 1. Evidence conflict or ambiguity: If artifacts disagree about status, approval, IDs, candidate, slice, current revision, or ownership, list the conflict, ask exactly one precise question that resolves the route, and stop for that required input. Do not guess.
 2. New-chat recovery: Reconstruct state from visible artifacts below `<project-root>/artifacts/` and `fullstack-skill-handoff/v1` handoffs. If prior progress is claimed but the evidence is absent, request only the latest artifact and handoff needed to prove that state, then stop for that required input. If no lifecycle artifact exists, select and execute `discover-product`. Otherwise defer to approval, rejected, draft, blocked, and lifecycle logic; do not route any incomplete chain from recovery.
@@ -103,7 +103,7 @@ After resolving `<project-root>`, apply these routing rules in order. The first 
 4. Development-start stop: Before any scaffold, package/dependency installation, generated starter-app output, or application edit, require Foundation and a valid development-start authorization. Foundation means the approved product brief, experience specification, application blueprint, and delivery backlog at the revisions referenced by the backlog; a Vite or other scaffold is not Foundation. Backlog approval alone is not authorization. Create a separate bound authorization request on that approved backlog, with the same binding-field schema and a fresh unique `request_id`, and the same target path, content revision, question, options, prompt evidence, and source-reply fields as a Review Record: `Start development for [approved backlog revision]? First item: [item]. Expected runnable outcome: [outcome].` with `Yes`, `No`, and `Other` (user typing for comments/feedback). When using `ask_question`, present `["Yes", "No"]` and rely on the default write-in 'Other' box. Stop before development. `Yes` persists authorization for exactly the shown scope without a content revision bump. `No` records rejected authorization and makes no scaffold, install, or application edit; do not poll again until the user explicitly asks to start or revise. User typing or comments entered via `Other` require explicit revision feedback tied to the current backlog or scope and routes to planning, or to the owning prerequisite when scope changes, then requires fresh Foundation reviews as applicable. Do not infer authorization from approval, a native process, an unrelated plan, or a current editor. A material scope or backlog-revision change requires a renewed authorization.
 5. Rejection or revision: If an artifact is `rejected`, stop and wait for an explicit request to revise it. If sufficient revision feedback has set an artifact to `draft`, select and execute only its owner. That specialist stops at its next approval boundary.
 6. Draft or blocked work: Select and execute the owner of a `draft` artifact. For `blocked`, select and execute the owner of the earliest missing prerequisite named by the evidence; a rejected prerequisite remains stopped until the human requests revision. If the blocker is ambiguous, apply rule 1.
-7. Visual freshness: Before planning, UI implementation, verification, remediation, or release routing, compare every governing visual reference with the current approved experience specification. Every reference MUST exactly match `experience-spec@VDC-NNN#VIS-NNN`, with three decimal digits in both IDs. A revision-only, noncanonical, stale, superseded, or mismatched reference stops the normal route for missing current input. Select and execute `design-experience` first; after the revised experience specification is explicitly approved, select and execute `plan-delivery`; after the updated backlog is explicitly approved, seek a renewed development-start authorization when the affected scope is material, then select affected `implement-feature` items one at a time to regenerate implementation and evidence. Run both verifiers sequentially in this same agent when their prerequisites are approved. Never silently carry a prior visual reference forward.
+7. Visual freshness: Before planning, UI implementation, verification, remediation, or release routing, compare every governing visual reference with the current approved experience specification. Every reference MUST exactly match `experience-spec@VDC-NNN#VIS-NNN`, with three decimal digits in both IDs. A revision-only, noncanonical, stale, superseded, or mismatched reference stops the normal route for missing current input. Select and execute `design-experience` first; after the revised experience specification is explicitly approved, select and execute `plan-delivery`; after the updated backlog is explicitly approved, seek a renewed development-start authorization when the affected scope is material, then select affected `implement-feature` items one at a time to regenerate implementation and evidence. Dispatch both verifiers in parallel when their prerequisites are approved. Never silently carry a prior visual reference forward.
 8. Lifecycle route: If none of the stop rules applies, select and execute the next route from the lifecycle below.
 
 Specialist availability guard: Before executing a selected route, confirm every selected specialist is enabled or available. If one is not, identify its exact name and stop for the missing skill contract or required input artifacts. Tell the human to enable that skill or provide its `SKILL.md` contract and required input artifacts, then retry. MUST NOT substitute another skill.
@@ -118,7 +118,7 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
    - `docs/13_decisions_and_questions.md` (Contract Registry: D/W/Q/A Registers)
    It stops only for required discovery input or the resulting brief's human-approval boundary.
 1b. **UI/UX Preference Interview:** After the product brief is approved and BEFORE selecting `design-experience`, KARSA MUST proactively ask the user for their aesthetic and visual preferences if not already provided. Act as an Art Director. Ask about the desired vibe (e.g., corporate, brutalist, playful, minimalist, editorial), color preferences, and typography constraints. If the user is unsure, KARSA MUST offer 3 distinct, non-generic style recommendations to choose from. Do not proceed to UI planning until a visual direction is chosen.
-2. Experience and architecture: Only after the visual direction is confirmed, select `design-experience` and `define-architecture` as a paired route. Load and execute them sequentially in this order in the same agent. 
+2. Experience and architecture: Only after the visual direction is confirmed, select `design-experience` and `define-architecture` as a paired route. Dispatch them as two parallel branches under the Team Dispatch Protocol; each branch has its own output and approval boundary. 
    - `design-experience` MUST physically output:
      - `docs/03_user_journeys.md` (User journeys, step-by-step actor flows, failure paths, signature moment)
      - `docs/07_core_workflows.md` (Screen inventory, layout grammar, component anatomy, VDC visual decisions)
@@ -142,7 +142,7 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
    - Every file MUST contain substantive engineering specifications (minimum 30 substantive lines).
    - Any placeholder text (such as "akan diisi seiring project berjalan", "saat ini kosong", "TBD", or unelaborated stubs) is strictly FORBIDDEN.
    - Every contract file must satisfy its semantic rubric: `04` (Gherkin ACs, error matrix), `05` (Entity schemas, invariants, state machine matrix, concurrency policy), `06` (Full JSON schemas, error payload schemas), `09` (Topology, DB migrations, env dictionary), `10` (Bcrypt specs, JWT lifecycle, RBAC matrix), `11` (Coverage %, latency budgets), `12` (Architectural trade-offs & mitigations), `14` (4-column traceability matrix), `15` (Execution flow with rollback protocols).
-   - If fewer than 15 files exist or if any file is an incomplete stub, the Traceability Audit by `contract-manager` is an automatic BLOCKER. Once all 15+ files exist with substantive depth and pass the Traceability Audit, KARSA MUST halt and ask the USER for Master Planning Approval. If approved, KARSA invokes `execution-manager` to extract the sprint scope and generate **`artifacts/increment_manifest.md`**.
+   - If fewer than 15 files exist or if any file is an incomplete stub, the Traceability Audit by `contract-manager` is an automatic BLOCKER. Once all 15+ files exist with substantive depth and pass the Traceability Audit, KARSA MUST halt and ask the USER for Master Planning Approval. If approved, KARSA dispatches `execution-strategist` to extract the sprint scope and generate **`artifacts/increment_manifest.md`**.
 5b. **Sprint Integrity Check:** Immediately after the Sprint Manifest is generated, KARSA invokes `contract-manager` to perform a Sprint Audit. `contract-manager` cross-checks every item in `artifacts/increment_manifest.md` against `docs/08_delivery_backlog.md` and `docs/15_execution_flow.md` to ensure zero hallucinated scope.
 5c. **Project Scaffolding Gate:** Before pulling the first backlog item, KARSA MUST instruct `strict-programmer` to initialize the project environment (frameworks, linters, folder structure, database configs). No business logic tickets may be processed until the empty scaffold is verified to run.
 5d. Implementation loop: Only after a clean Sprint Integrity Check and Scaffolding is confirmed, execute Ready backlog stories with `implement-feature`. `implement-feature` delegates tasks to `strict-programmer` and QA sub-agents. Items are implemented one at a time using rigorous TDD (red-green-refactor) and visual browser proof. To eliminate bureaucracy and approval fatigue, individual item reports and intermediate manifest updates serve as automated developer verification records under the human-granted `Development Start Authorization`; they do NOT each trigger separate interactive human modal approval stops. The authorization covers the full authorized scope. When an item is complete and its tests pass, `implement-feature` updates the manifest and proceeds seamlessly to the next Ready item in the authorized slice without asking redundant questions. For authenticated production-ready User/Staff work, JWT, password, server role, and ownership evidence is an early prerequisite; protected endpoints cannot be Ready or described as production-ready before it exists.
@@ -155,9 +155,60 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
    - Finally, KARSA MUST present the **Final Handover Report** to the user.
    - After explicit human approval of the release, re-evaluate the application obligation ledger: select the next Ready item across the existing authorized scope, or `plan-delivery` when a required obligation lacks a Ready item. Only when no required obligation remains may the response say the full original scope is delivered. This suite does not deploy.
 
-The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Execute each pair sequentially in the same agent; never delegate lifecycle branches or use concurrent/background lifecycle orchestration. The same executing agent retains ownership of artifacts, edits, approvals, routing, and joins; a host-native `browser_subagent` may only collect bounded browser interaction evidence. Every join MUST wait for both branches and all required human approvals.
+The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Dispatch each pair as two parallel branches under the Team Dispatch Protocol. The lead retains approvals, routing, and joins, and each branch owns only its own output paths; a host-native `browser_subagent` may only collect bounded browser interaction evidence. Every join MUST wait for both branches and all required human approvals.
 
-Sequential execution does not bypass a stop boundary. If the first specialist asks for input or reaches `awaiting-approval`, end the turn there. After the human responds, re-evaluate visible evidence before executing the remaining specialist. Never present output for a specialist that has not run.
+Dispatch does not bypass a stop boundary. When a branch asks for input or reaches `awaiting-approval`, the lead waits for the sibling branch, then ends the turn at the first required approval request. After the human responds, re-evaluate visible evidence before presenting the next approval. Never present output for a specialist that has not run, and never present a subagent's report in place of the artifact on disk.
+
+## Team Dispatch Protocol
+
+KARSA is the team lead. Specialist work runs in subagents started with `invoke_subagent`; the lead keeps the user conversation, every approval request, routing, and every join.
+
+### Phase Matrix
+
+| Phase | Lead (this agent) | Dispatched executor | Concurrency |
+|---|---|---|---|
+| Discovery (Fase 1A/1B) | Runs the brainstorming dialogue and writes `docs/01`, `docs/02`, `docs/13` using the `discover-product` contract | none; optional `scope-mapper` for `docs/02` after the feature inventory is agreed | n/a |
+| Brief approval, visual direction | Asks the approval request and the art-director interview | none | n/a |
+| Experience and architecture | Routes, joins, asks approvals one at a time | `self` x2: one executes `design-experience`, one executes `define-architecture` | parallel |
+| Planning | Routes, requests approval | `self` executes `plan-delivery` | single |
+| Traceability audit | Presents the audit to the user | `contract-manager` | single |
+| Sprint formation and integrity check | Requests Master Planning Approval | `execution-strategist`, then `contract-manager` | sequential |
+| Scaffold | Checks Development Start Authorization | `strict-programmer` | single |
+| Implementation loop | Selects the next Ready item | `strict-programmer`, then `integration-tester` per item; `contract-reviewer` per slice | sequential per item |
+| UAT and security | Joins both reports, presents the Slice Increment Review | `self` x2: one executes `verify-quality`, one executes `review-security` | parallel |
+| Remediation | Routes defect list | `strict-programmer`, then re-run verifiers | sequential |
+| Release | Asks the DevOps question and hands over | `self` executes `prepare-release` | single |
+
+### Dispatch Brief (lead to subagent)
+
+Every `invoke_subagent` prompt MUST contain these fields, and nothing the subagent must guess:
+
+- `objective`: one sentence, the single outcome expected.
+- `project_root`: the verified absolute path.
+- `contract`: absolute path of the `SKILL.md` or `agents/<name>/agent.md` to follow.
+- `inputs`: artifact paths with the exact revisions to read.
+- `outputs`: the exact paths the subagent may write. It must not write anywhere else.
+- `stop_boundary`: return at `awaiting-approval` or on a blocker. Never ask the user, never self-approve, never start the next phase.
+- `cleanup`: terminate every background process it started and release its ports.
+
+Set `Model` per the routing table in `agents/karsa.md`. Use `Workspace: inherit`; isolated branch workspaces are not part of this protocol yet.
+
+### Return Report (subagent to lead)
+
+The subagent's final message lists: paths written, artifact revision, status (`awaiting-approval`, `blocked`, or `done`), blockers, proposed D/W/Q/A register entries (it does not edit `docs/13`), and for any verification claim the exact command, raw output, and what the result does not prove.
+
+### Lead Obligations After Every Dispatch
+
+1. Re-read each produced artifact from disk at its exact path and revision. A report that names a file the lead cannot open is a blocker, not progress.
+2. Verify the written paths are a subset of the brief's `outputs`. Any other write is a defect to route back.
+3. Merge proposed D/W/Q/A entries into `docs/13` (or delegate that single write to `contract-manager`) so registers are never edited concurrently.
+4. For a parallel pair, wait for both branches before any join. Because only one approval request may be active across the lifecycle, present the two artifacts to the user one request at a time.
+5. If a subagent is silent, list subagents with `manage_subagents`, send one `send_message` nudge, and only then fall back. If `invoke_subagent` fails or a named agent is unavailable, dispatch `self` with the agent's `agent.md` as its contract. If dispatch is impossible, execute the contract inline and state in the next user-facing message that the team path was not used and why.
+6. After the phase, confirm no dispatched process is left running and stop leftover subagents.
+
+### Not Covered Yet
+
+Isolated git branch or worktree workspaces for `strict-programmer`, and direct subagent-to-subagent handoff messages (builder to tester without the lead), are deliberate follow-ups. Until then every handoff passes through the lead and is verified on disk.
 
 ## Development Outcome Claims
 
@@ -215,7 +266,7 @@ Approval required: <exact human decision needed, or none>
 Stop condition: <what must happen before routing can be evaluated again>
 ```
 
-The routing summary is not specialist output. When a skill is selected, immediately load and execute its contract inline, then label the following content `Specialist output: <skill-name>`. The specialist output follows the selected contract and MUST NOT be presented as additional routing-summary fields. For a paired route, execute the named contracts sequentially and label each specialist output separately. When a stop rule applies, `Selected next skill(s)` MUST be `none`. The summary remains ephemeral routing guidance; the orchestrator MUST NOT create or require a persistent orchestrator report, handoff, schema, hidden state, lifecycle status, or technical verdict.
+The routing summary is not specialist output. When a skill is selected, immediately execute its contract under the Team Dispatch Protocol, then label the following content `Specialist output: <skill-name>`. The specialist output follows the selected contract and MUST NOT be presented as additional routing-summary fields. For a paired route, dispatch the named contracts in parallel and label each specialist output separately after verifying its artifact on disk. When a stop rule applies, `Selected next skill(s)` MUST be `none`. The summary remains ephemeral routing guidance; the orchestrator MUST NOT create or require a persistent orchestrator report, handoff, schema, hidden state, lifecycle status, or technical verdict.
 
 ## Natural-Chat Examples
 
@@ -253,9 +304,9 @@ Selected next skill(s): design-experience and define-architecture, paired sequen
 Why: The approved brief opens both branches.
 Missing prerequisites: Approved experience specification and approved application blueprint before planning.
 Approval required: Separate explicit human approval for both branch artifacts.
-Stop condition: Execute design-experience then define-architecture inline; stop at each required human-approval boundary, and plan-delivery waits for both approvals.
+Stop condition: Dispatch design-experience and define-architecture in parallel; stop at each required human-approval boundary, and plan-delivery waits for both approvals.
 Specialist output: design-experience
-<Run the design-experience contract in this same agent.>
+<Dispatch the design-experience contract to a subagent and verify its artifact on disk.>
 Specialist output: define-architecture
 <On a later turn after the preceding approval stop is resolved, re-evaluate evidence and run define-architecture if eligible. Do not emit this section before it runs.>
 ```
@@ -300,9 +351,9 @@ Selected next skill(s): plan-delivery
 Why: Blocking verifier verdicts require a traceable remediation backlog item.
 Missing prerequisites: One human-approved remediation backlog item.
 Approval required: Human approval of the remediation item before implementation.
-Stop condition: Execute plan-delivery inline; stop when the remediation item reaches awaiting-approval. After approval use implement-feature, then run both verifiers sequentially.
+Stop condition: Dispatch plan-delivery; stop when the remediation item reaches awaiting-approval. After approval use implement-feature, then dispatch both verifiers in parallel.
 Specialist output: plan-delivery
-<Run the plan-delivery contract in this same agent.>
+<Dispatch the plan-delivery contract to a subagent and verify its artifacts on disk.>
 ```
 
 ### Stale VDC/VIS
@@ -315,9 +366,9 @@ Selected next skill(s): design-experience
 Why: The UI reference is stale and blocks implementation.
 Missing prerequisites: Approved current VIS reference, replanned backlog mapping, and regenerated affected evidence.
 Approval required: Human approval after each design, planning, and affected implementation boundary.
-Stop condition: Execute design-experience inline; stop at the revised experience specification approval, then execute plan-delivery and affected implement-feature work in order.
+Stop condition: Dispatch design-experience; stop at the revised experience specification approval, then execute plan-delivery and affected implement-feature work in order.
 Specialist output: design-experience
-<Run the design-experience contract in this same agent.>
+<Dispatch the design-experience contract to a subagent and verify its artifact on disk.>
 ```
 
 ### Missing Skill
@@ -343,9 +394,9 @@ Selected next skill(s): prepare-release
 Why: Both verifier branches satisfy the release-planning join.
 Missing prerequisites: Release candidate ID, version or build ID, and scope summary required by prepare-release.
 Approval required: Human approval of the resulting release plan; separate authorization is required outside this suite for any deployment.
-Stop condition: Execute prepare-release inline; stop when the release plan reaches awaiting-approval. Do not deploy.
+Stop condition: Dispatch prepare-release; stop when the release plan reaches awaiting-approval. Do not deploy.
 Specialist output: prepare-release
-<Run the prepare-release contract in this same agent.>
+<Dispatch the prepare-release contract to a subagent and verify its artifacts on disk.>
 ```
 
 

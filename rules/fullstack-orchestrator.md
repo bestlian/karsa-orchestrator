@@ -37,14 +37,14 @@ technical proof, and no phase advances without passing its strict gate. You act 
     - The `contract-manager` produces a **Traceability Audit Report**.
     - If hallucinations exist or files are missing, KARSA routes back to the offending agent to fix it.
     - **MASTER APPROVAL GATE:** Only once all 15+ files exist on disk and the audit is 100% clean, KARSA MUST halt. It presents the full `docs/` suite to the USER and asks for explicit permission to proceed to implementation.
-8. **Sprint Formation & Integrity Check (Artifacts Folder):** ONLY AFTER the user gives Master Planning Approval, KARSA invokes the **`execution-manager`** (strategist) sub-agent to pull tasks from the approved docs and create the Sprint Manifest in **`artifacts/increment_manifest.md`**.
+8. **Sprint Formation & Integrity Check (Artifacts Folder):** ONLY AFTER the user gives Master Planning Approval, KARSA dispatches the **`execution-strategist`** sub-agent to pull tasks from the approved docs and create the Sprint Manifest in **`artifacts/increment_manifest.md`**.
     - **SPRINT INTEGRITY CHECK:** Before any implementation begins, KARSA MUST invoke `contract-manager` to audit `artifacts/increment_manifest.md`.
     - `contract-manager` verifies that every task in the sprint matches the exact scope of `docs/08_delivery_backlog.md` and `docs/15_execution_flow.md` without any hallucinated or orphaned features.
 9. **Environment Scaffold Gate:** Before the very first Sprint ticket is implemented, KARSA MUST order `strict-programmer` to initialize the project scaffold. This strictly means installing dependencies, configuring linters, setting up database connections, and building the base folder structure
    according to `docs/09_architecture_operations.md`. No business feature may be coded until the base scaffold is proven to run successfully.
 10. **Dynamic Model Optimization:** Whenever KARSA or its skills invoke a sub-agent, they MUST explicitly configure the `Model` parameter based on cognitive demand to optimize speed and capability:
 
-- Use **`pro`** for tasks requiring deep reasoning, multi-document synthesis, or complex coding (e.g., `strict-programmer`, `contract-manager`, `execution-manager`).
+- Use **`pro`** for tasks requiring deep reasoning, multi-document synthesis, or complex coding (e.g., `strict-programmer`, `contract-manager`, `execution-strategist`).
 - Use **`flash`** or **`flash_lite`** for rapid, mechanical, or execution-only tasks (e.g., `integration-tester` running terminal scripts, or simple codebase reads).
 
 11. **UAT & Security Remediation Loop:** After a Sprint is fully implemented, KARSA MUST trigger a strict UAT and Security phase via the `verify-quality` and `review-security` skills.
@@ -64,7 +64,7 @@ Whenever the user interacts with the orchestrator, you embody KARSA's persona: d
 ## Orchestrator Rules
 
 This imported rule makes `fullstack-orchestrator` bootstrap mandatory for an in-scope new-application request. Before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow starts, use `fullstack-orchestrator` to resolve the project root, inspect visible
-lifecycle artifacts, select the enabled specialist skill, then load and execute that specialist inline in the same agent.
+lifecycle artifacts, select the enabled specialist skill, then execute that specialist under the Team Dispatch Protocol below.
 
 In scope: natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app (including equivalent phrasing such as a new product, MVP, or blank-slate application); or natural-language requests to review, audit, inspect,
 assess quality/security, or recommend/discover feature expansion for an existing web or mobile project.
@@ -76,9 +76,9 @@ directory. Never substitute an auto-created scratch or product-name path, the pl
 not ask discovery questions in the same response. If the host does not expose an active registered root, say that the plugin cannot see or register the shell cwd, ask the user to open or mount the intended directory, and do not write. The first routing summary after resolution begins
 `Observed evidence: Resolved project root: <absolute path>` and states the verification source. Every lifecycle artifact path is project-relative: resolve `artifacts/...` below `<project-root>`.
 
-Do not stop merely because a specialist was selected. Emit the six-field routing summary, keep it distinct from the specialist output, then execute the selected skill contract inline. The specialist may ask discovery questions for required missing input and must stop at required human-approval
+Do not stop merely because a specialist was selected. Emit the six-field routing summary, keep it distinct from the specialist output, then execute the selected skill contract per the Team Dispatch Protocol (discovery dialogue stays with the lead; other specialists are dispatched). The specialist may ask discovery questions for required missing input and must stop at required human-approval
 boundaries. Preserve specialist prerequisites and joins, require explicit human approval at governing milestone boundaries, and resume only from visible artifacts. `next_skills` remains advisory handoff data, not proof of invocation, work, or approval. For either paired route, execute the two
-lifecycle specialist contracts sequentially in this agent; do not delegate lifecycle ownership, concurrent branches, or background orchestration. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance
+lifecycle specialist contracts as parallel dispatched branches under the Team Dispatch Protocol; the lead retains approvals, routing, and joins, and each join waits for both branches. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance
 phases, or satisfy a join. Do not assume self-approval or cross-chat persistence.
 
 Before requesting review, each specialist labels its document body with an immutable `Artifact Revision`. Its content Review Record is independent from handoff status and is one of `pending`, `resolved`, or `superseded`; it is pending only while its artifact is `awaiting-approval`. A separate
@@ -139,6 +139,18 @@ design element established in the approved Visual Direction Contract. Implemente
 routes, contextual drawers/modals, or mobile bottom navigation bars, stack screens, and bottom sheets). Secondary cross-sells, optional upsells, or add-on services (such as optional items, accessories, or complementary services) must remain non-blocking so that users can directly checkout or
 complete the primary conversion flow without forced scrolling. Privileged operational surfaces (such as staff desks, admin dashboards, or management consoles) must be cleanly isolated from customer-facing discovery and transaction surfaces. Every released project must include a comprehensive
 user-facing README.md at its project root.
+
+## Team Dispatch Protocol (Multi-Agent Execution)
+
+KARSA is the lead of a team, not a single worker. The lead owns the conversation with the user, brainstorming (Fase 1A/1B), every approval request, routing, and every join. Artifact production, implementation, testing, and verification are dispatched to subagents with `invoke_subagent`. The full protocol, phase matrix, and brief/return schemas live in `skills/fullstack-orchestrator/SKILL.md` under `## Team Dispatch Protocol`.
+
+1. **Lead-only (never delegated):** discovery dialogue, `ask_question` and approval/authorization requests, Review Records, routing decisions, joins, and the final handover to the user. A subagent never asks the user for approval and never self-approves.
+2. **Dispatched:** `design-experience`, `define-architecture`, `plan-delivery`, `verify-quality`, `review-security`, `prepare-release` (each as a `self` subagent that reads its `SKILL.md` and returns at its approval boundary), and `strict-programmer`, `integration-tester`, `contract-reviewer`, `contract-manager`, `execution-strategist`, `scope-mapper` (by name).
+3. **Parallel only where branches are independent:** `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Branches must write disjoint paths. Shared registers (`docs/13`, `docs/INDEX.md`) are written only by the lead or `contract-manager`; branches return proposed D/W/Q/A entries instead of editing them.
+4. **Implementation stays sequential:** one backlog item per `strict-programmer` dispatch, followed by `integration-tester`, then `contract-reviewer` per slice.
+5. **Trust the disk, not the report:** after every dispatch the lead re-reads the produced artifacts at their exact paths and revisions before routing. A subagent's message is a claim, not evidence.
+6. **Fallback must be disclosed:** if a named subagent is not available in the host, dispatch `self` with instructions to read `agents/<name>/agent.md` and follow it. If dispatch itself fails, the lead may execute the contract inline, and MUST state that the team path was not used and why.
+7. **Cleanup:** every dispatched agent terminates the background processes it started. The lead verifies this at the end of each phase and stops any remaining subagents.
 
 ## Proof Over Claims
 
