@@ -4,6 +4,9 @@ This project follows Keep a Changelog.
 
 ## [Unreleased]
 
+### Added
+- Comprehensive ADLC Evaluation Harness (`evals/`): Implemented L1 static contract & protocol unit tests (`evals/test_protocols.py`) verifying A2A protocol schema, depth rubric invariants, builder branch isolation, and subagent security guardrails without token costs; alongside a headless behavioral evaluation runner (`evals/runner.py`) and assertion engine (`evals/assertions.py`) executing golden scenarios (`evals/scenarios.json`) against live models via `agy --agent karsa -p ... --output-format json`.
+
 ### Changed
 - Renamed the `fullstack-orchestrator` skill, rule, and distribution archive to `karsa-orchestrator`. Update any external reference to the old skill name.
 - Added the A2A handoff protocol (`karsa-a2a/v1`) in `skills/karsa-orchestrator/references/a2a-protocol.md`: a message envelope with scope checksums, on-disk handoff files under `artifacts/handoffs/`, a whitelist of direct edges, and a fix loop between `strict-programmer` and `integration-tester` capped at 3 rounds. Direct messaging was verified between sibling subagents before the protocol relied on it.

@@ -56,3 +56,9 @@ jobs:
 
       - name: Run Deterministic Consistency & Anti-Drift Linter
         run: python scripts/lint-consistency.py
+
+      - name: Run Protocol & Contract Evaluations (L1)
+        run: python evals/test_protocols.py
+
+      - name: Validate Behavioral Evaluation Scenarios Schema
+        run: python evals/runner.py --dry-run

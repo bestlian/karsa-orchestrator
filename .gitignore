@@ -1,3 +1,5 @@
 scripts/build-dist.ps1
 scripts/test-package-parity.ps1
 .agents/
+__pycache__/
+*.pyc
