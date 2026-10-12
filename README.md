@@ -91,11 +91,11 @@ KARSA dirancang agar mudah digunakan baik melalui GUI **Antigravity IDE** maupun
 
 ### 1. Mode Percakapan Standar (Rekomendasi Pemula)
 
-Buka proyek Anda di Antigravity IDE atau jalankan `agy` di terminal. Pilih agent **`karsa`** dari dropdown atau panggil `@karsa` di awal prompt.
+Mulai sesi dengan agent **`karsa`**: jalankan `agy --agent karsa`, atau buka panel `/agents` dan pilih **karsa**. Memilih agent mengganti persona, tool, dan aturan sesi sekaligus. `@` di Antigravity dipakai untuk menyisipkan file atau folder ke prompt, bukan untuk memanggil agent.
 
 #### Contoh Prompt Awal:
 ```text
-@karsa Saya ingin membuat aplikasi SaaS reservasi lapangan olahraga full-stack. Bantu saya brainstorm dan buatkan aplikasinya.
+Saya ingin membuat aplikasi SaaS reservasi lapangan olahraga full-stack. Bantu saya brainstorm dan buatkan aplikasinya.
 ```
 
 #### Apa yang Akan Terjadi (Alur Kerja KARSA):
@@ -148,7 +148,7 @@ agy --agent karsa -p "Buatkan scaffold awal dan API contract untuk aplikasi mana
 KARSA juga dapat mengaudit aplikasi web atau mobile yang sudah ada di repositori Anda:
 
 ```text
-@karsa Tolong audit aplikasi ini: periksa arsitektur backend, kepatuhan kontras warna WCAG AA, dan potensi celah keamanan auth.
+Tolong audit aplikasi ini: periksa arsitektur backend, kepatuhan kontras warna WCAG AA, dan potensi celah keamanan auth.
 ```
 
 ---
