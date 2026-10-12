@@ -48,10 +48,18 @@ FORBIDDEN_SUBAGENT_TOOLS = [
     "notebook_edit",
 ]
 
+TEXT_EXTENSIONS = {
+    ".md", ".py", ".json", ".csv", ".sh", ".txt", ".yml", ".yaml",
+    ".html", ".css", ".js", ".ts", ".xml", ".svg"
+}
+
 errors = []
 
 
-def sha256_bytes(data: bytes) -> str:
+def hash_content(data: bytes, filename: str) -> str:
+    ext = os.path.splitext(filename)[1].lower()
+    if ext in TEXT_EXTENSIONS:
+        data = data.replace(b"\r\n", b"\n")
     return hashlib.sha256(data).hexdigest()
 
 
@@ -75,7 +83,7 @@ def check_skill_parity():
             for f in files:
                 rel = os.path.relpath(os.path.join(root_dir, f), skill_dir).replace("\\", "/")
                 with open(os.path.join(root_dir, f), "rb") as fh:
-                    disk_files[rel] = sha256_bytes(fh.read())
+                    disk_files[rel] = hash_content(fh.read(), f)
 
         # Collect files from zip
         zip_files = {}
@@ -84,7 +92,7 @@ def check_skill_parity():
                 if info.is_dir():
                     continue
                 norm_name = info.filename.lstrip("./").replace("\\", "/")
-                zip_files[norm_name] = sha256_bytes(zf.read(info.filename))
+                zip_files[norm_name] = hash_content(zf.read(info.filename), info.filename)
 
         # Compare sets
         disk_set = set(disk_files.keys())
