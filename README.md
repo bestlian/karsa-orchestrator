@@ -113,8 +113,8 @@ KARSA functions across the **Antigravity UI** and the **Antigravity CLI (`agy`)*
 ### 1. Interactive Mode (Recommended)
 
 Start a session targeting the **`karsa`** agent:
-- **In Antigravity UI:** Click the agent dropdown at the bottom-right of the prompt bar and select **karsa** (or type `/agents` in chat).
-- **In Terminal / CLI:** Run `agy --agent karsa`.
+- **In Antigravity UI / IDE:** Click the agent dropdown at the bottom-right of the prompt bar (see screenshot below) and select **karsa**. *(Note: `/agents` is a CLI-only command and does not exist in the UI/IDE prompt input).*
+- **In Terminal / CLI:** Run `agy --agent karsa` (or run `/agents` inside an interactive CLI session).
 
 ![Selecting KARSA Agent in Antigravity UI](src/pilih-agent-agy.png)
 
@@ -333,7 +333,7 @@ python evals/runner.py --scenario eval-01-zero-guesswork
 - **Port Conflicts (Port Already in Use):**  
   KARSA automatically terminates background test runners and dev servers once testing concludes. If a port (e.g., `8000` or `5173`) remains occupied by an external process, terminate it before starting a new run.
 - **Checking Active Agents:**  
-  During an active session, verify background subagents via `/agents` or ask KARSA for a team status digest.
+  During an active session, inspect active subagents via the Subagents tab in the UI Auxiliary Pane, in CLI via `/agents`, or ask KARSA for a team status digest.
 
 ---
 
