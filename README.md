@@ -108,13 +108,15 @@ agy plugin install .
 
 ## 🚀 Quickstart & Workflow
 
-KARSA functions across the **Antigravity IDE GUI** and the **Antigravity CLI (`agy`)**.
+KARSA functions across the **Antigravity UI** and the **Antigravity CLI (`agy`)**.
 
 ### 1. Interactive Mode (Recommended)
 
 Start a session targeting the **`karsa`** agent:
-- In terminal: `agy --agent karsa`
-- In IDE: Open `/agents` and select **karsa**.
+- **In Antigravity UI:** Click the agent dropdown at the bottom-right of the prompt bar and select **karsa** (or type `/agents` in chat).
+- **In Terminal / CLI:** Run `agy --agent karsa`.
+
+![Selecting KARSA Agent in Antigravity UI](src/pilih-agent-agy.png)
 
 > [!NOTE]
 > Selecting an agent configures the persona, allowed tools, and operational doctrines simultaneously. In Antigravity, `@` mentions are reserved for embedding files or directories into prompts, not for invoking agent personas.
