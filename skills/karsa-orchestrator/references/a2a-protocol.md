@@ -47,7 +47,24 @@ handoff_file: artifacts/handoffs/<message_id>.md
 action_requested: <one sentence>
 ```
 
-`scope_checksum` covers executable, configuration, test, and source files in scope only. Governance documents do not change it.
+`scope_checksum` covers executable, configuration, test, and source files in scope only. Governance documents (`docs/`, `artifacts/`) do not change it.
+
+### Deterministic Checksum Command
+
+Agents MUST NEVER compute `scope_checksum` manually or guess hashes. Always invoke the bundled deterministic helper:
+
+```bash
+python <plugin-dir>/skills/karsa-orchestrator/scripts/karsa-tools.py checksum \
+  --root <project-root> \
+  --files src/app.py tests/test_app.py
+
+# Or from a git base ref (automatically excludes docs/ and artifacts/):
+python <plugin-dir>/skills/karsa-orchestrator/scripts/karsa-tools.py checksum \
+  --root <project-root> \
+  --git-diff main
+```
+
+Both senders and receivers MUST use `karsa-tools.py checksum` with the identical file scope so Windows (CRLF) and Linux/macOS (LF) produce byte-identical SHA-256 digests.
 
 ## Handoff File
 
@@ -70,6 +87,9 @@ These files are the recovery record. After a host restart the lead resumes from 
 | `strict-programmer` | `integration-tester` | `HANDOFF` | Item is implemented and ready to test |
 | `integration-tester` | `strict-programmer` | `DEFECT`, `STALE` | Test failed, or the scope changed after handoff |
 | `integration-tester` | lead | `VERDICT` | Pass or fail for the exact `scope_checksum` |
+| `security-scanner` | `strict-programmer` | `DEFECT`, `STALE` | Vulnerable dependency, secret, or confirmed SAST finding handed off for upgrade/fix (after lead authorization) |
+| `strict-programmer` | `security-scanner` | `HANDOFF` | Package upgrades / security fixes applied and build verified; ready for re-scan |
+| `security-scanner` | lead | `VERDICT` | Pass or fail for the exact `scope_checksum` after scan / re-scan |
 | any dispatched agent | lead | `BLOCKER`, `QUESTION`, `VERDICT`, `DIGEST` | Escalation and reporting |
 | lead | any dispatched agent | instruction | Dispatch, redirect, or stop |
 

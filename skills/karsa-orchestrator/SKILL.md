@@ -11,11 +11,15 @@ This skill is a deterministic natural-language routing and execution contract fo
 
 The orchestrator does not replace specialist ownership, produce a separate orchestrator artifact, self-approve, retain persistent state, deploy, or claim cross-chat persistence. The selected specialist owns its artifacts and output even when this agent executes it. After selecting a skill, the orchestrator MUST NOT stop merely to report that selection or wait for a second agent. It MUST execute the selected contract under the Team Dispatch Protocol. Subagents never approve, never ask the user for approval, and never advance a phase; the lead owns approvals, routing, and joins. A host-native `browser_subagent` may collect bounded interaction evidence only; it cannot edit features, make approval decisions, select or advance lifecycle phases, or satisfy a join.
 
-## Mandatory Bootstrap Scope
+## Mandatory Bootstrap Scope & Tiered Track Sizing
 
-This skill is the mandatory bootstrap before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow for an in-scope request. In scope includes natural-language requests to create, build, or scaffold a new web app, mobile app, cross-platform app, frontend-and-backend app, or full-stack app; or natural-language requests to review, audit, inspect quality/security, or recommend/discover feature expansion for an existing web or mobile project.
+This skill is the mandatory bootstrap before native planning, coding, scaffolding, dependency installation, or a direct specialist workflow for an in-scope request. In scope includes:
+- **Track L (Greenfield Full-Stack):** Natural-language requests to create, build, or scaffold a new web, mobile, cross-platform, or full-stack application (full 15-document contract suite).
+- **Track M (Brownfield Enhancement / Migration):** Multi-module feature additions, refactors, or framework/dependency upgrades on an existing application (Brownfield Plan + Contract Delta + Test Checklist + Security Baseline).
+- **Track S (Patch / Hotfix / Security Upgrade):** Targeted bug fixes, CVE package upgrades, or single-concern hardening on an existing codebase (mandatory **Impact & Priority Plan** analyzing whole-system cross-logic ripple, priority sequence, and rollback before coding).
+- **Read-Only Audit / Scan:** Requests to review, audit, inspect quality/security (`/audit`, `/security-scan`), or discover feature expansion for an existing project.
 
-The bootstrap does not apply to bug fixes, changes to existing apps, libraries, CLIs, general questions, or isolated pages or prototypes unless the user explicitly requests one as a new application. Outside this scope, do not claim this lifecycle owns the request.
+Consult `references/track-sizing.md` for exact track criteria, escalation rules (S → M → L), and artifact templates. **No track—including Track S—may skip whole-system impact planning and explicit human plan approval before `strict-programmer` modifies code.** Pure general questions remain outside this lifecycle.
 
 ## Project Root And Artifact Contract
 
@@ -69,7 +73,7 @@ Visible artifacts below `<project-root>/artifacts/` and `docs/` and their handof
 | `prepare-release` | `<project-root>/artifacts/release/<candidate-id>-release-plan.md` |
 
 4. **Authoritative Artifacts Storage & Observability Ledger:**
-   All lifecycle evidence, test outputs, handoff messages, and audit trails MUST reside under `<project-root>/artifacts/`. Storing execution evidence in untracked or temporary folders outside this tree is strictly prohibited. The lead orchestrator maintains `<project-root>/artifacts/audit/dispatch-log.jsonl` recording each subagent dispatch, model tier, workspace mode, cycle rounds, and verification verdict according to the schema in `references/evidence-reconciliation.md`.
+   All lifecycle evidence, test outputs, handoff messages, and audit trails MUST reside under `<project-root>/artifacts/`. Storing execution evidence in untracked or temporary folders outside this tree is strictly prohibited. The lead orchestrator maintains `<project-root>/artifacts/audit/dispatch-log.jsonl` using the bundled deterministic CLI (`scripts/karsa-tools.py log-dispatch` and `validate-dispatch-log`) and computes canonical `scope_checksum` values via `scripts/karsa-tools.py checksum` according to `references/evidence-reconciliation.md` and `references/a2a-protocol.md`.
 
 ## Decision Ingestion And Discovery Proposals
 
@@ -103,6 +107,11 @@ Specialist availability guard: Before executing a selected route, confirm every 
 Every transition across major lifecycle phases (Discovery -> Foundation -> Planning -> Development Start -> Slice Milestone -> Release) requires explicit human approval at the governing milestone boundary. Automated verification steps within an authorized development phase run without redundant human micro-approvals.
 
 ## Lifecycle And Join Rules
+
+**Track S / Track M Fast-Path (Existing Codebase Patches, Security Upgrades & Brownfield Enhancements):** Before jumping into Track L's 15-document discovery pipeline, classify the request per `references/track-sizing.md`:
+- On **Track S**, draft (or dispatch `delivery-planner` for) `<project-root>/artifacts/plans/<change-id>-impact-plan.md` covering whole-system cross-logic impact, priority queue, rollback, and verification proof plan. Halt for explicit human approval of the plan, then dispatch `strict-programmer` (`Workspace: branch`), followed by `integration-tester` and/or `security-scanner` verification and gated merge into `main`.
+- On **Track M**, produce the Brownfield Planning Set (Change Brief & Whole-System Impact, Contract Delta, Test Checklist, and baseline `security-scanner` report), halt for explicit human approval, then execute via `strict-programmer` (`Workspace: branch`) + `integration-tester` + parallel `verify-quality` & `security-scanner` before merge.
+- On **Track L** (greenfield full-stack), execute the full numbered lifecycle below:
 
 1. Discovery & Intent Decomposition: If the user provides a vague idea, ambiguous request, unstructured intent, or there is no approved product brief, you MUST select and execute `discover-product`. This is KARSA's primary **Planner Skill**. It conducts human-centric requirement gathering (Actors, Business Problem, Core Workflows, and Feature Inventory) BEFORE proposing technical stacks or delivery shapes. It extracts constraints and MUST physically output:
    - `docs/01_product_brief.md` (Product Summary, Problem, ICP, Boundaries, Feature Inventory)
@@ -141,11 +150,15 @@ Every transition across major lifecycle phases (Discovery -> Foundation -> Plann
 6. **UAT & Quality-Security Gate:** When all items in the release slice are implemented and tested, automatically execute `verify-quality` to act as the UAT Auditor. It will produce a formal **UAT Report** (classifying bugs by severity and type). Simultaneously execute `review-security`. Once automated checks pass (or identify blockers), present a consolidated Slice Increment Review to the human user with working browser proof, test results, and the increment demo.
 7. Quality-security join: One verifier cannot satisfy the other branch. The join remains closed until both reports exist and are explicitly approved. Quality `conditional` or `fail`, or security `block`, enters remediation regardless of artifact approval. Security `pass-with-findings` is eligible only when every finding is nonblocking and no blocker exists.
 8. **UAT Bug Remediation Loop:** If the UAT Report or Security Review contains failing bugs or blockers, KARSA MUST route the defect list back to `implement-feature`. The `strict-programmer` is ordered to fix the specific bugs. Execute `verify-quality` (UAT) again against the remediated candidate. Repeat this loop continuously until the UAT Report is 100% clean and both verifier reports satisfy the release criteria without waivers.
-9. **Release Planning, CI/CD, & Handover:** Select and execute `prepare-release` only when BOTH the UAT Report and Vulnerability Report have a clean `pass` verdict with zero blocking defects. 
-   - `prepare-release` MUST generate a final `README.md` (detailing architecture, setup, and run commands).
+9. **Release Planning, CI/CD, & Handover:** Select and execute `prepare-release` only when BOTH the UAT Report and Vulnerability Report have a clean `pass` verdict with zero blocking defects.
+   - `prepare-release` MUST generate a final `README.md` (detailing architecture, setup, and run commands), a **Post-Deploy Smoke Test Checklist** for environment-bound checks (shared brokers, live OAuth/Entra endpoints, DB TLS, cron jobs), and a **Continuous Maintenance Handoff**.
    - **DevOps Prompt:** Once the README is generated, KARSA MUST proactively ask the user: *"Do you need me to prepare the CI/CD pipeline and Docker containerization?"*. If the user says yes, generate `Dockerfile` and Actions.
    - Finally, KARSA MUST present the **Final Handover Report** to the user.
    - After explicit human approval of the release, re-evaluate the application obligation ledger: select the next Ready item across the existing authorized scope, or `plan-delivery` when a required obligation lacks a Ready item. Only when no required obligation remains may the response say the full original scope is delivered. This suite does not deploy.
+10. **Continuous Post-Release Maintenance & Post-Deploy Verification Loop (Phase 8):** After deployment (executed externally under human authorization), the lifecycle remains closed-loop rather than fire-and-forget:
+    - Execute and record the release plan's **Post-Deploy Smoke Test Checklist** in the target UAT/Production environment for items that could not be verified locally.
+    - Recommend recurring read-only Dependabot + GHAS security drift checks via `/schedule` triggering `/security-scan` (`security-scanner` on `flash`).
+    - Any confirmed post-deploy regression, newly disclosed High/Critical CVE, deprecated dependency, or secret leak MUST re-enter KARSA on **Track S** (`Impact & Priority Plan` -> explicit human approval -> `strict-programmer` in `Workspace: branch` -> `integration-tester` / `security-scanner` verification -> gated merge).
 
 The only paired routes are `design-experience` with `define-architecture`, and `verify-quality` with `review-security`. Dispatch each pair as two parallel branches under the Team Dispatch Protocol. The lead retains approvals, routing, and joins, and each branch owns only its own output paths; a host-native `browser_subagent` may only collect bounded browser interaction evidence. Every join MUST wait for both branches and all required human approvals.
 
@@ -167,9 +180,10 @@ KARSA is the team lead. Specialist work runs in subagents started with `invoke_s
 | Sprint formation and integrity check | Requests Master Planning Approval | `delivery-planner` | single |
 | Scaffold | Checks Development Start Authorization | `strict-programmer` | single |
 | Implementation loop | Selects the next Ready item, audits each `VERDICT`, enforces UAT merge gate | `strict-programmer` (Workspace: branch) and `integration-tester` as peers in a bounded fix loop; merges to main ONLY after UAT passes | sequential per item |
-| UAT and security | Joins both reports, presents the Slice Increment Review | `self` x2: one executes `verify-quality`, one executes `review-security` | parallel |
-| Remediation | Routes defect list | `strict-programmer`, then re-run verifiers | sequential |
+| UAT and security | Joins both reports, presents the Slice Increment Review | `self` executes `verify-quality`, `security-scanner` executes `review-security` (SCA/Secrets/SAST + deep audit) | parallel |
+| Remediation | Routes defect list | `strict-programmer`, then re-run `verify-quality` and `security-scanner` | sequential |
 | Release | Asks the DevOps question and hands over | `self` executes `prepare-release` | single |
+| Post-Release Maintenance (Phase 8) | Schedules `/security-scan` drift checks, routes confirmed CVEs/regressions to Track S | `security-scanner` (`flash`) for scans; `strict-programmer` (`branch`) after Track S plan approval | scheduled / on-demand |
 
 ### Dispatch Brief (lead to subagent)
 
@@ -217,10 +231,10 @@ To prevent broken, untested, or drifting code from corrupting the primary codeba
    - Once the candidate increment or slice is implemented and passing internal tests, `strict-programmer` commits changes atomically and reports the branch name and commit SHA to KARSA.
 
 3. **UAT & Security Verification Gate (The Merge Barrier):**
-   - Before ANY merge into `main` can occur, KARSA dispatches `verify-quality` (UAT Auditor) and `review-security` (Security Auditor) against the candidate branch.
+   - Before ANY merge into `main` can occur, KARSA dispatches `verify-quality` (UAT Auditor) and `security-scanner` (executing `review-security` in Full Security Audit Mode: deterministic SCA/Secrets/SAST via `scan_security.py` + deep threat/auth/RBAC review) against the candidate branch.
    - **STRICT MERGE CONDITION:** A feature branch is PERMITTED to merge into `main` IF AND ONLY IF:
      a. The **UAT Report** produces a clean `PASS` with ZERO blocking defects, verified responsive reflow at 375px viewport (zero horizontal scroll leak), and WCAG AA contrast (>=4.5:1 normal, >=3.0:1 large).
-     b. The **Vulnerability Report** produces a clean `PASS` with ZERO RED CODE hardcoded credential leaks and zero critical/high security vulnerabilities.
+     b. The **Vulnerability Report** (from `security-scanner`) produces a clean `PASS` with ZERO Critical/High dependency CVEs, ZERO RED CODE hardcoded credential leaks, and ZERO critical/high security vulnerabilities.
      c. All 4-layer proof evidence (AC, real isolated DB fixture, live API subprocess, E2E browser UI) is verified on disk.
 
 4. **Merge Execution & Cleanup:**

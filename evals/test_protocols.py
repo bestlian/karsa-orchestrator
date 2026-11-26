@@ -75,6 +75,7 @@ class TestKarsaProtocols(unittest.TestCase):
             "delivery-planner",
             "integration-tester",
             "strict-programmer",
+            "security-scanner",
         ]
         for name in subagents:
             agent_file = os.path.join(ROOT, "agents", name, "agent.md")
@@ -85,6 +86,28 @@ class TestKarsaProtocols(unittest.TestCase):
                 "Untrusted Data Isolation" in content or "Anti-Prompt Injection" in content,
                 f"Agent {name} must declare Untrusted Data Isolation / Anti-Prompt Injection guardrail",
             )
+
+    def test_security_scanner_read_only_separation(self):
+        agent_file = os.path.join(ROOT, "agents", "security-scanner", "agent.md")
+        with open(agent_file, "r", encoding="utf-8") as f:
+            content = f.read()
+        fm_match = re.search(r"^---\r?\n(.*?)\r?\n---", content, re.DOTALL)
+        self.assertIsNotNone(fm_match)
+        fm = fm_match.group(1)
+        self.assertNotIn("replace_file_content", fm, "security-scanner must not have code-edit tools")
+        self.assertNotIn("multi_replace_file_content", fm, "security-scanner must not have code-edit tools")
+        self.assertIn("strict-programmer", content, "security-scanner must hand off upgrades/fixes to strict-programmer")
+
+    def test_tiered_track_sizing_and_track_s_plan(self):
+        track_path = os.path.join(ROOT, "skills", "karsa-orchestrator", "references", "track-sizing.md")
+        self.assertTrue(os.path.isfile(track_path), "track-sizing.md must exist on disk")
+        with open(track_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        for token in ["Track S", "Track M", "Track L", "impact-plan.md", "Priority Queue", "Rollback"]:
+            self.assertIn(token, content, f"track-sizing.md must specify: {token}")
+        with open(os.path.join(ROOT, "skills", "karsa-orchestrator", "SKILL.md"), "r", encoding="utf-8") as f:
+            skill_content = f.read()
+        self.assertIn("references/track-sizing.md", skill_content, "SKILL.md must reference track-sizing.md")
 
     def test_artifacts_evidence_directory_contract(self):
         recon_path = os.path.join(ROOT, "skills", "karsa-orchestrator", "references", "evidence-reconciliation.md")
@@ -143,6 +166,124 @@ class TestKarsaProtocols(unittest.TestCase):
             match = re.search(r"^##\s*\[([0-9]+\.[0-9]+\.[0-9]+)\]", f.read(), re.MULTILINE)
         self.assertIsNotNone(match, "CHANGELOG.md must define a version header")
         self.assertEqual(plugin_ver, match.group(1), "plugin.json version must match CHANGELOG.md")
+
+    def test_karsa_tools_checksum_and_dispatch_log(self):
+        import json
+        import subprocess
+        import tempfile
+
+        script = os.path.join(ROOT, "skills", "karsa-orchestrator", "scripts", "karsa-tools.py")
+        self.assertTrue(os.path.isfile(script), "karsa-tools.py must exist inside karsa-orchestrator/scripts/")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            src_dir = os.path.join(tmp, "src")
+            os.makedirs(src_dir, exist_ok=True)
+            file_a = os.path.join(src_dir, "a.py")
+            file_b = os.path.join(src_dir, "b.py")
+            with open(file_a, "wb") as f:
+                f.write(b"x = 1\r\ny = 2\r\n")
+            with open(file_b, "wb") as f:
+                f.write(b"z = 3\n")
+
+            # Deterministic across argument order
+            r1 = subprocess.run(
+                [sys.executable, "-B", script, "checksum", "--root", tmp, "--files", "src/a.py", "src/b.py"],
+                capture_output=True, text=True, check=False,
+            )
+            r2 = subprocess.run(
+                [sys.executable, "-B", script, "checksum", "--root", tmp, "--files", "src/b.py,src/a.py"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(r1.returncode, 0, r1.stderr)
+            self.assertEqual(r2.returncode, 0, r2.stderr)
+            self.assertEqual(r1.stdout.strip(), r2.stdout.strip())
+            self.assertEqual(len(r1.stdout.strip()), 64)
+
+            # CRLF and LF produce identical checksum
+            with open(file_a, "wb") as f:
+                f.write(b"x = 1\ny = 2\n")
+            r3 = subprocess.run(
+                [sys.executable, "-B", script, "checksum", "--root", tmp, "--files", "src/a.py", "src/b.py"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(r3.returncode, 0, r3.stderr)
+            self.assertEqual(r1.stdout.strip(), r3.stdout.strip())
+
+            # Path traversal rejected
+            r_trav = subprocess.run(
+                [sys.executable, "-B", script, "checksum", "--root", tmp, "--files", "../escape.py"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(r_trav.returncode, 0)
+
+            # Create evidence files and test log-dispatch + validate-dispatch-log
+            ev_dir = os.path.join(tmp, "artifacts", "implementation")
+            os.makedirs(ev_dir, exist_ok=True)
+            with open(os.path.join(ev_dir, "PATCH-001.md"), "w", encoding="utf-8") as f:
+                f.write("# Proof\n")
+
+            log1 = subprocess.run(
+                [
+                    sys.executable, "-B", script, "log-dispatch",
+                    "--root", tmp, "--dispatch-id", "auto",
+                    "--agent", "strict-programmer", "--model", "flash", "--workspace", "branch",
+                    "--phase", "Track S", "--item-id", "PATCH-001", "--rounds", "1",
+                    "--status", "PASS", "--evidence-path", "artifacts/implementation/PATCH-001.md",
+                ],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(log1.returncode, 0, log1.stderr)
+            entry1 = json.loads(log1.stdout.strip())
+            self.assertEqual(entry1["dispatch_id"], "DSP-001")
+            self.assertIsNone(entry1["failure_category"])
+
+            # Invalid PASS with failure_category must fail
+            log_bad = subprocess.run(
+                [
+                    sys.executable, "-B", script, "log-dispatch",
+                    "--root", tmp, "--dispatch-id", "auto",
+                    "--agent", "strict-programmer", "--model", "flash", "--workspace", "branch",
+                    "--phase", "Track S", "--item-id", "PATCH-001", "--rounds", "1",
+                    "--status", "PASS", "--evidence-path", "artifacts/implementation/PATCH-001.md",
+                    "--failure-category", "test_failure",
+                ],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(log_bad.returncode, 0)
+
+            # Valid FAIL increments to DSP-002
+            log2 = subprocess.run(
+                [
+                    sys.executable, "-B", script, "log-dispatch",
+                    "--root", tmp, "--dispatch-id", "auto",
+                    "--agent", "security-scanner", "--model", "flash", "--workspace", "inherit",
+                    "--phase", "Security", "--item-id", "PATCH-001", "--rounds", "1",
+                    "--status", "FAIL", "--evidence-path", "artifacts/implementation/PATCH-001.md",
+                    "--failure-category", "security_leak",
+                ],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(log2.returncode, 0, log2.stderr)
+            self.assertEqual(json.loads(log2.stdout.strip())["dispatch_id"], "DSP-002")
+
+            val = subprocess.run(
+                [sys.executable, "-B", script, "validate-dispatch-log", "--root", tmp, "--check-files"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(val.returncode, 0, val.stderr)
+            self.assertIn("[PASS]", val.stdout)
+
+    def test_post_deploy_smoke_test_and_maintenance_loop(self):
+        rel_path = os.path.join(ROOT, "skills", "prepare-release", "SKILL.md")
+        orch_path = os.path.join(ROOT, "skills", "karsa-orchestrator", "SKILL.md")
+        lead_path = os.path.join(ROOT, "agents", "karsa.md")
+        for path in (rel_path, orch_path, lead_path):
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+            self.assertIn("Post-Deploy Smoke Test Checklist", content, f"{path} must mandate Post-Deploy Smoke Test Checklist")
+            self.assertIn("/security-scan", content, f"{path} must reference /security-scan in continuous maintenance")
+            self.assertIn("/schedule", content, f"{path} must reference /schedule for recurring maintenance")
+            self.assertIn("Track S", content, f"{path} must route post-release drift through Track S")
 
 
 if __name__ == "__main__":

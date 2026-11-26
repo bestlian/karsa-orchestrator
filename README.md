@@ -1,15 +1,15 @@
 # KARSA Orchestrator
 
 [![Plugin Validation](https://github.com/bestlian/karsa-orchestrator/actions/workflows/validate.yml/badge.svg)](https://github.com/bestlian/karsa-orchestrator/actions/workflows/validate.yml)
-[![Version: 2.0.0](https://img.shields.io/badge/version-2.0.0-blue.svg)](plugin.json)
+[![Version: 2.1.0](https://img.shields.io/badge/version-2.1.0-blue.svg)](plugin.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Antigravity](https://img.shields.io/badge/Antigravity-Plugin-orange.svg)](https://antigravity.google)
 
 **KARSA** (*Kontrak, Arsitektur, dan Realisasi Sistem Aplikasi*) is an enterprise-grade autonomous multi-agent full-stack delivery orchestrator plugin for **Google Antigravity**.
 
-Instead of a single AI model attempting to juggle an entire software lifecycle in a monolithic context window, KARSA transforms Antigravity into a disciplined **4-agent engineering team**:
+Instead of a single AI model attempting to juggle an entire software lifecycle in a monolithic context window, KARSA transforms Antigravity into a disciplined **5-agent engineering team**:
 - **Collaborative Product Sparring:** Explores requirements, personas, and edge cases through natural dialogue before fixing frameworks or databases.
-- **Strict 15-Document Contract Suite:** Authors exhaustive, traceable specifications (`docs/01` to `docs/15`) backed by an uncompromising Zero-Placeholder Contract.
+- **Tiered ADLC Rigor (`Track S / Track M / Track L`):** Scales planning depth to project scope without ever coding blindly—**Track S** (patches/CVE upgrades) mandates an approved *Impact & Priority Plan* mapping whole-system cross-logic ripple and rollback; **Track M** handles brownfield enhancements/migrations; **Track L** enforces the full 15-document contract suite (`docs/01` to `docs/15`) backed by the Zero-Placeholder Contract.
 - **A2A Handoff Protocol (`karsa-a2a/v1`):** Direct peer-to-peer message passing with scope checksums, handoff files, and a bounded 3-round fix loop.
 - **Builder Workspace Isolation (`Workspace: branch`):** Builders work exclusively inside isolated Git worktrees, keeping `main` untouched until passing strict UAT and Security merge barriers.
 - **Dynamic Model Economy:** Routes heavy architectural decisions and verifications to `pro` tiers while delegating bounded execution and checklists to `flash` tiers.
@@ -79,7 +79,7 @@ Verify that the plugin is recognized:
 ```bash
 agy plugin list
 ```
-You should see `karsa-orchestrator` marked with `[ok]`, processing **9 skills**, **4 agents**, and **2 commands**.
+You should see `karsa-orchestrator` marked with `[ok]`, processing **9 skills**, **5 agents**, and **3 commands**.
 
 To list the registered active agents:
 ```bash
@@ -90,6 +90,7 @@ Expected output:
 delivery-planner
 integration-tester
 karsa
+security-scanner
 strict-programmer
 ```
 
@@ -141,7 +142,9 @@ I want to build a full-stack sports field reservation SaaS. Help me brainstorm t
 5. **Phase 6 - UAT & Security Merge Gate:**  
    Before any merge into `main`, parallel verifiers run automated UAT (including WCAG AA contrast and 375px mobile reflow checks) and security audits (Anti-RED-CODE scan).
 6. **Phase 7 - Merge & Release Handover:**  
-   Upon achieving a 100% clean UAT and Security verdict, the Lead merges the candidate branch into `main`, produces user-facing `README.md`, and prepares deployment pipelines.
+   Upon achieving a 100% clean UAT and Security verdict, the Lead merges the candidate branch into `main`, produces user-facing `README.md`, a **Post-Deploy Smoke Test Checklist** (for environment-bound checks like shared brokers, live OAuth, DB TLS), and optional deployment pipelines.
+7. **Phase 8 - Post-Deploy Verification & Continuous Maintenance:**  
+   Supports recurring `/security-scan` runs via `/schedule` for continuous Dependabot/GHAS drift detection; confirmed CVEs or regressions re-enter cleanly through **Track S** (`Impact & Priority Plan` -> `strict-programmer` -> `security-scanner` re-scan).
 
 ---
 
@@ -170,19 +173,23 @@ agy --agent karsa -p "Create the baseline database schema and API contracts for 
 
 ---
 
-### 4. Auditing Existing Projects
+### 4. Auditing & Security Scanning Existing Projects
 
-KARSA can audit existing codebases without forcing re-scaffolding:
+KARSA can audit existing codebases or run fast Dependabot + GHAS pre-flight scans without forcing re-scaffolding:
 
 ```text
-Audit this project: verify backend architecture boundaries, WCAG AA color contrast compliance, and potential authentication security vulnerabilities.
+# Full architecture, quality, and security audit:
+/audit
+
+# Fast read-only Dependabot CVE + Secret + SAST pre-flight scan:
+/security-scan
 ```
 
 ---
 
 ## 🧠 Multi-Agent Architecture
 
-KARSA distributes software engineering responsibilities across 4 specialized roles:
+KARSA distributes software engineering responsibilities across 5 specialized roles:
 
 ```mermaid
 flowchart TD
@@ -193,9 +200,10 @@ flowchart TD
         
         KARSA -->|Dispatch: Workspace: branch| Builder["strict-programmer (Builder)\nModel: flash/pro | Worktree Branch"]
         Builder <-->|A2A Fix Loop: max 3 rounds| Tester["integration-tester (QA & Contract Verifier)\nReal DB Fixture & Concurrency"]
+        Builder <-->|A2A Upgrade/Fix & Re-Scan: max 3 rounds| SecAuditor["security-scanner (Read-Only)\nDependabot SCA, Secrets, SAST & Deep Audit"]
         
         KARSA -->|Dispatch: Parallel Audit| UATAuditor["verify-quality (UAT)\nE2E UI, Contrast, Reflow"]
-        KARSA -->|Dispatch: Parallel Audit| SecAuditor["review-security\nAuth & Anti-RED-CODE"]
+        KARSA -->|Dispatch: Parallel Audit / /security-scan| SecAuditor
     end
     
     UATAuditor -->|UAT PASS| MergeGate{"🛡️ UAT Merge Gate"}
@@ -209,10 +217,10 @@ flowchart TD
 |---|---|---|---|
 | **`karsa`** | Lead Orchestrator, user dialogue, routing, milestone approvals, and merge execution | `inherit` (matches user choice) | `main` |
 | **`delivery-planner`** | Master blueprint: delivery phasing (S0–S3), contract registries (D/W/Q/A), quality release metrics, E2E execution sequences (`docs/15`), and Zero-Placeholder audits | `pro` | `inherit` |
-| **`strict-programmer`** | Builder: TDD implementation, anti-mocking fixtures, clean code comments, and increment manifest tracking | `flash` *(pro for complex locking/auth)* | **`branch` (Isolated Worktree)** |
+| **`strict-programmer`** | Builder: TDD implementation, approved dependency upgrades/security fixes, anti-mocking fixtures, clean code comments, and increment manifest tracking | `flash` *(pro for complex locking/auth)* | **`branch` (Isolated Worktree)** |
 | **`integration-tester`** | Adversarial QA: automated test execution, concurrency race safety, data isolation, and OpenAPI/contract alignment audits | `pro` | `inherit` / `branch` |
+| **`security-scanner`** | Read-only Security Verifier executing `review-security` in Fast `/security-scan` mode (Dependabot SCA, CWE-798 Secrets, SAST via `scan_security.py`) or Full Audit mode (RBAC, JWT, threat model); stops at report and re-scans after `strict-programmer` remediation | `pro` *(Full Audit)* / `flash` *(Fast `/security-scan`)* | `inherit` |
 | **`verify-quality`** | UAT Auditor: verifies E2E UI, WCAG AA contrast, and mobile reflow | `pro` | `inherit` |
-| **`review-security`** | Security Auditor: verifies RBAC, JWT lifecycle, and hardcoded credential leaks | `pro` | `inherit` |
 | **`prepare-release`** | Release Assembler: compiles verified evidence, final README, and handover reports | `flash` | `inherit` |
 
 ---
@@ -291,6 +299,24 @@ Whenever the Lead Orchestrator (`karsa`) dispatches a subagent or records a term
 
 - **`status` Enum:** `PASS`, `FAIL`, `BLOCKED`, `STALE_CHECKSUM`.
 - **`failure_category`:** `null` on `PASS`, or one of `["contract_defect", "test_failure", "security_leak", "timeout", "stale_checksum"]`.
+
+### Deterministic ADLC Helper CLI (`karsa-tools.py`)
+
+Agents never compute `scope_checksum` hashes or hand-craft `dispatch-log.jsonl` lines manually. Use the bundled Python CLI (`skills/karsa-orchestrator/scripts/karsa-tools.py`):
+
+```bash
+# Compute canonical SHA-256 scope_checksum (CRLF/LF normalized, sorted paths)
+python skills/karsa-orchestrator/scripts/karsa-tools.py checksum --root . --git-diff main
+
+# Append a schema-validated dispatch-log.jsonl entry (auto DSP-NNN & UTC timestamp)
+python skills/karsa-orchestrator/scripts/karsa-tools.py log-dispatch \
+  --root . --dispatch-id auto --agent security-scanner --model flash \
+  --workspace inherit --phase Security --item-id SCAN-001 --rounds 1 \
+  --status PASS --evidence-path artifacts/security/SCAN-001-security-review.md
+
+# Validate every line in artifacts/audit/dispatch-log.jsonl (and optionally verify files exist)
+python skills/karsa-orchestrator/scripts/karsa-tools.py validate-dispatch-log --root . --check-files
+```
 
 ---
 

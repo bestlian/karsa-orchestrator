@@ -91,7 +91,27 @@ All verification proof, logs, manifests, and audit records MUST reside under `<p
 
 ### Observability Dispatch Ledger (`artifacts/audit/dispatch-log.jsonl`)
 
-Whenever the Lead Orchestrator (`karsa`) dispatches a subagent or processes a terminal verification result, it appends a single JSON line to `<project-root>/artifacts/audit/dispatch-log.jsonl`.
+Whenever the Lead Orchestrator (`karsa`) dispatches a subagent or processes a terminal verification result, it appends a single validated JSON line to `<project-root>/artifacts/audit/dispatch-log.jsonl` using the bundled deterministic CLI (`skills/karsa-orchestrator/scripts/karsa-tools.py`) instead of hand-crafting JSONL.
+
+```bash
+# Append a validated entry (auto-increments DSP-NNN and populates UTC timestamp):
+python <plugin-dir>/skills/karsa-orchestrator/scripts/karsa-tools.py log-dispatch \
+  --root <project-root> \
+  --dispatch-id auto \
+  --agent strict-programmer \
+  --model flash \
+  --workspace branch \
+  --phase "Track S" \
+  --item-id PATCH-001 \
+  --rounds 1 \
+  --status PASS \
+  --evidence-path artifacts/implementation/PATCH-001-implementation-report.md
+
+# Validate ledger integrity before release or merge gates:
+python <plugin-dir>/skills/karsa-orchestrator/scripts/karsa-tools.py validate-dispatch-log \
+  --root <project-root> \
+  --check-files
+```
 
 Each entry MUST adhere to this JSON schema:
 
@@ -100,9 +120,9 @@ Each entry MUST adhere to this JSON schema:
   "timestamp": "ISO-8601 UTC timestamp",
   "dispatch_id": "DSP-NNN",
   "agent": "target-agent-name",
-  "model": "flash | pro | inherit",
-  "workspace": "main | branch",
-  "phase": "Discovery | Master Planning | S0 | S1 | UAT | Release",
+  "model": "flash | pro | inherit | flash_lite",
+  "workspace": "main | branch | inherit | share",
+  "phase": "Discovery | Master Planning | Track S | Track M | S0 | S1 | UAT | Security | Release | Maintenance",
   "item_id": "backlog-or-milestone-id",
   "rounds": 1,
   "status": "PASS | FAIL | BLOCKED | STALE_CHECKSUM",

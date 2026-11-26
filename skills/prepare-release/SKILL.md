@@ -57,11 +57,12 @@ The plan must include:
 4. Rollout plan.
 5. Rollback plan.
 6. Monitoring and alerts.
-7. Verification steps.
+7. Verification steps & **Post-Deploy Smoke Test Checklist** (explicitly cataloging environment-bound checks that cannot be proven locally—such as shared message broker consumer groups/partitions, live OAuth/Entra redirect URIs, production DB TLS/connectivity, or scheduled cron jobs—each with exact command/telemetry signal, owner, and pass/rollback criteria).
 8. Communications plan.
 9. Ownership and approvers.
 10. Go or no go checklist.
 11. Residual risks.
+12. **Continuous Maintenance & Dependency Hygiene Handoff** (post-release cadence recommending recurring `/security-scan` via `/schedule`—e.g., weekly—so newly disclosed CVEs, deprecated dependencies, or secret drift route through Track S Impact & Priority Plan -> `strict-programmer` -> `security-scanner` re-scan).
 
 The plan must also include a separate final Delivery Gate section. That gate reports one overall verdict, exactly `PASS` or `FAIL`, and it stays separate from the artifact status and from the upstream technical verdicts.
 
@@ -106,11 +107,11 @@ Keep the artifact status as `awaiting-approval`. The status is not the verdict. 
 7. Define the rollout sequence and the stop points for manual review.
 8. Define rollback triggers, rollback steps, and who decides to roll back.
 9. List monitoring signals, alert thresholds, and the response owner.
-10. Define the verification checks that prove the release worked.
+10. Define the verification checks and a **Post-Deploy Smoke Test Checklist** for environment-bound integrations that could not be verified locally (e.g., shared message broker consumer groups, live OAuth/Entra redirect URIs, production DB TLS, cron schedules), specifying exact command/log signal, owner, and rollback trigger.
 11. Draft the communication plan for stakeholders and support.
 12. Record the release owner, the approver, and any required support roles.
 13. Add a go or no go checklist with explicit pass criteria.
-14. Capture residual risks that remain after approval.
+14. Capture residual risks that remain after approval and include a **Continuous Maintenance & Dependency Hygiene Handoff** (recommending scheduled `/security-scan` via `/schedule` feeding confirmed CVEs/drift back into Track S).
 15. State full-request scope status: delivered obligations, remaining obligations, and next route. Use `application not ready` whenever required scope remains.
 16. End the document with status `awaiting-approval`.
 17. Add the final Delivery Gate with a single overall verdict line, exactly `PASS` or `FAIL`, plus the rationale that cites the upstream technical verdicts.
@@ -187,6 +188,8 @@ validation_evidence:
   - rollback plan
   - monitoring and alerts
   - verification steps
+  - post-deploy smoke test checklist
+  - continuous maintenance and scheduled security-scan handoff
   - communications plan
   - go or no go checklist
   - archive manifest checks
@@ -218,14 +221,15 @@ Use a direct, reviewable structure like this:
 6. Rollout.
 7. Rollback.
 8. Monitoring and alerts.
-9. Verification.
+9. Verification & Post-Deploy Smoke Test Checklist (environment-bound checks with exact command/log signal, owner, and rollback trigger).
 10. Communications.
 11. Ownership.
 12. Go or no go checklist.
 13. Residual risks.
-14. Status: `awaiting-approval`.
-15. Final Delivery Gate, with one overall verdict line, exactly `PASS` or `FAIL`.
-16. Full-request scope status and next authorized route; never use slice approval to close unresolved required scope.
+14. Continuous Maintenance & Dependency Hygiene Handoff (`/schedule` + `/security-scan` cadence and Track S remediation routing).
+15. Status: `awaiting-approval`.
+16. Final Delivery Gate, with one overall verdict line, exactly `PASS` or `FAIL`.
+17. Full-request scope status and next authorized route; never use slice approval to close unresolved required scope.
 
 ## Stop Condition
 

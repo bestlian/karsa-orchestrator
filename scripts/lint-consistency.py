@@ -31,6 +31,7 @@ SUBAGENTS = [
     "delivery-planner",
     "integration-tester",
     "strict-programmer",
+    "security-scanner",
 ]
 
 FORBIDDEN_TERMS = [

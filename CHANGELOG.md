@@ -2,6 +2,19 @@
 
 This project follows Keep a Changelog.
 
+## [2.1.0] - 2026-11-26
+
+### Added
+- **Read-Only `security-scanner` Agent & `/security-scan` Command:** Added a dedicated read-only security verifier agent (`agents/security-scanner/agent.md`, zero code-editing tools) and `/security-scan` command backed by a deterministic multi-ecosystem scanner (`skills/review-security/scripts/scan_security.py`) covering Dependabot-style SCA (`.NET` NuGet, `Node.js` npm/pnpm/yarn, `Python` `pip-audit`), Secret Scanning (CWE-798 + `.gitignore` hygiene with redaction), and GHAS CodeQL SAST pre-flight checks.
+- **Tiered ADLC Track Sizing (`Track S / Track M / Track L`):** Added `skills/karsa-orchestrator/references/track-sizing.md` and updated `SKILL.md`, `agents/karsa.md`, `agents/delivery-planner/agent.md`, and `agents/strict-programmer/agent.md` so even small patches and CVE upgrades (**Track S**) require an approved **Impact & Priority Plan** (`artifacts/plans/<change-id>-impact-plan.md`) analyzing whole-system cross-logic ripple, execution priority, and rollback before coding, alongside **Track M** (brownfield enhancements/migrations) and **Track L** (greenfield 15-document suite).
+- **Deterministic ADLC Helper CLI (`skills/karsa-orchestrator/scripts/karsa-tools.py`):** Added a zero-dependency Python CLI (`checksum`, `log-dispatch`, `validate-dispatch-log`) so agents compute cross-platform CRLF/LF-normalized SHA-256 `scope_checksum` digests and append/validate `artifacts/audit/dispatch-log.jsonl` deterministically instead of manually crafting hashes or JSONL.
+- **Post-Deploy Smoke Test & Phase 8 Continuous Maintenance Loop:** Updated `skills/prepare-release/SKILL.md`, `skills/karsa-orchestrator/SKILL.md`, `agents/karsa.md`, and `README.md` with a mandatory **Post-Deploy Smoke Test Checklist** (capturing environment-bound items such as shared message brokers, live OAuth/Entra, DB TLS, and cron jobs) and a Phase 8 **Continuous Maintenance** loop combining `/schedule` + `/security-scan` with Track S remediation.
+- **L1 Protocol Guardrails:** Added `test_security_scanner_read_only_separation`, `test_tiered_track_sizing_and_track_s_plan`, `test_karsa_tools_checksum_and_dispatch_log`, and `test_post_deploy_smoke_test_and_maintenance_loop` in `evals/test_protocols.py`.
+
+### Changed
+- **Unified Two-Mode `review-security` Skill:** Merged automated Dependabot/GHAS scanning directly into `skills/review-security/SKILL.md` (Mode 1: Fast `/security-scan` on `flash`; Mode 2: Full Security Audit on `pro`) to eliminate skill duplication while backing deep security audits with deterministic CVE/secret evidence.
+- **Orchestrator & A2A Integration:** Updated `skills/karsa-orchestrator/SKILL.md` (Phase 6 Matrix & Merge Barrier), `skills/karsa-orchestrator/references/a2a-protocol.md`, `agents/karsa.md`, `agents/strict-programmer/agent.md`, `scripts/lint-consistency.py`, and `README.md` to route `review-security` through `security-scanner` with a bounded 3-round `security-scanner <-> strict-programmer` fix-and-rescan loop.
+
 ## [2.0.0] - 2026-10-12
 
 ### Added

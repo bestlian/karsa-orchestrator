@@ -1,11 +1,25 @@
 ---
 name: review-security
-description: Use when reviewing an implementation candidate or an existing application codebase for exploitable security risks, authorization boundaries, and release blockers.
+description: Use when reviewing an implementation candidate or an existing application codebase for exploitable security risks, dependency CVEs (Dependabot/SCA), hardcoded secrets (CWE-798), GHAS CodeQL SAST patterns, authorization boundaries, and release blockers.
 ---
 
 # Review Security
 
-Use this skill after `implement-feature` and alongside `verify-quality` to review one implementation candidate for security issues that can block release.
+Executed by the read-only **`security-scanner`** agent in one of two modes depending on the request:
+
+- **Mode 1 — Fast Dependabot / GHAS Pre-Flight (`/security-scan`, model `flash`):** Deterministic dependency vulnerability scanning (SCA for .NET NuGet, Node.js npm/pnpm/yarn, Python `pip-audit`), secret scanning (CWE-798 + `.gitignore` hygiene), and GHAS CodeQL SAST pre-check via `scripts/scan_security.py`. Stops at producing `artifacts/security/dependabot-ghas-report.md` and hands off approved upgrades/remediations to `strict-programmer` via `karsa-a2a/v1`, then re-scans to verify.
+- **Mode 2 — Full Security Audit (Phase 6 Merge Gate & `/audit`, model `pro`):** Runs `scripts/scan_security.py` first to collect deterministic SCA, secret, and SAST evidence, then performs full threat modeling, auth/JWT/RBAC/IDOR exploitability analysis, and produces the formal security review / vulnerability report.
+
+## Fast Dependabot / GHAS Pre-Flight Mode (`/security-scan`)
+
+1. Run the bundled read-only scanner against `<project-root>`:
+   ```powershell
+   python "<plugin-root>/skills/review-security/scripts/scan_security.py" --root "<project-root>" --output "<project-root>/artifacts/security/dependabot-ghas-report.md"
+   ```
+   Optional flags: `--check-outdated`, `--skip-sca`, `--skip-secrets`, `--skip-sast`, `--json-output "<path>"`.
+2. Triage every Critical/High SAST regex match by reading the cited `file:line` and labeling it `confirmed finding`, `review needed`, or `rejected hypothesis` (false positive with reason).
+3. **Stop at report (strict separation of duties):** Never edit `*.csproj`, `package.json`, lockfiles, or application code. Report the GHAS Gate verdict (`PASS` = 0 Critical/High CVEs, 0 tracked secrets, 0 confirmed Critical/High SAST; else `BLOCKED`) along with exact recommended upgrade versions and proof gaps.
+4. **Handoff & Re-Scan Cycle:** After lead/user confirms remediation, hand off `DEFECT` to **`strict-programmer`** (isolated `Workspace: branch`). Once `strict-programmer` upgrades packages / fixes code, verifies build/tests, and sends `HANDOFF` with the updated `scope_checksum`, re-run `scan_security.py` independently (up to 3 bounded A2A rounds) and emit `VERDICT pass` to the lead when clean.
 
 ## Use When
 
@@ -127,14 +141,15 @@ When invoked on an existing codebase:
 ## Workflow
 
 1. Identify the candidate and its surrounding flow.
-2. Re-read the increment manifest and every required item report at their exact paths and revisions. Confirm explicit approval and technical result, compare them with the candidate, and block on any mismatch. Tie reviewed code to a stable revision or checksum of executable, configuration, and source scope only; a change in that scope invalidates affected review evidence, while governance documents and review state do not. Never trust a compaction summary, screenshot, label, or metadata normalization as authoritative evidence.
-3. Reconcile threat assumptions and trust boundaries.
-4. Trace attacker-controlled inputs to sensitive sinks.
-5. Check whether auth, authz, session, or tenant checks can be bypassed.
-6. Look for data exposure, logging leaks, or unsafe persistence.
-7. Check for injection, SSRF, upload abuse, or dependency risk.
-8. Confirm whether the issue can be reached in a realistic deployment.
-9. Write the result with evidence, severity, remediation, and claim status.
+2. Run `scripts/scan_security.py` against `<project-root>` first to gather deterministic SCA (dependency CVEs), secret scanning (CWE-798), and SAST pre-flight evidence (`artifacts/security/dependabot-ghas-report.md` and `artifacts/proof/security-scan.log`).
+3. Re-read the increment manifest and every required item report at their exact paths and revisions. Confirm explicit approval and technical result, compare them with the candidate, and block on any mismatch. Tie reviewed code to a stable revision or checksum of executable, configuration, and source scope only; a change in that scope invalidates affected review evidence, while governance documents and review state do not. Never trust a compaction summary, screenshot, label, or metadata normalization as authoritative evidence.
+4. Reconcile threat assumptions and trust boundaries.
+5. Trace attacker-controlled inputs to sensitive sinks.
+6. Check whether auth, authz, session, or tenant checks can be bypassed.
+7. Look for data exposure, logging leaks, or unsafe persistence.
+8. Check for injection, SSRF, upload abuse, or dependency risk (incorporating `scan_security.py` findings).
+9. Confirm whether the issue can be reached in a realistic deployment.
+10. Write the result with evidence, severity, remediation, and claim status.
 
 For production-ready work, review the substantive backend API/database integration and frontend API use, staff roles and authorization, secrets/configuration, logging, durable storage, migrations, backups, and process/concurrency assumptions that apply to the approved scope. Recommend an independent security or operational audit when warranted by payment, sensitive data, or privilege risk; that recommendation is not an audit result. Use isolated nonproduction fixtures and never a project live database.
 
